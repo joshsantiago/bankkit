@@ -15,7 +15,7 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
       <Navbar user={user} onLogout={logout} />
       <div className="flex">
         <Sidebar isAdmin={isAdmin} />
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-4 md:p-8">
           <div className="max-w-7xl mx-auto">
             {children}
           </div>

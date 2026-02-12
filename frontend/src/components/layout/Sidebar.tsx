@@ -18,7 +18,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ isAdmin }) => {
   `;
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 min-h-[calc(100vh-4rem)]">
+    <aside className="hidden md:block w-64 bg-white border-r border-gray-200 min-h-[calc(100vh-4rem)]">
       <nav className="p-4 space-y-1">
         <Link to="/dashboard" className={linkClass('/dashboard')}>
           <span className="mr-3">📊</span>
