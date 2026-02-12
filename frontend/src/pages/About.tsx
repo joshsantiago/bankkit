@@ -1,9 +1,17 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Target, Users, Heart, Award, ChevronRight, ArrowLeft } from 'lucide-react';
+import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 export const About: React.FC = () => {
   const navigate = useNavigate();
+
+  // Scroll animations
+  const storyAnim = useScrollAnimation();
+  const valuesAnim = useScrollAnimation();
+  const teamAnim = useScrollAnimation();
+  const statsAnim = useScrollAnimation();
+  const ctaAnim = useScrollAnimation();
 
   return (
     <div className="min-h-screen bg-white">
@@ -43,7 +51,12 @@ export const About: React.FC = () => {
       </section>
 
       {/* Story Section */}
-      <section className="py-20 px-4">
+      <section
+        ref={storyAnim.ref}
+        className={`py-20 px-4 transition-all duration-1000 ${
+          storyAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+      >
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Our Story</span>
@@ -69,7 +82,12 @@ export const About: React.FC = () => {
       </section>
 
       {/* Values Section */}
-      <section className="py-20 px-4 bg-gray-50">
+      <section
+        ref={valuesAnim.ref}
+        className={`py-20 px-4 bg-gray-50 transition-all duration-1000 ${
+          valuesAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+      >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Our Values</span>
@@ -121,7 +139,12 @@ export const About: React.FC = () => {
       </section>
 
       {/* Team Section */}
-      <section className="py-20 px-4">
+      <section
+        ref={teamAnim.ref}
+        className={`py-20 px-4 transition-all duration-1000 ${
+          teamAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+      >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Leadership</span>
@@ -148,7 +171,12 @@ export const About: React.FC = () => {
       </section>
 
       {/* Stats Section */}
-      <section className="py-20 px-4 bg-black text-white">
+      <section
+        ref={statsAnim.ref}
+        className={`py-20 px-4 bg-black text-white transition-all duration-1000 ${
+          statsAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+      >
         <div className="max-w-7xl mx-auto">
           <div className="grid md:grid-cols-4 gap-8 text-center">
             <div>
@@ -172,7 +200,12 @@ export const About: React.FC = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-gray-50">
+      <section
+        ref={ctaAnim.ref}
+        className={`py-20 px-4 bg-gray-50 transition-all duration-1000 ${
+          ctaAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+      >
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-6">
             Join us on our journey

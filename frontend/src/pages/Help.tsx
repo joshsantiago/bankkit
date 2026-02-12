@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ChevronDown, ChevronRight, ArrowLeft, Search, MessageCircle } from 'lucide-react';
+import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 interface FAQItem {
   question: string;
@@ -13,6 +14,10 @@ export const Help: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [activeCategory, setActiveCategory] = useState('All');
+
+  // Scroll animations
+  const faqAnim = useScrollAnimation();
+  const contactAnim = useScrollAnimation();
 
   const faqs: FAQItem[] = [
     {
@@ -172,7 +177,12 @@ export const Help: React.FC = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="py-12 px-4">
+      <section
+        ref={faqAnim.ref}
+        className={`py-12 px-4 transition-all duration-1000 ${
+          faqAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+      >
         <div className="max-w-4xl mx-auto">
           <div className="space-y-4">
             {filteredFaqs.length === 0 ? (
@@ -221,7 +231,12 @@ export const Help: React.FC = () => {
       </section>
 
       {/* Contact Support Section */}
-      <section className="py-20 px-4 bg-gradient-to-br from-black to-gray-900 text-white">
+      <section
+        ref={contactAnim.ref}
+        className={`py-20 px-4 bg-gradient-to-br from-black to-gray-900 text-white transition-all duration-1000 ${
+          contactAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+      >
         <div className="max-w-4xl mx-auto text-center">
           <div className="w-16 h-16 bg-lime-400 rounded-full flex items-center justify-center mx-auto mb-6">
             <MessageCircle className="w-8 h-8 text-black" />

@@ -11,9 +11,16 @@ import {
   ArrowLeft,
   Check
 } from 'lucide-react';
+import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 export const Security: React.FC = () => {
   const navigate = useNavigate();
+
+  // Scroll animations
+  const featuresAnim = useScrollAnimation();
+  const processAnim = useScrollAnimation();
+  const complianceAnim = useScrollAnimation();
+  const ctaAnim = useScrollAnimation();
 
   return (
     <div className="min-h-screen bg-white">
@@ -56,7 +63,12 @@ export const Security: React.FC = () => {
       </section>
 
       {/* Security Features */}
-      <section className="py-20 px-4">
+      <section
+        ref={featuresAnim.ref}
+        className={`py-20 px-4 transition-all duration-1000 ${
+          featuresAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+      >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Protection</span>
@@ -158,7 +170,12 @@ export const Security: React.FC = () => {
       </section>
 
       {/* How It Works */}
-      <section className="py-20 px-4 bg-gradient-to-br from-gray-900 to-black text-white">
+      <section
+        ref={processAnim.ref}
+        className={`py-20 px-4 bg-gradient-to-br from-gray-900 to-black text-white transition-all duration-1000 ${
+          processAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+      >
         <div className="max-w-5xl mx-auto">
           <div className="text-center mb-16">
             <span className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Process</span>
@@ -222,7 +239,12 @@ export const Security: React.FC = () => {
       </section>
 
       {/* Compliance Section */}
-      <section className="py-20 px-4 bg-gray-50">
+      <section
+        ref={complianceAnim.ref}
+        className={`py-20 px-4 bg-gray-50 transition-all duration-1000 ${
+          complianceAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+      >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Compliance</span>
@@ -249,7 +271,12 @@ export const Security: React.FC = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 px-4 bg-black text-white">
+      <section
+        ref={ctaAnim.ref}
+        className={`py-20 px-4 bg-black text-white transition-all duration-1000 ${
+          ctaAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+      >
         <div className="max-w-4xl mx-auto text-center">
           <h2 className="text-4xl md:text-5xl font-bold mb-6">
             Ready to bank securely?
