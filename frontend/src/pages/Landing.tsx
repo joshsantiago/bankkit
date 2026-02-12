@@ -14,9 +14,18 @@ import {
   Users,
   Star
 } from 'lucide-react';
+import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
 export const Landing: React.FC = () => {
   const navigate = useNavigate();
+
+  // Scroll animations for each section
+  const featuresAnim = useScrollAnimation();
+  const testimonialsAnim = useScrollAnimation();
+  const statsAnim = useScrollAnimation();
+  const ctaAnim = useScrollAnimation();
+  const securityAnim = useScrollAnimation();
+  const finalCtaAnim = useScrollAnimation();
 
   return (
     <div className="min-h-screen bg-white">
@@ -168,7 +177,13 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* Bento Box Features Section */}
-      <section id="features" className="py-20 px-4 bg-gray-50">
+      <section
+        id="features"
+        ref={featuresAnim.ref}
+        className={`py-20 px-4 bg-gray-50 transition-all duration-1000 ${
+          featuresAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+      >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Features</span>
@@ -305,7 +320,12 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* Customer Testimonials Section */}
-      <section className="py-20 px-4 bg-white">
+      <section
+        ref={testimonialsAnim.ref}
+        className={`py-20 px-4 bg-white transition-all duration-1000 ${
+          testimonialsAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+      >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Testimonials</span>
@@ -402,7 +422,13 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* Statistics Section */}
-      <section id="about" className="py-20 px-4 bg-gray-50">
+      <section
+        id="about"
+        ref={statsAnim.ref}
+        className={`py-20 px-4 bg-gray-50 transition-all duration-1000 ${
+          statsAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+      >
         <div className="max-w-7xl mx-auto text-center">
           <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Statistics</span>
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mt-2 mb-4">
@@ -444,7 +470,12 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* CTA Section with Illustration */}
-      <section className="py-20 px-4 bg-white">
+      <section
+        ref={ctaAnim.ref}
+        className={`py-20 px-4 bg-white transition-all duration-1000 ${
+          ctaAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+      >
         <div className="max-w-5xl mx-auto">
           <div className="bg-black rounded-[3rem] p-12 md:p-16 relative overflow-hidden hover:scale-[1.01] transition-all duration-300">
             {/* Decorative Stars */}
@@ -485,7 +516,13 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* Security & Trust Section */}
-      <section id="security" className="py-20 px-4 bg-gray-50">
+      <section
+        id="security"
+        ref={securityAnim.ref}
+        className={`py-20 px-4 bg-gray-50 transition-all duration-1000 ${
+          securityAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+      >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Trust & Security</span>
@@ -534,7 +571,12 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 px-4 bg-white">
+      <section
+        ref={finalCtaAnim.ref}
+        className={`py-20 px-4 bg-white transition-all duration-1000 ${
+          finalCtaAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
+        }`}
+      >
         <div className="max-w-4xl mx-auto">
           <div className="bg-black rounded-[3rem] p-12 text-center hover:scale-[1.01] transition-all duration-300">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
