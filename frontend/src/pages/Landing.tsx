@@ -1,6 +1,19 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button } from '../components/ui/Button';
+import {
+  CreditCard,
+  Zap,
+  TrendingUp,
+  Shield,
+  BarChart3,
+  Smartphone,
+  ChevronRight,
+  Check,
+  Lock,
+  Globe,
+  Users,
+  DollarSign
+} from 'lucide-react';
 
 export const Landing: React.FC = () => {
   const navigate = useNavigate();
@@ -61,7 +74,7 @@ export const Landing: React.FC = () => {
                   className="bg-lime-400 text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-lime-300 transition-all hover:scale-105 flex items-center gap-2"
                 >
                   Digitize Now
-                  <span>→</span>
+                  <ChevronRight className="w-5 h-5" />
                 </button>
                 <button className="border-2 border-white/20 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white/10 transition-all">
                   Learn More
@@ -92,7 +105,7 @@ export const Landing: React.FC = () => {
                   <div className="flex justify-between items-start">
                     <span className="text-2xl font-bold text-white">BankKit</span>
                     <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                      <span className="text-2xl">💳</span>
+                      <CreditCard className="w-6 h-6 text-white" />
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -108,7 +121,7 @@ export const Landing: React.FC = () => {
                   <div className="flex justify-between items-start">
                     <span className="text-2xl font-bold text-white">BankKit</span>
                     <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                      <span className="text-2xl">📱</span>
+                      <TrendingUp className="w-6 h-6 text-white" />
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -124,7 +137,7 @@ export const Landing: React.FC = () => {
                   <div className="flex justify-between items-start">
                     <span className="text-2xl font-bold text-white">BankKit</span>
                     <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                      <span className="text-2xl">⚡</span>
+                      <Zap className="w-6 h-6 text-white" />
                     </div>
                   </div>
                   <div className="space-y-2">
@@ -163,11 +176,11 @@ export const Landing: React.FC = () => {
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {/* Feature 1 */}
-            <div className="bg-white rounded-3xl p-6 hover:shadow-xl transition-shadow">
-              <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center text-2xl mb-4">
-                💳
+            <div className="bg-white rounded-3xl p-8 hover:shadow-xl transition-shadow">
+              <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mb-4">
+                <CreditCard className="w-7 h-7 text-white" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Zero Fees</h3>
               <p className="text-gray-600">
@@ -176,9 +189,9 @@ export const Landing: React.FC = () => {
             </div>
 
             {/* Feature 2 */}
-            <div className="bg-white rounded-3xl p-6 hover:shadow-xl transition-shadow">
-              <div className="w-14 h-14 bg-gradient-to-br from-pink-500 to-red-500 rounded-2xl flex items-center justify-center text-2xl mb-4">
-                ⚡
+            <div className="bg-white rounded-3xl p-8 hover:shadow-xl transition-shadow">
+              <div className="w-14 h-14 bg-gradient-to-br from-pink-500 to-red-500 rounded-2xl flex items-center justify-center mb-4">
+                <Zap className="w-7 h-7 text-white" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Instant Transfers</h3>
               <p className="text-gray-600">
@@ -187,9 +200,9 @@ export const Landing: React.FC = () => {
             </div>
 
             {/* Feature 3 */}
-            <div className="bg-white rounded-3xl p-6 hover:shadow-xl transition-shadow">
-              <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-teal-500 rounded-2xl flex items-center justify-center text-2xl mb-4">
-                📈
+            <div className="bg-white rounded-3xl p-8 hover:shadow-xl transition-shadow">
+              <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-teal-500 rounded-2xl flex items-center justify-center mb-4">
+                <TrendingUp className="w-7 h-7 text-white" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">High Yield</h3>
               <p className="text-gray-600">
@@ -198,40 +211,134 @@ export const Landing: React.FC = () => {
             </div>
 
             {/* Feature 4 */}
-            <div className="bg-white rounded-3xl p-6 hover:shadow-xl transition-shadow">
-              <div className="w-14 h-14 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center text-2xl mb-4">
-                🔒
+            <div className="bg-white rounded-3xl p-8 hover:shadow-xl transition-shadow">
+              <div className="w-14 h-14 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center mb-4">
+                <Shield className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Secure</h3>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Bank-Level Security</h3>
               <p className="text-gray-600">
-                Bank-grade 256-bit encryption. FDIC insured up to $250K. Your money is safe.
+                256-bit encryption and FDIC insured up to $250K. Your money is protected.
               </p>
             </div>
 
-            {/* Feature 5 - Dark Card */}
-            <div className="bg-black text-white rounded-3xl p-6 hover:shadow-xl transition-shadow lg:col-span-2">
-              <h3 className="text-xl font-bold mb-4">Real-time Analytics</h3>
-              <p className="text-gray-400 mb-6">
-                Track your spending, set budgets, and get insights with beautiful charts and reports.
-              </p>
-              <div className="h-40 bg-gradient-to-br from-purple-900/50 to-blue-900/50 rounded-2xl flex items-center justify-center">
-                <div className="text-6xl">📊</div>
+            {/* Feature 5 - Analytics (Redesigned) */}
+            <div className="bg-gradient-to-br from-purple-600 to-blue-600 text-white rounded-3xl p-8 hover:shadow-xl transition-shadow lg:col-span-2 overflow-hidden relative">
+              <div className="relative z-10">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                    <BarChart3 className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-bold">Real-time Analytics</h3>
+                </div>
+                <p className="text-white/90 mb-6 max-w-md">
+                  Track your spending patterns, visualize cash flow, and get actionable insights with beautiful charts.
+                </p>
+                <div className="flex gap-3">
+                  <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm flex items-center gap-2">
+                    <Check className="w-4 h-4" />
+                    Smart Budgets
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm flex items-center gap-2">
+                    <Check className="w-4 h-4" />
+                    Spending Alerts
+                  </div>
+                </div>
+              </div>
+
+              {/* Chart Visualization */}
+              <div className="absolute right-0 bottom-0 w-64 h-48 opacity-30">
+                <svg viewBox="0 0 200 150" className="w-full h-full">
+                  <path
+                    d="M 0,120 L 40,100 L 80,60 L 120,80 L 160,30 L 200,50"
+                    fill="none"
+                    stroke="white"
+                    strokeWidth="3"
+                    strokeLinecap="round"
+                  />
+                  <path
+                    d="M 0,120 L 40,100 L 80,60 L 120,80 L 160,30 L 200,50 L 200,150 L 0,150 Z"
+                    fill="url(#gradient)"
+                    opacity="0.3"
+                  />
+                  <defs>
+                    <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                      <stop offset="0%" stopColor="white" stopOpacity="0.5" />
+                      <stop offset="100%" stopColor="white" stopOpacity="0" />
+                    </linearGradient>
+                  </defs>
+                </svg>
               </div>
             </div>
 
-            {/* Feature 6 */}
-            <div className="bg-gradient-to-br from-lime-400 to-green-500 text-black rounded-3xl p-6 hover:shadow-xl transition-shadow lg:col-span-2">
-              <h3 className="text-xl font-bold mb-2">Mobile First</h3>
-              <p className="mb-6">
-                Designed for your phone. Manage everything on the go with our beautiful app.
-              </p>
-              <div className="flex items-center gap-4">
-                <Button variant="secondary" size="sm">
-                  App Store
-                </Button>
-                <Button variant="secondary" size="sm">
-                  Play Store
-                </Button>
+            {/* Feature 6 - Mobile First (Redesigned) */}
+            <div className="bg-gradient-to-br from-lime-400 to-green-500 text-black rounded-3xl p-8 hover:shadow-xl transition-shadow lg:col-span-3 relative overflow-hidden">
+              <div className="grid lg:grid-cols-2 gap-8 items-center">
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="w-12 h-12 bg-black/10 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                      <Smartphone className="w-6 h-6 text-black" />
+                    </div>
+                    <h3 className="text-2xl font-bold">Mobile-First Experience</h3>
+                  </div>
+                  <p className="text-black/80 mb-6">
+                    Designed from the ground up for mobile. Manage your finances anywhere with our beautifully crafted app.
+                  </p>
+                  <div className="grid grid-cols-2 gap-4 mb-6">
+                    <div className="bg-white/20 backdrop-blur-sm p-4 rounded-2xl">
+                      <div className="text-2xl font-bold mb-1">4.9★</div>
+                      <div className="text-sm text-black/70">App Store Rating</div>
+                    </div>
+                    <div className="bg-white/20 backdrop-blur-sm p-4 rounded-2xl">
+                      <div className="text-2xl font-bold mb-1">500K+</div>
+                      <div className="text-sm text-black/70">Downloads</div>
+                    </div>
+                  </div>
+                  <div className="flex gap-3">
+                    <button className="bg-black text-white px-6 py-3 rounded-full font-semibold hover:bg-black/90 transition-colors flex items-center gap-2">
+                      <span>App Store</span>
+                    </button>
+                    <button className="bg-white text-black px-6 py-3 rounded-full font-semibold hover:bg-white/90 transition-colors flex items-center gap-2">
+                      <span>Play Store</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Phone Mockup */}
+                <div className="relative h-96 flex items-center justify-center">
+                  <div className="relative w-64 h-full">
+                    {/* Phone Frame */}
+                    <div className="absolute inset-0 bg-black rounded-[3rem] shadow-2xl p-3">
+                      {/* Screen */}
+                      <div className="w-full h-full bg-white rounded-[2.5rem] overflow-hidden relative">
+                        {/* Status Bar */}
+                        <div className="bg-gray-100 h-8 flex items-center justify-between px-6 text-xs">
+                          <span>9:41</span>
+                          <div className="flex gap-1">
+                            <div className="w-4 h-4 bg-black rounded-full"></div>
+                          </div>
+                        </div>
+
+                        {/* App Content */}
+                        <div className="p-4 space-y-4">
+                          <div className="text-2xl font-bold">$48,392.00</div>
+                          <div className="grid grid-cols-2 gap-2">
+                            <div className="bg-gradient-to-br from-blue-500 to-purple-500 h-20 rounded-2xl"></div>
+                            <div className="bg-gradient-to-br from-pink-500 to-red-500 h-20 rounded-2xl"></div>
+                            <div className="bg-gradient-to-br from-green-500 to-teal-500 h-20 rounded-2xl col-span-2"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Floating Elements */}
+                    <div className="absolute -right-4 top-20 bg-white rounded-2xl shadow-xl p-3 animate-float">
+                      <DollarSign className="w-8 h-8 text-green-500" />
+                    </div>
+                    <div className="absolute -left-4 bottom-32 bg-white rounded-2xl shadow-xl p-3 animate-float" style={{ animationDelay: '1s' }}>
+                      <TrendingUp className="w-8 h-8 text-blue-500" />
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -246,7 +353,7 @@ export const Landing: React.FC = () => {
             Get to know more about BankKit
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-16">
-            We are customers - focused digital bank that brings together a range of digital financial solutions
+            We are customers-focused digital bank that brings together a range of digital financial solutions
           </p>
 
           <div className="grid md:grid-cols-3 gap-12">
@@ -300,7 +407,7 @@ export const Landing: React.FC = () => {
                 className="bg-lime-400 text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-lime-300 transition-all hover:scale-105 inline-flex items-center gap-2"
               >
                 Try BankKit Now
-                <span>→</span>
+                <ChevronRight className="w-5 h-5" />
               </button>
 
               {/* Phone Mockup */}
@@ -309,7 +416,7 @@ export const Landing: React.FC = () => {
                   <div className="w-64 h-96 bg-gradient-to-br from-gray-800 to-gray-900 rounded-[3rem] p-4 shadow-2xl">
                     <div className="w-full h-full bg-gradient-to-br from-pink-500 via-purple-500 to-yellow-500 rounded-[2.5rem] flex items-center justify-center">
                       <div className="text-white text-center">
-                        <div className="text-6xl mb-4">📱</div>
+                        <Smartphone className="w-16 h-16 mx-auto mb-4" />
                         <div className="text-xl font-bold">BankKit</div>
                       </div>
                     </div>
@@ -321,7 +428,7 @@ export const Landing: React.FC = () => {
         </div>
       </section>
 
-      {/* Security & Partners Section */}
+      {/* Security & Trust Section */}
       <section id="security" className="py-20 px-4 bg-white">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
@@ -334,22 +441,37 @@ export const Landing: React.FC = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 items-center opacity-40">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-gray-400">FDIC</div>
-              <div className="text-sm text-gray-500 mt-1">Insured</div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+            <div className="text-center p-6 bg-gray-50 rounded-3xl hover:bg-gray-100 transition-colors">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Shield className="w-8 h-8 text-white" />
+              </div>
+              <div className="text-2xl font-bold text-gray-900 mb-1">FDIC</div>
+              <div className="text-sm text-gray-600">Insured up to $250K</div>
             </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-gray-400">256-bit</div>
-              <div className="text-sm text-gray-500 mt-1">Encryption</div>
+
+            <div className="text-center p-6 bg-gray-50 rounded-3xl hover:bg-gray-100 transition-colors">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Lock className="w-8 h-8 text-white" />
+              </div>
+              <div className="text-2xl font-bold text-gray-900 mb-1">256-bit</div>
+              <div className="text-sm text-gray-600">Encryption</div>
             </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-gray-400">2FA</div>
-              <div className="text-sm text-gray-500 mt-1">Protected</div>
+
+            <div className="text-center p-6 bg-gray-50 rounded-3xl hover:bg-gray-100 transition-colors">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Users className="w-8 h-8 text-white" />
+              </div>
+              <div className="text-2xl font-bold text-gray-900 mb-1">2FA</div>
+              <div className="text-sm text-gray-600">Two-Factor Auth</div>
             </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-gray-400">SOC 2</div>
-              <div className="text-sm text-gray-500 mt-1">Certified</div>
+
+            <div className="text-center p-6 bg-gray-50 rounded-3xl hover:bg-gray-100 transition-colors">
+              <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <Globe className="w-8 h-8 text-white" />
+              </div>
+              <div className="text-2xl font-bold text-gray-900 mb-1">SOC 2</div>
+              <div className="text-sm text-gray-600">Certified</div>
             </div>
           </div>
         </div>
@@ -415,6 +537,21 @@ export const Landing: React.FC = () => {
           </div>
         </div>
       </footer>
+
+      {/* Floating Animation Keyframes */}
+      <style>{`
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-20px);
+          }
+        }
+        .animate-float {
+          animation: float 3s ease-in-out infinite;
+        }
+      `}</style>
     </div>
   );
 };
