@@ -55,21 +55,21 @@ export const Landing: React.FC = () => {
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
             <div className="space-y-6">
-              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full">
+              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full animate-fade-in-up">
                 <span className="w-2 h-2 bg-lime-400 rounded-full animate-pulse"></span>
                 <span className="text-sm text-gray-300">Trusted by 500K+ users</span>
               </div>
 
-              <h1 className="text-5xl md:text-7xl font-bold leading-tight">
+              <h1 className="text-5xl md:text-7xl font-bold leading-tight animate-fade-in-up animation-delay-200">
                 Digitize your financial
                 <span className="block mt-2">future</span>
               </h1>
 
-              <p className="text-xl text-gray-400 max-w-lg">
+              <p className="text-xl text-gray-400 max-w-lg animate-fade-in-up animation-delay-400">
                 Modern banking designed for today's lifestyle. Zero fees, instant transfers, and high-yield savings.
               </p>
 
-              <div className="flex flex-wrap gap-4">
+              <div className="flex flex-wrap gap-4 animate-fade-in-up animation-delay-600">
                 <button
                   onClick={() => navigate('/onboarding')}
                   className="bg-lime-400 text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-lime-300 transition-all hover:scale-105 flex items-center gap-2"
@@ -82,7 +82,7 @@ export const Landing: React.FC = () => {
                 </button>
               </div>
 
-              <div className="flex items-center gap-8 pt-4">
+              <div className="flex items-center gap-8 pt-4 animate-fade-in-up animation-delay-800">
                 <div>
                   <div className="text-3xl font-bold">500K+</div>
                   <div className="text-sm text-gray-400">Active Users</div>
@@ -101,7 +101,7 @@ export const Landing: React.FC = () => {
             {/* Right - Card Mockup */}
             <div className="relative h-[600px] flex items-center justify-center">
               {/* Card 1 - Cyan */}
-              <div className="absolute top-20 left-0 w-80 h-52 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-3xl shadow-2xl transform -rotate-12 hover:rotate-0 transition-transform duration-500">
+              <div className="absolute top-20 left-0 w-80 h-52 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-3xl shadow-2xl transform -rotate-12 hover:rotate-0 transition-transform duration-500 animate-fade-in-right animation-delay-400">
                 <div className="p-6 flex flex-col justify-between h-full">
                   <div className="flex justify-between items-start">
                     <span className="text-2xl font-bold text-white">BankKit</span>
@@ -117,7 +117,7 @@ export const Landing: React.FC = () => {
               </div>
 
               {/* Card 2 - Gradient Center */}
-              <div className="absolute top-40 left-20 w-80 h-52 bg-gradient-to-br from-pink-500 via-purple-500 to-yellow-500 rounded-3xl shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500 z-10">
+              <div className="absolute top-40 left-20 w-80 h-52 bg-gradient-to-br from-pink-500 via-purple-500 to-yellow-500 rounded-3xl shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500 z-10 animate-fade-in-right animation-delay-600">
                 <div className="p-6 flex flex-col justify-between h-full">
                   <div className="flex justify-between items-start">
                     <span className="text-2xl font-bold text-white">BankKit</span>
@@ -133,7 +133,7 @@ export const Landing: React.FC = () => {
               </div>
 
               {/* Card 3 - Yellow */}
-              <div className="absolute top-60 right-0 w-80 h-52 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-3xl shadow-2xl transform rotate-12 hover:rotate-0 transition-transform duration-500">
+              <div className="absolute top-60 right-0 w-80 h-52 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-3xl shadow-2xl transform rotate-12 hover:rotate-0 transition-transform duration-500 animate-fade-in-right animation-delay-800">
                 <div className="p-6 flex flex-col justify-between h-full">
                   <div className="flex justify-between items-start">
                     <span className="text-2xl font-bold text-white">BankKit</span>
@@ -149,7 +149,7 @@ export const Landing: React.FC = () => {
               </div>
 
               {/* Floating Badge */}
-              <div className="absolute bottom-20 right-10 bg-white rounded-full px-6 py-3 shadow-2xl flex items-center gap-3 z-20">
+              <div className="absolute bottom-20 right-10 bg-white rounded-full px-6 py-3 shadow-2xl flex items-center gap-3 z-20 animate-fade-in animation-delay-1000">
                 <div className="flex -space-x-2">
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 border-2 border-white"></div>
                   <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-500 to-red-500 border-2 border-white"></div>
@@ -594,7 +594,7 @@ export const Landing: React.FC = () => {
         </div>
       </footer>
 
-      {/* Floating Animation Keyframes */}
+      {/* Animation Keyframes */}
       <style>{`
         @keyframes float {
           0%, 100% {
@@ -606,6 +606,72 @@ export const Landing: React.FC = () => {
         }
         .animate-float {
           animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes fadeInUp {
+          0% {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+
+        @keyframes fadeInRight {
+          0% {
+            opacity: 0;
+            transform: translateX(50px);
+          }
+          100% {
+            opacity: 1;
+            transform: translateX(0);
+          }
+        }
+
+        @keyframes fadeIn {
+          0% {
+            opacity: 0;
+          }
+          100% {
+            opacity: 1;
+          }
+        }
+
+        .animate-fade-in-up {
+          animation: fadeInUp 0.8s ease-out forwards;
+          opacity: 0;
+        }
+
+        .animate-fade-in-right {
+          animation: fadeInRight 0.8s ease-out forwards;
+          opacity: 0;
+        }
+
+        .animate-fade-in {
+          animation: fadeIn 0.8s ease-out forwards;
+          opacity: 0;
+        }
+
+        .animation-delay-200 {
+          animation-delay: 0.2s;
+        }
+
+        .animation-delay-400 {
+          animation-delay: 0.4s;
+        }
+
+        .animation-delay-600 {
+          animation-delay: 0.6s;
+        }
+
+        .animation-delay-800 {
+          animation-delay: 0.8s;
+        }
+
+        .animation-delay-1000 {
+          animation-delay: 1s;
         }
       `}</style>
     </div>
