@@ -29,8 +29,9 @@ export const Landing: React.FC = () => {
             </div>
             <div className="hidden md:flex items-center space-x-8">
               <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
-              <a href="#about" className="text-gray-300 hover:text-white transition-colors">About</a>
-              <a href="#security" className="text-gray-300 hover:text-white transition-colors">Security</a>
+              <button onClick={() => navigate('/about')} className="text-gray-300 hover:text-white transition-colors">About</button>
+              <button onClick={() => navigate('/security')} className="text-gray-300 hover:text-white transition-colors">Security</button>
+              <button onClick={() => navigate('/help')} className="text-gray-300 hover:text-white transition-colors">Help</button>
               <button
                 onClick={() => navigate('/login')}
                 className="text-gray-300 hover:text-white transition-colors"
@@ -511,16 +512,16 @@ export const Landing: React.FC = () => {
               <h4 className="font-semibold mb-4">Product</h4>
               <ul className="space-y-2 text-gray-400 text-sm">
                 <li><a href="#features" className="hover:text-white">Features</a></li>
-                <li><a href="#security" className="hover:text-white">Security</a></li>
+                <li><button onClick={() => navigate('/security')} className="hover:text-white">Security</button></li>
                 <li><a href="#" className="hover:text-white">Mobile App</a></li>
               </ul>
             </div>
             <div>
               <h4 className="font-semibold mb-4">Company</h4>
               <ul className="space-y-2 text-gray-400 text-sm">
-                <li><a href="#about" className="hover:text-white">About</a></li>
+                <li><button onClick={() => navigate('/about')} className="hover:text-white">About</button></li>
                 <li><a href="#" className="hover:text-white">Careers</a></li>
-                <li><a href="#" className="hover:text-white">Contact</a></li>
+                <li><button onClick={() => navigate('/help')} className="hover:text-white">Help</button></li>
               </ul>
             </div>
             <div>
