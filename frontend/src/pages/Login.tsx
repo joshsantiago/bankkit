@@ -61,9 +61,9 @@ export const Login: React.FC = () => {
           </Button>
         </form>
 
-        <p className="text-center text-sm text-gray-600 mt-6">
+        <p className="text-center text-sm text-gray-700 mt-6">
           Don't have an account?{' '}
-          <Link to="/register" className="text-primary-600 hover:text-primary-700 font-medium">
+          <Link to="/register" className="text-primary-600 hover:text-primary-700 font-semibold underline">
             Sign up
           </Link>
         </p>
