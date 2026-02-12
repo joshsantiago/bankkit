@@ -8,15 +8,9 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { AccountsModule } from './accounts/accounts.module';
 import { UsersModule } from './users/users.module';
-import { UsersModule } from './users/users.module';
-import { AccountsModule } from './accounts/accounts.module';
-import { TransactionsModule } from './transactions/transactions.module';
-import { DashboardModule } from './dashboard/dashboard.module';
-import { AdminModule } from './admin/admin.module';
 import { User } from './entities/user.entity';
 import { Account } from './entities/account.entity';
 import { Transaction } from './entities/transaction.entity';
-import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [

@@ -1,4 +1,4 @@
-import React from 'react';
+import type React from 'react';
 
 interface AlertProps {
   type?: 'success' | 'error' | 'info' | 'warning';
@@ -13,13 +13,6 @@ export const Alert: React.FC<AlertProps> = ({ type = 'info', title, message, onC
     error: 'bg-red-50 border-red-200 text-red-800',
     info: 'bg-blue-50 border-blue-200 text-blue-800',
     warning: 'bg-yellow-50 border-yellow-200 text-yellow-800',
-  };
-
-  const iconStyles = {
-    success: 'text-green-500',
-    error: 'text-red-500',
-    info: 'text-blue-500',
-    warning: 'text-yellow-500',
   };
 
   return (

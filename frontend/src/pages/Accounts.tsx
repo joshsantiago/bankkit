@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import type React from 'react';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { MainLayout } from '../components/layout/MainLayout';
 import { Card, CardBody, Button, Loader, Alert, Modal } from '../components/ui';
 import { accountService } from '../services/accountService';
 import { formatCurrency } from '../utils/formatters';
 
 export const Accounts: React.FC = () => {
-  const navigate = useNavigate();
   const [accounts, setAccounts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
