@@ -12,7 +12,7 @@ import {
   Lock,
   Globe,
   Users,
-  DollarSign
+  Star
 } from 'lucide-react';
 
 export const Landing: React.FC = () => {
@@ -167,72 +167,83 @@ export const Landing: React.FC = () => {
         <div className="absolute bottom-40 left-1/3 w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse"></div>
       </section>
 
-      {/* Features Section */}
+      {/* Bento Box Features Section */}
       <section id="features" className="py-20 px-4 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Features</span>
             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mt-2">
-              Best features provided by BankKit
+              Everything you need in one place
             </h2>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {/* Feature 1 */}
-            <div className="bg-white rounded-3xl p-8 hover:shadow-xl transition-shadow">
-              <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mb-4">
-                <CreditCard className="w-7 h-7 text-white" />
+          {/* Bento Grid Layout */}
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
+            {/* Large Feature 1 - Zero Fees */}
+            <div className="md:col-span-3 md:row-span-2 bg-gradient-to-br from-blue-600 to-purple-600 rounded-3xl p-8 text-white hover:scale-[1.02] transition-all duration-300 hover:shadow-2xl group">
+              <div className="flex flex-col h-full justify-between">
+                <div>
+                  <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <CreditCard className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-3xl font-bold mb-4">Zero Fees, Forever</h3>
+                  <p className="text-white/90 text-lg mb-6">
+                    No monthly fees, no minimum balance, no overdraft fees, no hidden charges.
+                    Banking should be free, and we mean it.
+                  </p>
+                </div>
+                <div className="flex gap-3 flex-wrap">
+                  <span className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm">No Monthly Fees</span>
+                  <span className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm">No Minimums</span>
+                  <span className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm">No Hidden Costs</span>
+                </div>
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Zero Fees</h3>
-              <p className="text-gray-600">
-                No monthly fees, no minimum balance, no hidden charges. Banking should be free.
-              </p>
             </div>
 
-            {/* Feature 2 */}
-            <div className="bg-white rounded-3xl p-8 hover:shadow-xl transition-shadow">
-              <div className="w-14 h-14 bg-gradient-to-br from-pink-500 to-red-500 rounded-2xl flex items-center justify-center mb-4">
+            {/* Medium Feature 2 - Instant Transfers */}
+            <div className="md:col-span-3 bg-white rounded-3xl p-8 hover:scale-[1.02] transition-all duration-300 hover:shadow-2xl group">
+              <div className="w-14 h-14 bg-gradient-to-br from-pink-500 to-red-500 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
                 <Zap className="w-7 h-7 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Instant Transfers</h3>
+              <h3 className="text-2xl font-bold text-gray-900 mb-2">Instant Transfers</h3>
               <p className="text-gray-600">
-                Send money instantly to anyone, anytime. No waiting, no delays.
+                Send money to anyone instantly with just their email or phone. No delays, no waiting periods.
               </p>
             </div>
 
-            {/* Feature 3 */}
-            <div className="bg-white rounded-3xl p-8 hover:shadow-xl transition-shadow">
-              <div className="w-14 h-14 bg-gradient-to-br from-green-500 to-teal-500 rounded-2xl flex items-center justify-center mb-4">
-                <TrendingUp className="w-7 h-7 text-white" />
+            {/* Small Feature 3 - High Yield */}
+            <div className="md:col-span-2 bg-gradient-to-br from-green-500 to-teal-500 rounded-3xl p-6 text-white hover:scale-[1.02] transition-all duration-300 hover:shadow-2xl group">
+              <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <TrendingUp className="w-6 h-6 text-white" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">High Yield</h3>
-              <p className="text-gray-600">
-                Earn competitive interest on your savings. Your money works harder for you.
+              <h3 className="text-xl font-bold mb-2">High Yield</h3>
+              <p className="text-white/90 text-sm">
+                Earn competitive APY on your savings automatically
               </p>
             </div>
 
-            {/* Feature 4 */}
-            <div className="bg-white rounded-3xl p-8 hover:shadow-xl transition-shadow">
-              <div className="w-14 h-14 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center mb-4">
-                <Shield className="w-7 h-7 text-white" />
+            {/* Small Feature 4 - Security */}
+            <div className="md:col-span-2 bg-white rounded-3xl p-6 hover:scale-[1.02] transition-all duration-300 hover:shadow-2xl group">
+              <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <Shield className="w-6 h-6 text-white" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 mb-2">Bank-Level Security</h3>
-              <p className="text-gray-600">
-                256-bit encryption and FDIC insured up to $250K. Your money is protected.
+              <p className="text-gray-600 text-sm">
+                256-bit encryption & FDIC insured up to $250K
               </p>
             </div>
 
-            {/* Feature 5 - Analytics (Redesigned) */}
-            <div className="bg-gradient-to-br from-purple-600 to-blue-600 text-white rounded-3xl p-8 hover:shadow-xl transition-shadow lg:col-span-2 overflow-hidden relative">
+            {/* Medium Feature 5 - Analytics */}
+            <div className="md:col-span-4 bg-gradient-to-br from-purple-600 to-blue-600 text-white rounded-3xl p-8 overflow-hidden relative hover:scale-[1.02] transition-all duration-300 hover:shadow-2xl group">
               <div className="relative z-10">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center">
+                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
                     <BarChart3 className="w-6 h-6 text-white" />
                   </div>
                   <h3 className="text-2xl font-bold">Real-time Analytics</h3>
                 </div>
                 <p className="text-white/90 mb-6 max-w-md">
-                  Track your spending patterns, visualize cash flow, and get actionable insights with beautiful charts.
+                  Track spending patterns, visualize cash flow, and get actionable insights with beautiful charts.
                 </p>
                 <div className="flex gap-3">
                   <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm flex items-center gap-2">
@@ -247,7 +258,7 @@ export const Landing: React.FC = () => {
               </div>
 
               {/* Chart Visualization */}
-              <div className="absolute right-0 bottom-0 w-64 h-48 opacity-30">
+              <div className="absolute right-0 bottom-0 w-64 h-48 opacity-30 group-hover:opacity-40 transition-opacity">
                 <svg viewBox="0 0 200 150" className="w-full h-full">
                   <path
                     d="M 0,120 L 40,100 L 80,60 L 120,80 L 160,30 L 200,50"
@@ -271,74 +282,21 @@ export const Landing: React.FC = () => {
               </div>
             </div>
 
-            {/* Feature 6 - Mobile First (Redesigned) */}
-            <div className="bg-gradient-to-br from-lime-400 to-green-500 text-black rounded-3xl p-8 hover:shadow-xl transition-shadow lg:col-span-3 relative overflow-hidden">
-              <div className="grid lg:grid-cols-2 gap-8 items-center">
-                <div className="relative z-10">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-12 h-12 bg-black/10 backdrop-blur-sm rounded-xl flex items-center justify-center">
-                      <Smartphone className="w-6 h-6 text-black" />
-                    </div>
-                    <h3 className="text-2xl font-bold">Mobile-First Experience</h3>
-                  </div>
-                  <p className="text-black/80 mb-6">
-                    Designed from the ground up for mobile. Manage your finances anywhere with our beautifully crafted app.
-                  </p>
-                  <div className="grid grid-cols-2 gap-4 mb-6">
-                    <div className="bg-white/20 backdrop-blur-sm p-4 rounded-2xl">
-                      <div className="text-2xl font-bold mb-1">4.9★</div>
-                      <div className="text-sm text-black/70">App Store Rating</div>
-                    </div>
-                    <div className="bg-white/20 backdrop-blur-sm p-4 rounded-2xl">
-                      <div className="text-2xl font-bold mb-1">500K+</div>
-                      <div className="text-sm text-black/70">Downloads</div>
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <button className="bg-black text-white px-6 py-3 rounded-full font-semibold hover:bg-black/90 transition-colors flex items-center gap-2">
-                      <span>App Store</span>
-                    </button>
-                    <button className="bg-white text-black px-6 py-3 rounded-full font-semibold hover:bg-white/90 transition-colors flex items-center gap-2">
-                      <span>Play Store</span>
-                    </button>
-                  </div>
+            {/* Medium Feature 6 - Mobile */}
+            <div className="md:col-span-2 bg-gradient-to-br from-lime-400 to-green-500 text-black rounded-3xl p-6 hover:scale-[1.02] transition-all duration-300 hover:shadow-2xl group">
+              <div className="w-12 h-12 bg-black/10 backdrop-blur-sm rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                <Smartphone className="w-6 h-6 text-black" />
+              </div>
+              <h3 className="text-xl font-bold mb-2">Mobile First</h3>
+              <p className="text-black/80 text-sm mb-4">
+                Beautifully designed app for iOS and Android
+              </p>
+              <div className="flex gap-2">
+                <div className="bg-black/10 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold">
+                  4.9★
                 </div>
-
-                {/* Phone Mockup */}
-                <div className="relative h-96 flex items-center justify-center">
-                  <div className="relative w-64 h-full">
-                    {/* Phone Frame */}
-                    <div className="absolute inset-0 bg-black rounded-[3rem] shadow-2xl p-3">
-                      {/* Screen */}
-                      <div className="w-full h-full bg-white rounded-[2.5rem] overflow-hidden relative">
-                        {/* Status Bar */}
-                        <div className="bg-gray-100 h-8 flex items-center justify-between px-6 text-xs">
-                          <span>9:41</span>
-                          <div className="flex gap-1">
-                            <div className="w-4 h-4 bg-black rounded-full"></div>
-                          </div>
-                        </div>
-
-                        {/* App Content */}
-                        <div className="p-4 space-y-4">
-                          <div className="text-2xl font-bold">$48,392.00</div>
-                          <div className="grid grid-cols-2 gap-2">
-                            <div className="bg-gradient-to-br from-blue-500 to-purple-500 h-20 rounded-2xl"></div>
-                            <div className="bg-gradient-to-br from-pink-500 to-red-500 h-20 rounded-2xl"></div>
-                            <div className="bg-gradient-to-br from-green-500 to-teal-500 h-20 rounded-2xl col-span-2"></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Floating Elements */}
-                    <div className="absolute -right-4 top-20 bg-white rounded-2xl shadow-xl p-3 animate-float">
-                      <DollarSign className="w-8 h-8 text-green-500" />
-                    </div>
-                    <div className="absolute -left-4 bottom-32 bg-white rounded-2xl shadow-xl p-3 animate-float" style={{ animationDelay: '1s' }}>
-                      <TrendingUp className="w-8 h-8 text-blue-500" />
-                    </div>
-                  </div>
+                <div className="bg-black/10 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold">
+                  500K+ Downloads
                 </div>
               </div>
             </div>
@@ -346,8 +304,105 @@ export const Landing: React.FC = () => {
         </div>
       </section>
 
+      {/* Customer Testimonials Section */}
+      <section className="py-20 px-4 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Testimonials</span>
+            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mt-2">
+              Loved by customers everywhere
+            </h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {/* Testimonial 1 */}
+            <div className="bg-gray-50 rounded-3xl p-8 hover:scale-[1.02] transition-all duration-300 hover:shadow-xl group">
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                ))}
+              </div>
+              <p className="text-gray-700 mb-6 leading-relaxed">
+                "Switching to BankKit was the best financial decision I made this year.
+                Zero fees and instant transfers have saved me so much hassle."
+              </p>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500"></div>
+                <div>
+                  <div className="font-bold text-gray-900">Sarah Johnson</div>
+                  <div className="text-sm text-gray-500">Freelance Designer</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Testimonial 2 */}
+            <div className="bg-gray-50 rounded-3xl p-8 hover:scale-[1.02] transition-all duration-300 hover:shadow-xl group">
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                ))}
+              </div>
+              <p className="text-gray-700 mb-6 leading-relaxed">
+                "The mobile app is incredibly intuitive. I can manage everything from
+                my phone - transfers, budgets, savings goals. It just works."
+              </p>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-red-500"></div>
+                <div>
+                  <div className="font-bold text-gray-900">Marcus Chen</div>
+                  <div className="text-sm text-gray-500">Small Business Owner</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Testimonial 3 */}
+            <div className="bg-gray-50 rounded-3xl p-8 hover:scale-[1.02] transition-all duration-300 hover:shadow-xl group">
+              <div className="flex gap-1 mb-4">
+                {[...Array(5)].map((_, i) => (
+                  <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                ))}
+              </div>
+              <p className="text-gray-700 mb-6 leading-relaxed">
+                "Finally, a bank that gets it. High APY on savings, beautiful interface,
+                and customer support that actually responds. Highly recommend!"
+              </p>
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-teal-500"></div>
+                <div>
+                  <div className="font-bold text-gray-900">Emily Rodriguez</div>
+                  <div className="text-sm text-gray-500">Software Engineer</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Trust Badges */}
+          <div className="mt-16 flex flex-wrap justify-center items-center gap-8 opacity-60">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-gray-900">500K+</div>
+              <div className="text-sm text-gray-600">Happy Customers</div>
+            </div>
+            <div className="h-8 w-px bg-gray-300"></div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-gray-900">4.9/5</div>
+              <div className="text-sm text-gray-600">Average Rating</div>
+            </div>
+            <div className="h-8 w-px bg-gray-300"></div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-gray-900">99.9%</div>
+              <div className="text-sm text-gray-600">Uptime</div>
+            </div>
+            <div className="h-8 w-px bg-gray-300"></div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-gray-900">24/7</div>
+              <div className="text-sm text-gray-600">Support</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Statistics Section */}
-      <section id="about" className="py-20 px-4 bg-white">
+      <section id="about" className="py-20 px-4 bg-gray-50">
         <div className="max-w-7xl mx-auto text-center">
           <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Statistics</span>
           <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mt-2 mb-4">
@@ -358,7 +413,7 @@ export const Landing: React.FC = () => {
           </p>
 
           <div className="grid md:grid-cols-3 gap-12">
-            <div>
+            <div className="hover:scale-105 transition-transform duration-300">
               <div className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
                 500K
               </div>
@@ -367,7 +422,7 @@ export const Landing: React.FC = () => {
               </p>
             </div>
 
-            <div>
+            <div className="hover:scale-105 transition-transform duration-300">
               <div className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-pink-600 to-red-600 bg-clip-text text-transparent mb-2">
                 $2.5B
               </div>
@@ -376,7 +431,7 @@ export const Landing: React.FC = () => {
               </p>
             </div>
 
-            <div>
+            <div className="hover:scale-105 transition-transform duration-300">
               <div className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent mb-2">
                 287%
               </div>
@@ -389,9 +444,9 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* CTA Section with Illustration */}
-      <section className="py-20 px-4 bg-gray-50">
+      <section className="py-20 px-4 bg-white">
         <div className="max-w-5xl mx-auto">
-          <div className="bg-black rounded-[3rem] p-12 md:p-16 relative overflow-hidden">
+          <div className="bg-black rounded-[3rem] p-12 md:p-16 relative overflow-hidden hover:scale-[1.01] transition-all duration-300">
             {/* Decorative Stars */}
             <div className="absolute top-10 right-20 text-yellow-400 text-2xl">✦</div>
             <div className="absolute top-32 right-40 text-lime-400 text-lg">✦</div>
@@ -414,7 +469,7 @@ export const Landing: React.FC = () => {
               {/* Phone Mockup */}
               <div className="mt-12">
                 <div className="inline-block relative">
-                  <div className="w-64 h-96 bg-gradient-to-br from-gray-800 to-gray-900 rounded-[3rem] p-4 shadow-2xl">
+                  <div className="w-64 h-96 bg-gradient-to-br from-gray-800 to-gray-900 rounded-[3rem] p-4 shadow-2xl hover:scale-105 transition-transform duration-300">
                     <div className="w-full h-full bg-gradient-to-br from-pink-500 via-purple-500 to-yellow-500 rounded-[2.5rem] flex items-center justify-center">
                       <div className="text-white text-center">
                         <Smartphone className="w-16 h-16 mx-auto mb-4" />
@@ -430,7 +485,7 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* Security & Trust Section */}
-      <section id="security" className="py-20 px-4 bg-white">
+      <section id="security" className="py-20 px-4 bg-gray-50">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16">
             <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Trust & Security</span>
@@ -443,32 +498,32 @@ export const Landing: React.FC = () => {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="text-center p-6 bg-gray-50 rounded-3xl hover:bg-gray-100 transition-colors">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="text-center p-6 bg-white rounded-3xl hover:scale-105 transition-all duration-300 hover:shadow-xl group">
+              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <Shield className="w-8 h-8 text-white" />
               </div>
               <div className="text-2xl font-bold text-gray-900 mb-1">FDIC</div>
               <div className="text-sm text-gray-600">Insured up to $250K</div>
             </div>
 
-            <div className="text-center p-6 bg-gray-50 rounded-3xl hover:bg-gray-100 transition-colors">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="text-center p-6 bg-white rounded-3xl hover:scale-105 transition-all duration-300 hover:shadow-xl group">
+              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <Lock className="w-8 h-8 text-white" />
               </div>
               <div className="text-2xl font-bold text-gray-900 mb-1">256-bit</div>
               <div className="text-sm text-gray-600">Encryption</div>
             </div>
 
-            <div className="text-center p-6 bg-gray-50 rounded-3xl hover:bg-gray-100 transition-colors">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="text-center p-6 bg-white rounded-3xl hover:scale-105 transition-all duration-300 hover:shadow-xl group">
+              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <Users className="w-8 h-8 text-white" />
               </div>
               <div className="text-2xl font-bold text-gray-900 mb-1">2FA</div>
               <div className="text-sm text-gray-600">Two-Factor Auth</div>
             </div>
 
-            <div className="text-center p-6 bg-gray-50 rounded-3xl hover:bg-gray-100 transition-colors">
-              <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4">
+            <div className="text-center p-6 bg-white rounded-3xl hover:scale-105 transition-all duration-300 hover:shadow-xl group">
+              <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
                 <Globe className="w-8 h-8 text-white" />
               </div>
               <div className="text-2xl font-bold text-gray-900 mb-1">SOC 2</div>
@@ -479,9 +534,9 @@ export const Landing: React.FC = () => {
       </section>
 
       {/* Final CTA */}
-      <section className="py-20 px-4 bg-gray-50">
+      <section className="py-20 px-4 bg-white">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-black rounded-[3rem] p-12 text-center">
+          <div className="bg-black rounded-[3rem] p-12 text-center hover:scale-[1.01] transition-all duration-300">
             <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
               Connect your finances with BankKit
             </h2>
