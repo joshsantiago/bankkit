@@ -4,6 +4,7 @@ import { ProtectedRoute } from './components/ProtectedRoute';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { Login } from './pages/Login';
 import { Register } from './pages/Register';
+import { Onboarding } from './pages/Onboarding';
 import { Dashboard } from './pages/Dashboard';
 import { Accounts } from './pages/Accounts';
 import { Transactions } from './pages/Transactions';
@@ -21,6 +22,7 @@ function App() {
             {/* Public routes */}
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
+            <Route path="/onboarding" element={<Onboarding />} />
 
             {/* Protected routes */}
             <Route
