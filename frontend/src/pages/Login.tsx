@@ -70,8 +70,11 @@ export const Login: React.FC = () => {
 
         <div className="mt-6 p-4 bg-blue-50 rounded-lg">
           <p className="text-xs text-gray-600 font-semibold mb-2">Demo Accounts:</p>
-          <p className="text-xs text-gray-600">Admin: admin@bankkit.com / password123</p>
-          <p className="text-xs text-gray-600">User: john.doe@example.com / password123</p>
+          <p className="text-xs text-gray-600"><strong>Admin:</strong> admin@bankkit.com</p>
+          <p className="text-xs text-gray-600"><strong>Password:</strong> password123</p>
+          <hr className="my-2 border-blue-100" />
+          <p className="text-xs text-gray-600"><strong>User:</strong> john.doe@example.com</p>
+          <p className="text-xs text-gray-600"><strong>Password:</strong> password123</p>
         </div>
       </div>
     </div>
