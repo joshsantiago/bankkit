@@ -1,0 +1,79 @@
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import { Button, Input, Alert } from '../components/ui';
+
+export const Login: React.FC = () => {
+  const navigate = useNavigate();
+  const { login } = useAuth();
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      await login(formData);
+      navigate('/dashboard');
+    } catch (err: any) {
+      setError(err.response?.data?.error?.message || 'Login failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-primary-600">BankKit</h1>
+          <p className="text-gray-600 mt-2">Sign in to your account</p>
+        </div>
+
+        {error && <Alert type="error" message={error} onClose={() => setError('')} />}
+
+        <form onSubmit={handleSubmit} className="space-y-4 mt-6">
+          <Input
+            type="email"
+            label="Email"
+            placeholder="your@email.com"
+            value={formData.email}
+            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+            required
+            fullWidth
+          />
+
+          <Input
+            type="password"
+            label="Password"
+            placeholder="••••••••"
+            value={formData.password}
+            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+            required
+            fullWidth
+          />
+
+          <Button type="submit" fullWidth disabled={loading}>
+            {loading ? 'Signing in...' : 'Sign In'}
+          </Button>
+        </form>
+
+        <p className="text-center text-sm text-gray-600 mt-6">
+          Don't have an account?{' '}
+          <Link to="/register" className="text-primary-600 hover:text-primary-700 font-medium">
+            Sign up
+          </Link>
+        </p>
+
+        <div className="mt-6 p-4 bg-blue-50 rounded-lg">
+          <p className="text-xs text-gray-600 font-semibold mb-2">Demo Accounts:</p>
+          <p className="text-xs text-gray-600">Admin: admin@bankkit.com / password123</p>
+          <p className="text-xs text-gray-600">User: john.doe@example.com / password123</p>
+        </div>
+      </div>
+    </div>
+  );
+};
