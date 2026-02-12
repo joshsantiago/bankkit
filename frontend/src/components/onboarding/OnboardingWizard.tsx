@@ -237,8 +237,19 @@ export const OnboardingWizard: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50 py-8 px-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-blue-50 via-purple-50 to-pink-50">
+      {/* Minimal Header */}
+      <div className="bg-white border-b border-gray-200 px-4 py-4">
+        <div className="max-w-7xl mx-auto">
+          <button onClick={() => navigate('/')} className="text-2xl font-bold text-primary-600 hover:text-primary-700 transition-colors">
+            BankKit
+          </button>
+        </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 py-8 px-4">
+        <div className="max-w-4xl mx-auto">
         {/* Progress Indicator */}
         {currentStep < 4 && (
           <WizardProgress currentStep={currentStep} steps={steps} />
@@ -319,6 +330,7 @@ export const OnboardingWizard: React.FC = () => {
           </div>
         )}
       </div>
+    </div>
     </div>
   );
 };

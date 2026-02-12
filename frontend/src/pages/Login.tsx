@@ -26,12 +26,20 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8">
-        <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-primary-600">BankKit</h1>
-          <p className="text-gray-600 mt-2">Sign in to your account</p>
+    <div className="min-h-screen flex flex-col bg-gray-100">
+      {/* Minimal Header */}
+      <div className="bg-white border-b border-gray-200 px-4 py-4">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-2xl font-bold text-primary-600">BankKit</h1>
         </div>
+      </div>
+
+      {/* Main Content */}
+      <div className="flex-1 flex items-center justify-center px-4 py-8">
+        <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8">
+          <div className="text-center mb-8">
+            <p className="text-gray-600">Sign in to your account</p>
+          </div>
 
         {error && <Alert type="error" message={error} onClose={() => setError('')} />}
 
@@ -77,6 +85,7 @@ export const Login: React.FC = () => {
           <p className="text-xs text-gray-600"><strong>Password:</strong> password123</p>
         </div>
       </div>
+    </div>
     </div>
   );
 };
