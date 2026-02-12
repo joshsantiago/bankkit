@@ -35,13 +35,13 @@ export const TableRow: React.FC<{ children: React.ReactNode; onClick?: () => voi
 );
 
 export const TableHeader: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-  <th className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${className}`}>
+  <th className={`px-3 md:px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${className}`}>
     {children}
   </th>
 );
 
 export const TableCell: React.FC<{ children: React.ReactNode; className?: string }> = ({ children, className = '' }) => (
-  <td className={`px-6 py-4 whitespace-nowrap text-sm text-gray-900 ${className}`}>
+  <td className={`px-3 md:px-6 py-4 whitespace-nowrap text-sm text-gray-900 ${className}`}>
     {children}
   </td>
 );
