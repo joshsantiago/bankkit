@@ -170,15 +170,15 @@ export const Dashboard: React.FC = () => {
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex font-sans selection:bg-emerald-100">
       {/* Sidebar - Desktop */}
-      <aside className="w-80 bg-white border-r border-gray-100 flex flex-col fixed inset-y-0 left-0 hidden lg:flex">
+      <aside className="w-80 bg-white border-r border-gray-100 flex flex-col fixed inset-y-0 left-0 hidden lg:flex" aria-label="Main navigation">
         <div className="p-8 flex items-center gap-3">
-          <div className="w-10 h-10 bg-[#064E3B] rounded-xl flex items-center justify-center text-white">
+          <div className="w-10 h-10 bg-[#064E3B] rounded-xl flex items-center justify-center text-white" aria-hidden="true">
             <ShieldCheck size={24} />
           </div>
           <span className="text-2xl font-black text-[#064E3B] tracking-tight">BankKit</span>
         </div>
 
-        <nav className="flex-1 px-4 py-4 space-y-2">
+        <nav className="flex-1 px-4 py-4 space-y-2" aria-label="Sidebar navigation">
           {[
             { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
             { id: 'accounts', icon: Wallet, label: 'Accounts', onClick: () => navigate('/accounts') },
@@ -200,8 +200,10 @@ export const Dashboard: React.FC = () => {
                   ? 'bg-[#DCFCE7] text-[#064E3B]'
                   : 'text-gray-400 hover:bg-gray-50 hover:text-[#064E3B]'
               }`}
+              aria-label={item.label}
+              aria-current={activeTab === item.id ? 'page' : undefined}
             >
-              <item.icon size={20} />
+              <item.icon size={20} aria-hidden="true" />
               {item.label}
             </button>
           ))}
@@ -231,11 +233,11 @@ export const Dashboard: React.FC = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 lg:ml-80 pb-24">
+      <main className="flex-1 lg:ml-80 pb-24" role="main">
         {/* Top Header */}
-        <header className="bg-white/80 backdrop-blur-md sticky top-0 z-30 px-8 py-6 flex items-center justify-between border-b border-gray-100">
+        <header className="bg-white/80 backdrop-blur-md sticky top-0 z-30 px-8 py-6 flex items-center justify-between border-b border-gray-100" role="banner">
           <div>
-            <h2 className="text-2xl font-black text-[#064E3B]">Welcome back, {user?.first_name}!</h2>
+            <h1 className="text-2xl font-black text-[#064E3B]">Welcome back, {user?.first_name}!</h1>
             <p className="text-sm font-bold text-gray-400">Today is {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}</p>
           </div>
 
@@ -1192,12 +1194,12 @@ export const Dashboard: React.FC = () => {
       {/* showNewModal handled in quick actions */}
 
       {/* Mobile Bottom Navigation */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-4 flex justify-between items-center z-50">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-4 flex justify-between items-center z-50" aria-label="Mobile navigation">
         {[
-          { id: 'dashboard', icon: LayoutDashboard },
-          { id: 'accounts', icon: Wallet, onClick: () => navigate('/accounts') },
-          { id: 'cards', icon: CreditCard, onClick: () => navigate('/cards') },
-          { id: 'settings', icon: Settings, onClick: () => navigate('/settings') },
+          { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+          { id: 'accounts', icon: Wallet, label: 'Accounts', onClick: () => navigate('/accounts') },
+          { id: 'cards', icon: CreditCard, label: 'Cards', onClick: () => navigate('/cards') },
+          { id: 'settings', icon: Settings, label: 'Settings', onClick: () => navigate('/settings') },
         ].map((item) => (
           <button
             key={item.id}
@@ -1209,8 +1211,10 @@ export const Dashboard: React.FC = () => {
               }
             }}
             className={`p-3 rounded-2xl transition-all ${activeTab === item.id ? 'bg-[#DCFCE7] text-[#064E3B]' : 'text-gray-400'}`}
+            aria-label={item.label}
+            aria-current={activeTab === item.id ? 'page' : undefined}
           >
-            <item.icon size={24} />
+            <item.icon size={24} aria-hidden="true" />
           </button>
         ))}
       </nav>
