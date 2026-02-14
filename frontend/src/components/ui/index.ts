@@ -1,6 +1,7 @@
 export * from './Button';
 export * from './Input';
 export * from './Card';
+export { CardContent as CardBody } from './Card';
 export * from './Alert';
 export * from './Modal';
 export * from './Loader';
