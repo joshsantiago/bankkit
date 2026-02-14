@@ -86,6 +86,9 @@ export function OnboardingPage() {
         password: data.password,
         first_name: data.first_name,
         last_name: data.last_name,
+        phone: data.phone,
+        dateOfBirth: data.dateOfBirth,
+        accountType: data.accountType as any,
       });
       setIsLoading(false);
       setStep(5);

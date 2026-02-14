@@ -18,6 +18,12 @@ export class User {
   @Column({ name: 'last_name' })
   lastName: string;
 
+  @Column({ nullable: true })
+  phone: string;
+
+  @Column({ name: 'date_of_birth', type: 'date', nullable: true })
+  dateOfBirth: Date;
+
   @Column({ type: 'enum', enum: ['user', 'admin'], default: 'user' })
   role: string;
 

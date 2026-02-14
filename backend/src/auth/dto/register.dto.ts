@@ -1,4 +1,4 @@
-import { IsEmail, IsString, MinLength, MaxLength } from 'class-validator';
+import { IsEmail, IsString, MinLength, MaxLength, IsOptional, IsDateString, IsEnum } from 'class-validator';
 
 export class RegisterDto {
   @IsEmail()
@@ -17,4 +17,16 @@ export class RegisterDto {
   @MinLength(1)
   @MaxLength(100)
   last_name: string;
+
+  @IsOptional()
+  @IsString()
+  phone?: string;
+
+  @IsOptional()
+  @IsDateString()
+  dateOfBirth?: string;
+
+  @IsOptional()
+  @IsEnum(['checking', 'savings', 'both'])
+  accountType?: 'checking' | 'savings' | 'both';
 }

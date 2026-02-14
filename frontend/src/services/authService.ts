@@ -10,6 +10,9 @@ export interface RegisterData {
   password: string;
   first_name: string;
   last_name: string;
+  phone?: string;
+  dateOfBirth?: string;
+  accountType?: 'checking' | 'savings' | 'both';
 }
 
 export interface User {

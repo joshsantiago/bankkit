@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from '../entities/user.entity';
+import { Account } from '../entities/account.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 
@@ -12,6 +13,8 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    @InjectRepository(Account)
+    private accountRepository: Repository<Account>,
     private jwtService: JwtService,
   ) {}
 
@@ -31,9 +34,31 @@ export class AuthService {
       passwordHash,
       firstName: registerDto.first_name,
       lastName: registerDto.last_name,
+      phone: registerDto.phone,
+      dateOfBirth: registerDto.dateOfBirth ? new Date(registerDto.dateOfBirth) : null,
     });
 
     await this.userRepository.save(user);
+
+    // Create initial accounts based on accountType selection
+    if (registerDto.accountType) {
+      const accountTypes = registerDto.accountType === 'both'
+        ? ['checking', 'savings']
+        : [registerDto.accountType];
+
+      for (const type of accountTypes) {
+        const accountNumber = this.generateAccountNumber();
+        const account = this.accountRepository.create({
+          userId: user.id,
+          accountNumber,
+          accountType: type,
+          balance: 0,
+          currency: 'USD',
+          status: 'active',
+        });
+        await this.accountRepository.save(account);
+      }
+    }
 
     const token = this.jwtService.sign({
       id: user.id,
@@ -55,6 +80,11 @@ export class AuthService {
       },
       message: 'User registered successfully',
     };
+  }
+
+  private generateAccountNumber(): string {
+    // Generate a 12-digit account number
+    return Math.floor(100000000000 + Math.random() * 900000000000).toString();
   }
 
   async login(loginDto: LoginDto) {
