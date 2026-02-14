@@ -1,339 +1,343 @@
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import {
-  Shield,
-  Lock,
-  Eye,
-  UserCheck,
-  FileText,
-  Server,
-  ChevronRight,
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { 
+  ShieldCheck, 
+  Lock, 
+  Smartphone, 
+  Eye, 
+  ShieldAlert, 
+  Fingerprint, 
+  Key, 
+  History, 
+  Globe, 
+  ChevronRight, 
   ArrowLeft,
-  Check
+  CheckCircle2,
+  AlertTriangle,
+  LogOut,
+  MapPin,
+  Clock,
+  ExternalLink,
+  ShieldQuestion
 } from 'lucide-react';
-import { useScrollAnimation } from '../hooks/useScrollAnimation';
 
-export const Security: React.FC = () => {
-  const navigate = useNavigate();
+const SECURITY_FEATURES = [
+  {
+    icon: Fingerprint,
+    title: 'Biometric Login',
+    desc: 'Use FaceID or TouchID to access your account instantly and securely.',
+    status: 'Enabled',
+    color: 'bg-emerald-50 text-emerald-600'
+  },
+  {
+    icon: Key,
+    title: 'Two-Factor Auth',
+    desc: 'Verify every sign-in with a secondary code sent to your trusted device.',
+    status: 'Enabled',
+    color: 'bg-blue-50 text-blue-600'
+  },
+  {
+    icon: ShieldAlert,
+    title: 'Fraud Monitoring',
+    desc: 'AI-powered detection watches for suspicious activity 24/7.',
+    status: 'Active',
+    color: 'bg-orange-50 text-orange-600'
+  },
+  {
+    icon: Globe,
+    title: 'Encryption',
+    desc: 'Your data is protected with military-grade 256-bit AES encryption.',
+    status: 'Active',
+    color: 'bg-purple-50 text-purple-600'
+  }
+];
 
-  // Scroll animations
-  const featuresAnim = useScrollAnimation();
-  const processAnim = useScrollAnimation();
-  const complianceAnim = useScrollAnimation();
-  const ctaAnim = useScrollAnimation();
+const ACTIVE_SESSIONS = [
+  {
+    id: 1,
+    device: 'iPhone 15 Pro',
+    location: 'San Francisco, CA',
+    time: 'Active now',
+    current: true,
+    icon: Smartphone
+  },
+  {
+    id: 2,
+    device: 'MacBook Pro 16"',
+    location: 'San Francisco, CA',
+    time: '2 hours ago',
+    current: false,
+    icon: Globe
+  },
+  {
+    id: 3,
+    device: 'Chrome on Windows',
+    location: 'Seattle, WA',
+    time: 'Feb 12, 10:45 AM',
+    current: false,
+    icon: Globe
+  }
+];
+
+const RECENT_ACTIVITY = [
+  { id: 1, event: 'Successful Login', date: 'Today, 9:41 AM', icon: Lock, status: 'success' },
+  { id: 2, event: 'Card Frozen', date: 'Yesterday, 4:20 PM', icon: ShieldAlert, status: 'warning' },
+  { id: 3, event: 'Password Changed', date: 'Feb 10, 2:15 PM', icon: Key, status: 'success' },
+];
+
+export function SecurityPage({ onBack }: { onBack: () => void }) {
+  const [activeTab, setActiveTab] = useState<'overview' | 'sessions' | 'settings'>('overview');
 
   return (
-    <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-black/90 backdrop-blur-sm z-50 border-b border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <button onClick={() => navigate('/')} className="text-2xl font-bold text-white hover:text-lime-400 transition-colors">
-              BankKit
-            </button>
-            <div className="flex items-center gap-6">
-              <button onClick={() => navigate('/')} className="text-gray-300 hover:text-white transition-colors flex items-center gap-2">
-                <ArrowLeft className="w-4 h-4" />
-                Back to Home
-              </button>
-              <button
-                onClick={() => navigate('/onboarding')}
-                className="bg-lime-400 text-black px-6 py-2 rounded-full font-semibold hover:bg-lime-300 transition-colors"
+    <div className="min-h-screen bg-[#F8FAFC]">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-100 sticky top-0 z-20">
+        <div className="max-w-7xl mx-auto px-6 py-8">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <button 
+                onClick={onBack}
+                className="p-3 bg-gray-50 rounded-2xl text-gray-400 hover:text-[#064E3B] transition-colors"
               >
-                Get Started
+                <ArrowLeft size={20} />
+              </button>
+              <div>
+                <h1 className="text-3xl font-black text-[#064E3B]">Security Center</h1>
+                <p className="text-sm font-bold text-gray-400">Protect your account and personal data</p>
+              </div>
+            </div>
+            
+            <div className="flex items-center gap-3 bg-[#DCFCE7] px-6 py-3 rounded-2xl border border-emerald-100">
+              <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse" />
+              <span className="text-sm font-black text-[#064E3B] uppercase tracking-widest">Account Status: Secure</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-6 py-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
+          
+          {/* Sidebar Nav */}
+          <div className="lg:col-span-3 space-y-4">
+            {[
+              { id: 'overview', label: 'Overview', icon: ShieldCheck },
+              { id: 'sessions', label: 'Active Sessions', icon: Smartphone },
+              { id: 'settings', label: 'Privacy Settings', icon: Eye },
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as any)}
+                className={`w-full flex items-center gap-4 px-6 py-4 rounded-2xl font-black transition-all ${
+                  activeTab === tab.id 
+                    ? 'bg-white text-[#064E3B] shadow-lg shadow-gray-200/50 border border-gray-50' 
+                    : 'text-gray-400 hover:text-[#064E3B]'
+                }`}
+              >
+                <tab.icon size={20} />
+                {tab.label}
+              </button>
+            ))}
+
+            <div className="mt-8 p-8 bg-[#064E3B] rounded-[2.5rem] text-white space-y-4">
+              <ShieldQuestion size={32} className="text-emerald-400" />
+              <h4 className="font-black">Found a bug?</h4>
+              <p className="text-xs font-bold text-white/60 leading-relaxed">
+                Report security vulnerabilities to our team and earn rewards through our bounty program.
+              </p>
+              <button className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-emerald-400 hover:underline">
+                Security Bounty <ExternalLink size={14} />
               </button>
             </div>
           </div>
-        </div>
-      </nav>
 
-      {/* Hero Section */}
-      <section className="pt-32 pb-20 px-4 bg-black text-white">
-        <div className="max-w-4xl mx-auto text-center">
-          <div className="w-20 h-20 bg-gradient-to-br from-green-400 to-teal-500 rounded-3xl flex items-center justify-center mx-auto mb-6">
-            <Shield className="w-10 h-10 text-white" />
-          </div>
-          <h1 className="text-5xl md:text-7xl font-bold mb-6">
-            Your security is our priority
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-400 max-w-3xl mx-auto">
-            We use bank-level security and encryption to protect your money and data. Here's how we keep you safe.
-          </p>
-        </div>
-      </section>
+          {/* Main Content */}
+          <div className="lg:col-span-9">
+            <AnimatePresence mode="wait">
+              {activeTab === 'overview' && (
+                <motion.div
+                  key="overview"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="space-y-10"
+                >
+                  {/* Stats Grid */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {SECURITY_FEATURES.map((feature) => (
+                      <div key={feature.title} className="bg-white p-8 rounded-[3rem] border border-gray-50 shadow-sm hover:shadow-md transition-shadow group">
+                        <div className="flex items-start justify-between mb-6">
+                          <div className={`p-4 rounded-2xl ${feature.color} transition-transform group-hover:scale-110`}>
+                            <feature.icon size={28} />
+                          </div>
+                          <span className="px-3 py-1 bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest rounded-full">
+                            {feature.status}
+                          </span>
+                        </div>
+                        <h3 className="text-xl font-black text-[#064E3B] mb-2">{feature.title}</h3>
+                        <p className="text-sm font-bold text-gray-400 leading-relaxed">{feature.desc}</p>
+                      </div>
+                    ))}
+                  </div>
 
-      {/* Security Features */}
-      <section
-        ref={featuresAnim.ref}
-        className={`py-20 px-4 transition-all duration-1000 ${
-          featuresAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Protection</span>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mt-2">How we protect you</h2>
-          </div>
+                  {/* Activity & Checklist */}
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+                    {/* Recent Security Activity */}
+                    <div className="bg-white p-10 rounded-[3rem] border border-gray-50 shadow-sm space-y-8">
+                      <div className="flex items-center justify-between">
+                        <h3 className="text-xl font-black text-[#064E3B]">Security Activity</h3>
+                        <button className="text-emerald-600 font-bold text-sm">View Log</button>
+                      </div>
+                      <div className="space-y-6">
+                        {RECENT_ACTIVITY.map((item) => (
+                          <div key={item.id} className="flex items-center justify-between group">
+                            <div className="flex items-center gap-4">
+                              <div className={`p-3 rounded-xl ${item.status === 'success' ? 'bg-emerald-50 text-emerald-600' : 'bg-orange-50 text-orange-600'}`}>
+                                <item.icon size={20} />
+                              </div>
+                              <div>
+                                <p className="font-black text-[#064E3B] group-hover:text-emerald-600 transition-colors">{item.event}</p>
+                                <p className="text-xs font-bold text-gray-400">{item.date}</p>
+                              </div>
+                            </div>
+                            <ChevronRight size={18} className="text-gray-200 group-hover:text-emerald-600 group-hover:translate-x-1 transition-all" />
+                          </div>
+                        ))}
+                      </div>
+                    </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {/* Feature 1 */}
-            <div className="bg-white rounded-3xl p-8 border-2 border-gray-100 hover:border-green-500 transition-all hover:shadow-xl">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-teal-500 rounded-2xl flex items-center justify-center mb-6">
-                <Lock className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">256-bit Encryption</h3>
-              <p className="text-gray-600 mb-4">
-                All your data is encrypted with bank-grade 256-bit AES encryption, the same standard used by major financial institutions.
-              </p>
-              <div className="flex items-center gap-2 text-green-600 text-sm font-semibold">
-                <Check className="w-4 h-4" />
-                Military-grade security
-              </div>
-            </div>
+                    {/* Security Checklist */}
+                    <div className="bg-[#DCFCE7] p-10 rounded-[3rem] space-y-8">
+                      <h3 className="text-xl font-black text-[#064E3B]">Security Checklist</h3>
+                      <div className="space-y-4">
+                        {[
+                          { label: 'Verified Phone Number', done: true },
+                          { label: 'Set Up 2FA Verification', done: true },
+                          { label: 'Emergency Contact Added', done: false },
+                          { label: 'Privacy Policy Reviewed', done: true },
+                        ].map((item, idx) => (
+                          <div key={idx} className="flex items-center gap-4 p-4 bg-white/50 rounded-2xl border border-white/20">
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center ${item.done ? 'bg-emerald-500 text-white' : 'bg-white text-gray-300'}`}>
+                              {item.done ? <CheckCircle2 size={16} /> : <div className="w-2 h-2 rounded-full bg-gray-200" />}
+                            </div>
+                            <span className={`text-sm font-black ${item.done ? 'text-[#064E3B]' : 'text-gray-400'}`}>{item.label}</span>
+                          </div>
+                        ))}
+                      </div>
+                      <button className="w-full bg-[#064E3B] text-white py-4 rounded-2xl font-black hover:scale-[1.02] transition-transform">
+                        Improve Score
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
 
-            {/* Feature 2 */}
-            <div className="bg-white rounded-3xl p-8 border-2 border-gray-100 hover:border-blue-500 transition-all hover:shadow-xl">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-purple-500 rounded-2xl flex items-center justify-center mb-6">
-                <UserCheck className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">Two-Factor Authentication</h3>
-              <p className="text-gray-600 mb-4">
-                Add an extra layer of security with 2FA. Even if someone has your password, they can't access your account without your second factor.
-              </p>
-              <div className="flex items-center gap-2 text-green-600 text-sm font-semibold">
-                <Check className="w-4 h-4" />
-                SMS & authenticator app support
-              </div>
-            </div>
+              {activeTab === 'sessions' && (
+                <motion.div
+                  key="sessions"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="space-y-8"
+                >
+                  <div className="bg-white p-10 rounded-[3rem] border border-gray-50 shadow-sm space-y-10">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h3 className="text-2xl font-black text-[#064E3B]">Active Sessions</h3>
+                        <p className="text-sm font-bold text-gray-400">Manage devices currently logged into your account</p>
+                      </div>
+                      <button className="text-red-500 font-black text-xs uppercase tracking-widest hover:underline">Log out all devices</button>
+                    </div>
 
-            {/* Feature 3 */}
-            <div className="bg-white rounded-3xl p-8 border-2 border-gray-100 hover:border-pink-500 transition-all hover:shadow-xl">
-              <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-red-500 rounded-2xl flex items-center justify-center mb-6">
-                <Eye className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">Fraud Monitoring</h3>
-              <p className="text-gray-600 mb-4">
-                Our AI-powered systems monitor transactions 24/7 to detect and prevent fraudulent activity in real-time.
-              </p>
-              <div className="flex items-center gap-2 text-green-600 text-sm font-semibold">
-                <Check className="w-4 h-4" />
-                24/7 automated monitoring
-              </div>
-            </div>
+                    <div className="space-y-4">
+                      {ACTIVE_SESSIONS.map((session) => (
+                        <div key={session.id} className="flex items-center justify-between p-6 rounded-[2rem] border border-gray-100 hover:border-emerald-200 transition-colors">
+                          <div className="flex items-center gap-6">
+                            <div className={`p-4 rounded-2xl ${session.current ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-50 text-gray-400'}`}>
+                              <session.icon size={24} />
+                            </div>
+                            <div>
+                              <div className="flex items-center gap-2 mb-1">
+                                <h4 className="font-black text-[#064E3B]">{session.device}</h4>
+                                {session.current && (
+                                  <span className="px-2 py-0.5 bg-emerald-100 text-emerald-600 text-[8px] font-black uppercase tracking-tighter rounded-full">Current</span>
+                                )}
+                              </div>
+                              <div className="flex items-center gap-4 text-xs font-bold text-gray-400">
+                                <span className="flex items-center gap-1.5"><MapPin size={12} /> {session.location}</span>
+                                <span className="flex items-center gap-1.5"><Clock size={12} /> {session.time}</span>
+                              </div>
+                            </div>
+                          </div>
+                          {!session.current && (
+                            <button className="p-3 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all">
+                              <LogOut size={20} />
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
 
-            {/* Feature 4 */}
-            <div className="bg-white rounded-3xl p-8 border-2 border-gray-100 hover:border-yellow-500 transition-all hover:shadow-xl">
-              <div className="w-16 h-16 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl flex items-center justify-center mb-6">
-                <FileText className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">FDIC Insured</h3>
-              <p className="text-gray-600 mb-4">
-                Your deposits are FDIC insured up to $250,000 per depositor, per account category, protecting your money.
-              </p>
-              <div className="flex items-center gap-2 text-green-600 text-sm font-semibold">
-                <Check className="w-4 h-4" />
-                Government backed protection
-              </div>
-            </div>
+                  <div className="bg-orange-50 p-8 rounded-[2.5rem] flex items-start gap-6 border border-orange-100">
+                    <div className="p-3 bg-white rounded-2xl text-orange-500 shadow-sm">
+                      <AlertTriangle size={24} />
+                    </div>
+                    <div>
+                      <h4 className="font-black text-orange-800 mb-1">Unrecognized device?</h4>
+                      <p className="text-sm font-bold text-orange-700/70 mb-4 leading-relaxed">
+                        If you don't recognize one of these devices, someone else might have access to your account. 
+                        Change your password immediately and log out of all sessions.
+                      </p>
+                      <button className="bg-orange-600 text-white px-6 py-3 rounded-xl font-black text-xs uppercase tracking-widest hover:bg-orange-700 transition-colors">
+                        Change Password
+                      </button>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
 
-            {/* Feature 5 */}
-            <div className="bg-white rounded-3xl p-8 border-2 border-gray-100 hover:border-purple-500 transition-all hover:shadow-xl">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-500 rounded-2xl flex items-center justify-center mb-6">
-                <Server className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">SOC 2 Certified</h3>
-              <p className="text-gray-600 mb-4">
-                We're SOC 2 Type II certified, meaning our security controls have been audited by independent third parties.
-              </p>
-              <div className="flex items-center gap-2 text-green-600 text-sm font-semibold">
-                <Check className="w-4 h-4" />
-                Independently verified
-              </div>
-            </div>
+              {activeTab === 'settings' && (
+                <motion.div
+                  key="settings"
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="space-y-8"
+                >
+                  <div className="bg-white p-10 rounded-[3rem] border border-gray-50 shadow-sm space-y-10">
+                    <h3 className="text-2xl font-black text-[#064E3B]">Privacy & Permissions</h3>
+                    
+                    <div className="space-y-10">
+                      {[
+                        { title: 'Data Sharing', desc: 'Allow BankKit to share anonymized data with partners for better offers.', enabled: false },
+                        { title: 'Location Access', desc: 'Use your location to prevent fraudulent transactions from unexpected places.', enabled: true },
+                        { title: 'Marketing Emails', desc: 'Receive updates about new features, security tips, and premium offers.', enabled: true },
+                        { title: 'Public Profile', desc: 'Allow other BankKit users to find you by your username for quick transfers.', enabled: false },
+                      ].map((setting, idx) => (
+                        <div key={idx} className="flex items-center justify-between group">
+                          <div className="max-w-md">
+                            <h4 className="font-black text-[#064E3B] mb-1 group-hover:text-emerald-600 transition-colors">{setting.title}</h4>
+                            <p className="text-sm font-bold text-gray-400 leading-relaxed">{setting.desc}</p>
+                          </div>
+                          <button className={`w-14 h-8 rounded-full relative transition-colors ${setting.enabled ? 'bg-[#064E3B]' : 'bg-gray-200'}`}>
+                            <div className={`absolute top-1 w-6 h-6 bg-white rounded-full transition-all ${setting.enabled ? 'left-7' : 'left-1'} shadow-sm`} />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
 
-            {/* Feature 6 */}
-            <div className="bg-white rounded-3xl p-8 border-2 border-gray-100 hover:border-teal-500 transition-all hover:shadow-xl">
-              <div className="w-16 h-16 bg-gradient-to-br from-teal-500 to-cyan-500 rounded-2xl flex items-center justify-center mb-6">
-                <Shield className="w-8 h-8 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-3">Biometric Security</h3>
-              <p className="text-gray-600 mb-4">
-                Use Face ID or Touch ID to securely access your account. Your biometric data never leaves your device.
-              </p>
-              <div className="flex items-center gap-2 text-green-600 text-sm font-semibold">
-                <Check className="w-4 h-4" />
-                Device-level security
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works */}
-      <section
-        ref={processAnim.ref}
-        className={`py-20 px-4 bg-gradient-to-br from-gray-900 to-black text-white transition-all duration-1000 ${
-          processAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-        }`}
-      >
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="text-sm font-semibold text-gray-400 uppercase tracking-wide">Process</span>
-            <h2 className="text-4xl md:text-5xl font-bold mt-2">How we keep your data safe</h2>
-          </div>
-
-          <div className="space-y-8">
-            <div className="flex gap-6 items-start">
-              <div className="flex-shrink-0 w-12 h-12 bg-lime-400 text-black rounded-full flex items-center justify-center font-bold text-lg">
-                1
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold mb-2">End-to-End Encryption</h3>
-                <p className="text-gray-400 text-lg">
-                  From the moment you enter your information, it's encrypted before leaving your device.
-                  Your data travels securely through our systems and is stored encrypted at rest.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-6 items-start">
-              <div className="flex-shrink-0 w-12 h-12 bg-lime-400 text-black rounded-full flex items-center justify-center font-bold text-lg">
-                2
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold mb-2">Secure Authentication</h3>
-                <p className="text-gray-400 text-lg">
-                  We verify your identity with multiple factors including password, 2FA, biometrics,
-                  and device fingerprinting to ensure only you can access your account.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-6 items-start">
-              <div className="flex-shrink-0 w-12 h-12 bg-lime-400 text-black rounded-full flex items-center justify-center font-bold text-lg">
-                3
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold mb-2">Continuous Monitoring</h3>
-                <p className="text-gray-400 text-lg">
-                  Our security team and AI systems work 24/7 to monitor for suspicious activity,
-                  potential threats, and unauthorized access attempts.
-                </p>
-              </div>
-            </div>
-
-            <div className="flex gap-6 items-start">
-              <div className="flex-shrink-0 w-12 h-12 bg-lime-400 text-black rounded-full flex items-center justify-center font-bold text-lg">
-                4
-              </div>
-              <div>
-                <h3 className="text-2xl font-bold mb-2">Rapid Response</h3>
-                <p className="text-gray-400 text-lg">
-                  If we detect anything unusual, we'll immediately alert you and take action
-                  to protect your account, including temporary locks and verification steps.
-                </p>
-              </div>
-            </div>
+                    <div className="pt-10 border-t border-gray-50 flex justify-end gap-4">
+                      <button className="px-8 py-4 rounded-2xl font-black text-gray-400 hover:text-[#064E3B] transition-colors">Reset Defaults</button>
+                      <button className="bg-[#064E3B] text-white px-10 py-4 rounded-2xl font-black shadow-xl shadow-[#064E3B]/10 hover:scale-[1.02] transition-transform">Save Changes</button>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
-      </section>
-
-      {/* Compliance Section */}
-      <section
-        ref={complianceAnim.ref}
-        className={`py-20 px-4 bg-gray-50 transition-all duration-1000 ${
-          complianceAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Compliance</span>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mt-2">Industry Standards</h2>
-            <p className="text-xl text-gray-600 mt-4 max-w-2xl mx-auto">
-              We meet or exceed all regulatory requirements and industry best practices
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {[
-              { name: 'FDIC', desc: 'Insured' },
-              { name: 'SOC 2', desc: 'Type II' },
-              { name: 'PCI DSS', desc: 'Certified' },
-              { name: 'GDPR', desc: 'Compliant' },
-            ].map((cert, i) => (
-              <div key={i} className="bg-white rounded-2xl p-6 text-center hover:shadow-lg transition-shadow">
-                <div className="text-3xl font-bold text-gray-900 mb-2">{cert.name}</div>
-                <div className="text-sm text-gray-600">{cert.desc}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section */}
-      <section
-        ref={ctaAnim.ref}
-        className={`py-20 px-4 bg-black text-white transition-all duration-1000 ${
-          ctaAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-        }`}
-      >
-        <div className="max-w-4xl mx-auto text-center">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            Ready to bank securely?
-          </h2>
-          <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-            Join hundreds of thousands who trust BankKit with their finances
-          </p>
-          <button
-            onClick={() => navigate('/onboarding')}
-            className="bg-lime-400 text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-lime-300 transition-all hover:scale-105 inline-flex items-center gap-2"
-          >
-            Open Your Account
-            <ChevronRight className="w-5 h-5" />
-          </button>
-        </div>
-      </section>
-
-      {/* Footer */}
-      <footer className="bg-black text-white py-12 px-4 border-t border-gray-800">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <div className="text-2xl font-bold mb-4">BankKit</div>
-              <p className="text-gray-400 text-sm">
-                The future of digital banking, available today.
-              </p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Product</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><button onClick={() => navigate('/')} className="hover:text-white">Features</button></li>
-                <li><button onClick={() => navigate('/security')} className="hover:text-white">Security</button></li>
-                <li><a href="#" className="hover:text-white">Mobile App</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><button onClick={() => navigate('/about')} className="hover:text-white">About</button></li>
-                <li><a href="#" className="hover:text-white">Careers</a></li>
-                <li><button onClick={() => navigate('/help')} className="hover:text-white">Help</button></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><a href="#" className="hover:text-white">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-white">FDIC Insurance</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
-            <p>© 2026 BankKit. All rights reserved. FDIC Insured.</p>
-          </div>
-        </div>
-      </footer>
+      </div>
     </div>
   );
-};
+}
