@@ -423,14 +423,20 @@ This document outlines the step-by-step integration of the new Figma-designed fr
 - [x] Security & Settings section
 - **Commit:** "replace accounts page with new design and account management" ✅
 
-### ✅ Task 7.10: Replace Cards page
+### ✅ Task 7.10: Replace Cards page - DONE
 **Files:** `frontend/src/pages/Cards.tsx`
-- [ ] Copy CardsPage
-- [ ] Display virtual and physical cards
-- [ ] Card management (freeze, replace, settings)
-- [ ] Transaction history per card
-- [ ] Add new card button
-- **Commit:** "replace cards page with new design"
+- [x] Card selection sidebar with all cards displayed
+- [x] Card visual display with chip, brand, number, expiry
+- [x] Show/hide card number toggle
+- [x] Copy card number to clipboard
+- [x] Card freeze/unfreeze with toggle
+- [x] Security settings (contactless, online spending)
+- [x] Digital features (show/hide, copy, replace)
+- [x] Spending limits with progress bar
+- [x] Quick increase and card design customization
+- [x] Virtual card indicator badge
+- [x] Responsive layout
+- **Commit:** "add cards page with card management and controls" ✅
 
 ### ✅ Task 7.11: Add New Card page
 **Files:** `frontend/src/pages/NewCard.tsx` (new)
