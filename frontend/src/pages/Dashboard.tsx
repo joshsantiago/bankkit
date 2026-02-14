@@ -263,7 +263,8 @@ export const Dashboard: React.FC = () => {
           </div>
         </header>
 
-
+        {/* Content Wrapper */}
+        <div className="max-w-7xl mx-auto px-8 py-10 space-y-10">
           {/* Profile Completion Banner */}
           <section className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm relative overflow-hidden">
             <div className="flex flex-col lg:flex-row gap-10 items-center">
@@ -500,6 +501,7 @@ export const Dashboard: React.FC = () => {
               </div>
             </div>
           </div>
+        </div>
       </main>
 
       {/* Transfer Modal */}
