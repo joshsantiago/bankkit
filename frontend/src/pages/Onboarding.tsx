@@ -16,6 +16,7 @@ import {
   ChevronRight,
   ShieldCheck
 } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 type OnboardingData = {
   email: string;
@@ -30,9 +31,10 @@ type OnboardingData = {
 
 export function OnboardingPage() {
   const navigate = useNavigate();
+  const { register: registerUser } = useAuth();
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [generatedAccount, setGeneratedAccount] = useState('');
+  const [error, setError] = useState('');
   
   const {
     register,
@@ -75,23 +77,22 @@ export function OnboardingPage() {
   const prevStep = () => setStep(prev => prev - 1);
 
   const onSubmit = async (data: OnboardingData) => {
+    setError('');
     setIsLoading(true);
-    // Simulate API Call
-    setTimeout(() => {
-      const accNum = Math.floor(1000000000 + Math.random() * 9000000000).toString();
-      setGeneratedAccount(accNum);
-      setIsLoading(false);
-      setStep(5);
-      
-      // Store in local storage as requested
-      localStorage.setItem('bankkit_token', 'mock-jwt-token-' + Math.random());
-      localStorage.setItem('bankkit_user', JSON.stringify({
+
+    try {
+      await registerUser({
         email: data.email,
+        password: data.password,
         first_name: data.first_name,
         last_name: data.last_name,
-        accountNumber: accNum
-      }));
-    }, 2000);
+      });
+      setIsLoading(false);
+      setStep(5);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      setIsLoading(false);
+    }
   };
 
   const progress = (step / 5) * 100;
@@ -125,6 +126,12 @@ export function OnboardingPage() {
 
       <div className="flex-1 flex items-center justify-center p-6">
         <div className="w-full max-w-xl">
+          {error && (
+            <div className="mb-6 bg-red-50 border-2 border-red-200 rounded-2xl p-4 flex items-start gap-3">
+              <ShieldCheck className="text-red-600 mt-0.5" size={20} />
+              <p className="text-red-800 font-bold text-sm">{error}</p>
+            </div>
+          )}
           <AnimatePresence mode="wait">
             {step === 1 && (
               <motion.div

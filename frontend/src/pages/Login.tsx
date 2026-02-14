@@ -15,25 +15,33 @@ import {
   Loader2
 } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { useAuth } from '../context/AuthContext';
 
 export function LoginPage() {
   const navigate = useNavigate();
+  const { login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState('');
   const [view, setView] = useState<'login' | 'forgot'>('login');
   const [forgotStep, setForgotStep] = useState(1);
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError('');
     setIsLoading(true);
-    // Simulate login
-    setTimeout(() => {
-      setIsLoading(false);
+
+    try {
+      await login({ email, password });
       navigate("/dashboard");
-    }, 1500);
+    } catch (err: any) {
+      setError(err.response?.data?.message || 'Invalid email or password');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleForgotSubmit = (e: React.FormEvent) => {
@@ -146,6 +154,13 @@ export function LoginPage() {
                 <h1 className="text-4xl font-black text-[#064E3B]">Sign in</h1>
                 <p className="text-gray-500 font-medium">New to BankKit? <button onClick={() => navigate('/onboarding')} className="text-emerald-600 font-black hover:underline">Create an account</button></p>
               </div>
+
+              {error && (
+                <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-4 flex items-start gap-3">
+                  <ShieldAlert className="text-red-600 mt-0.5" size={20} />
+                  <p className="text-red-800 font-bold text-sm">{error}</p>
+                </div>
+              )}
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="space-y-2">
