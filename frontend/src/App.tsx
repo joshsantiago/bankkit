@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { PublicLayout } from './components/layout/PublicLayout';
 import { LandingPage as Landing } from './pages/Landing';
 import { AboutPage as About } from './pages/About';
 import { SecurityPage as Security } from './pages/Security';
@@ -24,10 +25,10 @@ function App() {
         <AuthProvider>
           <Routes>
             {/* Public routes */}
-            <Route path="/" element={<Landing />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/security" element={<Security />} />
-            <Route path="/help" element={<Help />} />
+            <Route path="/" element={<PublicLayout><Landing /></PublicLayout>} />
+            <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
+            <Route path="/security" element={<PublicLayout><Security /></PublicLayout>} />
+            <Route path="/help" element={<PublicLayout><Help /></PublicLayout>} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/onboarding" element={<Onboarding />} />
