@@ -225,31 +225,29 @@ export function LandingPage() {
       </section>
 
       {/* Mobile App Showcase */}
-      <section className="bg-white py-24 max-w-[1440px] mx-auto px-6 flex flex-col lg:flex-row gap-20 items-center">
+      <section className="bg-gradient-to-b from-gray-50 to-white py-24 max-w-[1440px] mx-auto px-6 flex flex-col lg:flex-row gap-16 items-center">
          <div className="flex-1 order-2 lg:order-1 relative">
-            <div className="relative z-10 rounded-[48px] overflow-hidden border-[12px] border-black shadow-2xl">
-               <ImageWithFallback 
-                 src="https://images.unsplash.com/photo-1637762163426-5c1283bc0405?q=80&w=800" 
-                 alt="People using app" 
-                 className="w-full h-full object-cover"
-               />
-               <div className="absolute inset-0 bg-[#064E3B]/10 flex items-center justify-center">
-                  <div className="w-full h-full bg-white/20 backdrop-blur-sm p-10 flex flex-col gap-6">
-                     <div className="flex justify-between items-center">
-                        <div className="w-12 h-12 rounded-full bg-white/40" />
-                        <div className="bg-[#064E3B] text-white px-4 py-1.5 rounded-full text-xs font-bold">Verified</div>
-                     </div>
-                     <div className="h-4 w-1/3 bg-white/40 rounded" />
-                     <div className="h-10 w-2/3 bg-white/60 rounded-xl" />
-                     <div className="grid grid-cols-4 gap-4 pt-10">
-                        {[1,2,3,4].map(i => <div key={i} className="aspect-square bg-[#064E3B] rounded-2xl" />)}
-                     </div>
+            <div className="relative z-10">
+               {/* Phone mockup container */}
+               <div className="relative mx-auto max-w-[400px] aspect-[9/19] bg-gray-900 rounded-[3rem] p-3 shadow-2xl">
+                  {/* Phone screen */}
+                  <div className="relative w-full h-full bg-white rounded-[2.5rem] overflow-hidden">
+                     <ImageWithFallback
+                       src="https://images.unsplash.com/photo-1563986768609-322da13575f3?q=80&w=800"
+                       alt="BankKit app interface"
+                       className="w-full h-full object-cover"
+                     />
+                     {/* App UI overlay */}
+                     <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/20" />
                   </div>
+                  {/* Phone notch */}
+                  <div className="absolute top-0 left-1/2 -translate-x-1/2 w-1/3 h-7 bg-gray-900 rounded-b-3xl" />
                </div>
-            </div>
-            <div className="absolute -bottom-10 -right-10 bg-[#C6F4D6] p-8 rounded-[32px] shadow-2xl hidden md:block">
-               <p className="text-[#064E3B] font-black text-2xl">2.4M+</p>
-               <p className="text-[#064E3B]/70 font-bold text-sm uppercase tracking-wider">Active App Users</p>
+               {/* Stats badge */}
+               <div className="absolute -bottom-8 -right-8 bg-[#C6F4D6] p-6 rounded-3xl shadow-xl hidden lg:block">
+                  <p className="text-[#064E3B] font-black text-3xl">2.4M+</p>
+                  <p className="text-[#064E3B]/70 font-bold text-xs uppercase tracking-wider">Active Users</p>
+               </div>
             </div>
          </div>
          
