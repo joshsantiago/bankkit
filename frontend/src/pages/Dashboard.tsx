@@ -181,6 +181,7 @@ export const Dashboard: React.FC = () => {
             { id: 'accounts', icon: Wallet, label: 'Accounts', onClick: () => navigate('/accounts') },
             { id: 'transactions', icon: Clock, label: 'Transactions', onClick: () => navigate('/transactions') },
             { id: 'cards', icon: CreditCard, label: 'My Cards', onClick: () => navigate('/cards') },
+            { id: 'security', icon: ShieldCheck, label: 'Security', onClick: () => navigate('/security') },
             { id: 'settings', icon: Settings, label: 'Settings', onClick: () => navigate('/settings') },
           ].map((item) => (
             <button
@@ -1191,11 +1192,12 @@ export const Dashboard: React.FC = () => {
       {/* showNewModal handled in quick actions */}
 
       {/* Mobile Bottom Navigation */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-4 flex justify-between items-center z-50" aria-label="Mobile navigation">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-4 py-4 flex justify-between items-center z-50" aria-label="Mobile navigation">
         {[
           { id: 'dashboard', icon: LayoutDashboard, label: 'Dashboard' },
           { id: 'accounts', icon: Wallet, label: 'Accounts', onClick: () => navigate('/accounts') },
           { id: 'cards', icon: CreditCard, label: 'Cards', onClick: () => navigate('/cards') },
+          { id: 'security', icon: ShieldCheck, label: 'Security', onClick: () => navigate('/security') },
           { id: 'settings', icon: Settings, label: 'Settings', onClick: () => navigate('/settings') },
         ].map((item) => (
           <button
