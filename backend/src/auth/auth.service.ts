@@ -35,7 +35,7 @@ export class AuthService {
       firstName: registerDto.first_name,
       lastName: registerDto.last_name,
       phone: registerDto.phone,
-      dateOfBirth: registerDto.dateOfBirth ? new Date(registerDto.dateOfBirth) : null,
+      dateOfBirth: registerDto.dateOfBirth ? new Date(registerDto.dateOfBirth) : undefined,
     });
 
     await this.userRepository.save(user);
