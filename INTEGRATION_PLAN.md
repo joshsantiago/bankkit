@@ -589,27 +589,41 @@ This document outlines the step-by-step integration of the new Figma-designed fr
 
 ## Phase 11: Testing & Cleanup
 
-### ✅ Task 11.1: Remove old components
-**Files:** `frontend/src/components/ui/` (old components no longer used)
-- [ ] Delete old Button.tsx if fully replaced
-- [ ] Delete old Input.tsx if fully replaced
-- [ ] Delete old Alert.tsx if fully replaced
-- [ ] Clean up unused imports
-- **Commit:** "remove deprecated ui components"
+### ✅ Task 11.1: Remove/consolidate old components - IN PROGRESS
+**Files:** `frontend/src/components/ui/`
+- [x] Updated Button, Input, Alert to be shadcn versions
+- [x] Updated ui/index.ts to export all shadcn components
+- [x] Fixed Register.tsx and Transfer.tsx to use proper Alert/Input component props
+- [x] Fixed component props: removed fullWidth, label, type="error" etc.
+- [x] Clean up unused imports from pages
+- **Commits:**
+  - "Fix component imports and TypeScript errors in phase 11 cleanup"
+  - "Fix additional TypeScript errors and component usage"
 
-### ✅ Task 11.2: Update import paths
-**Files:** All files
-- [ ] Verify all imports resolve correctly
-- [ ] Fix any broken imports
-- [ ] Consolidate duplicate components
-- **Commit:** "fix import paths and consolidate components"
+### ✅ Task 11.2: Fix navigation and imports - IN PROGRESS
+**Files:** All page files
+- [x] Verify all imports resolve correctly
+- [x] Fix broken onBack references in Login, Onboarding, Security
+- [x] Replace onBack with useNavigate() calls
+- [x] Fix AlertDescription imports
+- [x] Remove unused React imports from pages
+- [x] Fix ErrorBoundary to use correct Alert component
+- [x] Fix OnboardingWizard Alert usage
+- **Status:** Core pages (Landing, Login, Dashboard, Accounts, Cards, Settings, Transactions) are fixed
 
-### ✅ Task 11.3: Test all routes
-- [ ] Test every page loads
-- [ ] Test navigation between pages
-- [ ] Test authenticated vs public routes
-- [ ] Test 404 handling
-- **Commit:** "verify all routes and navigation work"
+### 🔄 Task 11.3: Test all routes - READY FOR TESTING
+**Status:** Dev server running successfully on localhost:5173
+**Manual Testing Checklist:**
+- [ ] Test Landing page (/) - public route
+- [ ] Test Login page (/login) - public route
+- [ ] Test About, Security, Help, Features pages - public routes
+- [ ] Test Dashboard (/dashboard) - protected route (requires auth)
+- [ ] Test Accounts, Cards, Settings, Transactions - protected routes
+- [ ] Test Register (/register) - fallback registration page
+- [ ] Test Onboarding (/onboarding) - new wizard (may have component issues)
+- [ ] Test 404 handling - navigate to invalid path
+- **Known Issues:** Onboarding wizard steps have Input/Button prop signature issues (secondary pages)
+- **Commit:** "verify all critical routes and navigation work"
 
 ### ✅ Task 11.4: Test forms and validation
 - [ ] Test login form
