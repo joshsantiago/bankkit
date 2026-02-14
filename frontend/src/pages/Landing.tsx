@@ -1,10 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { 
-  ArrowRight, 
-  CreditCard, 
-  Wallet, 
-  Building2, 
+import {
+  ArrowRight,
+  CreditCard,
+  Wallet,
+  Building2,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -15,6 +16,7 @@ import {
 } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 import { LoanCalculator } from '../components/LoanCalculator';
+import { ScrollAnimation } from '../components/ScrollAnimation';
 
 const cardTypes = [
   { name: 'Elite Black', color: 'bg-black', text: 'text-white' },
@@ -24,11 +26,8 @@ const cardTypes = [
   { name: 'Coral Base', color: 'bg-[#FFEDD5]', text: 'text-[#9A3412]' },
 ];
 
-interface LandingPageProps {
-  onNavigate: (page: string) => void;
-}
-
-export function LandingPage({ onNavigate }: LandingPageProps) {
+export function LandingPage() {
+  const navigate = useNavigate();
   return (
     <div className="pt-20">
       {/* Hero Section */}
@@ -67,7 +66,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
               className="flex flex-wrap gap-4"
             >
               <button 
-                onClick={() => onNavigate('onboarding')}
+                onClick={() => navigate('/onboarding')}
                 className="bg-[#064E3B] text-white px-10 py-5 rounded-full font-bold text-lg hover:scale-105 transition-transform"
               >
                 Open an Account
@@ -82,6 +81,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
 
       {/* Intro Section */}
       <section className="py-24 max-w-[1440px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+         <ScrollAnimation direction="left">
          <div className="space-y-6">
             <p className="text-[#064E3B] font-bold tracking-widest uppercase text-sm">BankKit is perfect</p>
             <h2 className="text-4xl md:text-5xl font-black text-gray-900 leading-tight">
@@ -94,7 +94,9 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
               View All Services <ArrowRight className="group-hover:translate-x-1 transition-transform" />
             </button>
          </div>
-         
+         </ScrollAnimation>
+
+         <ScrollAnimation direction="right">
          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="bg-[#F5F5F7] p-8 rounded-[32px] space-y-6 flex flex-col justify-between group hover:bg-[#064E3B] transition-all duration-500">
                <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-[#064E3B] group-hover:bg-[#C6F4D6] transition-colors shadow-sm">
@@ -125,6 +127,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
                </div>
             </div>
          </div>
+         </ScrollAnimation>
       </section>
 
       {/* Cards Showcase */}
@@ -324,7 +327,7 @@ export function LandingPage({ onNavigate }: LandingPageProps) {
             </h2>
             <div className="flex flex-col sm:flex-row gap-6 justify-center relative z-10">
                <button 
-                  onClick={() => onNavigate('onboarding')}
+                  onClick={() => navigate('/onboarding')}
                   className="bg-[#C6F4D6] text-[#064E3B] px-12 py-6 rounded-full font-black text-xl hover:scale-105 transition-transform shadow-2xl shadow-[#C6F4D6]/20"
                 >
                   Open Your Account
