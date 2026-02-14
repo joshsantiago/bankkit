@@ -34,7 +34,6 @@ function AppRoutes() {
             {/* Public routes */}
             <Route path="/" element={<PageTransition><PublicLayout><Landing /></PublicLayout></PageTransition>} />
             <Route path="/about" element={<PageTransition><PublicLayout><About /></PublicLayout></PageTransition>} />
-            <Route path="/security" element={<PageTransition><PublicLayout><Security /></PublicLayout></PageTransition>} />
             <Route path="/help" element={<PageTransition><PublicLayout><Help /></PublicLayout></PageTransition>} />
             <Route path="/features" element={<PageTransition><PublicLayout><Features /></PublicLayout></PageTransition>} />
             <Route path="/credit-card" element={<PageTransition><PublicLayout><CreditCard /></PublicLayout></PageTransition>} />
@@ -100,6 +99,16 @@ function AppRoutes() {
                 <PageTransition>
                   <ProtectedRoute>
                     <Settings />
+                  </ProtectedRoute>
+                </PageTransition>
+              }
+            />
+            <Route
+              path="/security"
+              element={
+                <PageTransition>
+                  <ProtectedRoute>
+                    <Security />
                   </ProtectedRoute>
                 </PageTransition>
               }

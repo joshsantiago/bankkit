@@ -90,7 +90,7 @@ export function SecurityPage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'sessions' | 'settings'>('overview');
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] pt-24">
+    <div className="min-h-screen bg-[#F8FAFC]">
       {/* Header */}
       <div className="bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-6 py-8">
