@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Button, Input, Alert } from '../components/ui';
+import { Button, Input, Alert, AlertDescription } from '../components/ui';
 
-export const Register: React.FC = () => {
+export const Register = () => {
   const navigate = useNavigate();
   const { register } = useAuth();
   const [formData, setFormData] = useState({
@@ -38,51 +38,59 @@ export const Register: React.FC = () => {
           <p className="text-gray-600 mt-2">Create your account</p>
         </div>
 
-        {error && <Alert type="error" message={error} onClose={() => setError('')} />}
+        {error && (
+          <Alert variant="destructive" className="mb-4">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
 
         <form onSubmit={handleSubmit} className="space-y-4 mt-6">
           <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="text-sm font-medium mb-1 block">First Name</label>
+              <Input
+                type="text"
+                placeholder="John"
+                value={formData.first_name}
+                onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+                required
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium mb-1 block">Last Name</label>
+              <Input
+                type="text"
+                placeholder="Doe"
+                value={formData.last_name}
+                onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
+                required
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="text-sm font-medium mb-1 block">Email</label>
             <Input
-              type="text"
-              label="First Name"
-              placeholder="John"
-              value={formData.first_name}
-              onChange={(e) => setFormData({ ...formData, first_name: e.target.value })}
+              type="email"
+              placeholder="your@email.com"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               required
-              fullWidth
-            />
-            <Input
-              type="text"
-              label="Last Name"
-              placeholder="Doe"
-              value={formData.last_name}
-              onChange={(e) => setFormData({ ...formData, last_name: e.target.value })}
-              required
-              fullWidth
             />
           </div>
 
-          <Input
-            type="email"
-            label="Email"
-            placeholder="your@email.com"
-            value={formData.email}
-            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-            required
-            fullWidth
-          />
+          <div>
+            <label className="text-sm font-medium mb-1 block">Password</label>
+            <Input
+              type="password"
+              placeholder="••••••••"
+              value={formData.password}
+              onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+              required
+            />
+          </div>
 
-          <Input
-            type="password"
-            label="Password"
-            placeholder="••••••••"
-            value={formData.password}
-            onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-            required
-            fullWidth
-          />
-
-          <Button type="submit" fullWidth disabled={loading}>
+          <Button type="submit" className="w-full" disabled={loading}>
             {loading ? 'Creating account...' : 'Sign Up'}
           </Button>
         </form>

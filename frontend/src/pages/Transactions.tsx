@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
@@ -6,7 +6,6 @@ import {
   Search,
   Filter,
   Download,
-  ArrowUpRight,
   ArrowDownLeft,
   ChevronRight,
   X,

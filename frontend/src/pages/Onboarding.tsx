@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { useForm } from 'react-hook-form';
@@ -34,12 +34,12 @@ export function OnboardingPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [generatedAccount, setGeneratedAccount] = useState('');
   
-  const { 
-    register, 
-    handleSubmit, 
-    watch, 
+  const {
+    register,
+    handleSubmit,
+    watch,
     trigger,
-    formState: { errors, isValid },
+    formState: { errors },
     getValues
   } = useForm<OnboardingData>({
     mode: 'onBlur',
@@ -101,8 +101,8 @@ export function OnboardingPage() {
       {/* Top Header / Progress */}
       <div className="bg-white border-b border-gray-100 px-6 py-4 sticky top-0 z-50">
         <div className="max-w-2xl mx-auto flex items-center justify-between">
-          <button 
-            onClick={step === 1 ? onBack : prevStep}
+          <button
+            onClick={step === 1 ? () => navigate('/') : prevStep}
             className="p-2 hover:bg-gray-50 rounded-full text-gray-400 transition-colors"
           >
             <ArrowLeft size={24} />

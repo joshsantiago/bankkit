@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
@@ -64,8 +64,8 @@ export function LoginPage() {
         </div>
 
         <div className="relative z-10">
-          <button 
-            onClick={view === 'login' ? onBack : () => { setView('login'); setForgotStep(1); }}
+          <button
+            onClick={view === 'login' ? () => navigate('/') : () => { setView('login'); setForgotStep(1); }}
             className="flex items-center gap-2 text-[#DCFCE7] font-bold hover:gap-3 transition-all mb-20"
           >
             <ArrowLeft size={20} />
@@ -125,8 +125,8 @@ export function LoginPage() {
       >
         <div className="w-full max-w-md space-y-12 py-12">
           {/* Mobile Back Button */}
-          <button 
-            onClick={view === 'login' ? onBack : () => { setView('login'); setForgotStep(1); }}
+          <button
+            onClick={view === 'login' ? () => navigate('/') : () => { setView('login'); setForgotStep(1); }}
             className="lg:hidden flex items-center gap-2 text-gray-500 font-bold mb-8"
           >
             <ArrowLeft size={20} />
@@ -144,7 +144,7 @@ export function LoginPage() {
                   <Fingerprint size={32} />
                 </div>
                 <h1 className="text-4xl font-black text-[#064E3B]">Sign in</h1>
-                <p className="text-gray-500 font-medium">New to BankKit? <button onClick={onCreateAccount} className="text-emerald-600 font-black hover:underline">Create an account</button></p>
+                <p className="text-gray-500 font-medium">New to BankKit? <button onClick={() => navigate('/onboarding')} className="text-emerald-600 font-black hover:underline">Create an account</button></p>
               </div>
 
               <form onSubmit={handleSubmit} className="space-y-6">

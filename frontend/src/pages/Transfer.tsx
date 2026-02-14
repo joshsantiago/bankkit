@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MainLayout } from '../components/layout/MainLayout';
-import { Card, CardHeader, CardTitle, CardBody, Input, Button, Alert, Loader } from '../components/ui';
+import { Card, CardHeader, CardTitle, CardBody, Input, Button, Alert, AlertDescription, Loader } from '../components/ui';
 import { accountService } from '../services/accountService';
 import { transactionService } from '../services/transactionService';
 import { formatCurrency } from '../utils/formatters';
 
-export const Transfer: React.FC = () => {
+export const Transfer = () => {
   const navigate = useNavigate();
   const [accounts, setAccounts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -92,8 +92,16 @@ export const Transfer: React.FC = () => {
       <div className="max-w-2xl mx-auto space-y-6">
         <h1 className="text-3xl font-bold text-gray-900">Transfer Money</h1>
 
-        {error && <Alert type="error" message={error} onClose={() => setError('')} />}
-        {success && <Alert type="success" message={success} />}
+        {error && (
+          <Alert variant="destructive">
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+        {success && (
+          <Alert>
+            <AlertDescription>{success}</AlertDescription>
+          </Alert>
+        )}
 
         {accounts.length < 2 ? (
           <Card>
@@ -158,37 +166,43 @@ export const Transfer: React.FC = () => {
                   </select>
                 </div>
 
-                <Input
-                  type="number"
-                  label="Amount"
-                  placeholder="0.00"
-                  step="0.01"
-                  min="0.01"
-                  value={formData.amount}
-                  onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
-                  required
-                  fullWidth
-                />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Amount
+                  </label>
+                  <Input
+                    type="number"
+                    placeholder="0.00"
+                    step="0.01"
+                    min="0.01"
+                    value={formData.amount}
+                    onChange={(e) => setFormData({ ...formData, amount: e.target.value })}
+                    required
+                  />
+                </div>
 
-                <Input
-                  type="text"
-                  label="Description (Optional)"
-                  placeholder="What's this transfer for?"
-                  value={formData.description}
-                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  fullWidth
-                />
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Description (Optional)
+                  </label>
+                  <Input
+                    type="text"
+                    placeholder="What's this transfer for?"
+                    value={formData.description}
+                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                  />
+                </div>
 
-                <div className="flex space-x-3 pt-4">
+                <div className="flex gap-3 pt-4">
                   <Button
                     type="button"
                     variant="secondary"
                     onClick={() => navigate('/dashboard')}
-                    fullWidth
+                    className="flex-1"
                   >
                     Cancel
                   </Button>
-                  <Button type="submit" disabled={submitting} fullWidth>
+                  <Button type="submit" disabled={submitting} className="flex-1">
                     {submitting ? 'Processing...' : 'Transfer'}
                   </Button>
                 </div>

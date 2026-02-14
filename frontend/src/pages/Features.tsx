@@ -1,18 +1,15 @@
-import React from 'react';
 import { motion } from 'motion/react';
-import { 
-  Zap, 
-  Smartphone, 
-  BarChart3, 
-  Users, 
-  Lock, 
-  Globe, 
-  ArrowRight, 
+import {
+  Zap,
+  Smartphone,
+  BarChart3,
+  Users,
+  Lock,
+  Globe,
   MessageSquare,
   Sparkles,
   PieChart,
-  Split,
-  MousePointer2
+  Split
 } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
 

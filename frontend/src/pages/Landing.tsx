@@ -1,4 +1,3 @@
-import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'motion/react';
 import {
@@ -7,9 +6,6 @@ import {
   Wallet,
   Building2,
   Check,
-  ChevronLeft,
-  ChevronRight,
-  ShieldCheck,
   Zap,
   Globe,
   Layout

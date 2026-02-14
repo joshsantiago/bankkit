@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
@@ -13,7 +13,6 @@ import {
   ChevronRight,
   ArrowLeft,
   Camera,
-  CheckCircle2,
   AlertTriangle,
   Mail,
   Phone,

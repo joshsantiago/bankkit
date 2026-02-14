@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  ShieldCheck, 
-  Lock, 
-  Smartphone, 
-  Eye, 
-  ShieldAlert, 
-  Fingerprint, 
-  Key, 
-  History, 
-  Globe, 
-  ChevronRight, 
+import {
+  ShieldCheck,
+  Lock,
+  Smartphone,
+  Eye,
+  ShieldAlert,
+  Fingerprint,
+  Key,
+  Globe,
+  ChevronRight,
   ArrowLeft,
   CheckCircle2,
   AlertTriangle,
@@ -85,7 +84,7 @@ const RECENT_ACTIVITY = [
   { id: 3, event: 'Password Changed', date: 'Feb 10, 2:15 PM', icon: Key, status: 'success' },
 ];
 
-export function SecurityPage({ onBack }: { onBack: () => void }) {
+export function SecurityPage() {
   const [activeTab, setActiveTab] = useState<'overview' | 'sessions' | 'settings'>('overview');
 
   return (

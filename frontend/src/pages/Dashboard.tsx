@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
@@ -126,8 +126,6 @@ export const Dashboard: React.FC = () => {
   const [showNewModal, setShowNewModal] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeStep, setUpgradeStep] = useState(1);
-  const [selectedPlan, setSelectedPlan] = useState<'metal' | 'black' | 'gold'>('metal');
-  const [newStep, setNewStep] = useState(1);
   const [linkStep, setLinkStep] = useState(1);
   const [depositStep, setDepositStep] = useState(1);
   const [depositAmount, setDepositAmount] = useState('');
@@ -139,7 +137,6 @@ export const Dashboard: React.FC = () => {
   const [showSsn, setShowSsn] = useState(false);
   const [address, setAddress] = useState({ street: '', city: '', state: '', zip: '' });
   const [selectedBank, setSelectedBank] = useState<string | null>(null);
-  const [is2FAEnabled, setIs2FAEnabled] = useState(false);
 
   const formatSSN = (value: string) => {
     const digits = value.replace(/\D/g, '');
