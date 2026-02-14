@@ -7,12 +7,17 @@ import { LandingPage as Landing } from './pages/Landing';
 import { AboutPage as About } from './pages/About';
 import { SecurityPage as Security } from './pages/Security';
 import { HelpPage as Help } from './pages/Help';
+import { FeaturesPage as Features } from './pages/Features';
+import { CreditCardPage as CreditCard } from './pages/CreditCard';
+import { CheckSavingsPage as CheckSavings } from './pages/CheckSavings';
 import { LoginPage as Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { OnboardingPage as Onboarding } from './pages/Onboarding';
 import { Dashboard } from './pages/Dashboard';
 import { Accounts } from './pages/Accounts';
 import { Transactions } from './pages/Transactions';
+import { Cards } from './pages/Cards';
+import { Settings } from './pages/Settings';
 import { Transfer } from './pages/Transfer';
 import { AdminDashboard } from './pages/admin/AdminDashboard';
 import { AdminUsers } from './pages/admin/AdminUsers';
@@ -29,6 +34,9 @@ function App() {
             <Route path="/about" element={<PublicLayout><About /></PublicLayout>} />
             <Route path="/security" element={<PublicLayout><Security /></PublicLayout>} />
             <Route path="/help" element={<PublicLayout><Help /></PublicLayout>} />
+            <Route path="/features" element={<PublicLayout><Features /></PublicLayout>} />
+            <Route path="/credit-card" element={<PublicLayout><CreditCard /></PublicLayout>} />
+            <Route path="/check-savings" element={<PublicLayout><CheckSavings /></PublicLayout>} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/onboarding" element={<Onboarding />} />
@@ -63,6 +71,22 @@ function App() {
               element={
                 <ProtectedRoute>
                   <Transfer />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/cards"
+              element={
+                <ProtectedRoute>
+                  <Cards />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/settings"
+              element={
+                <ProtectedRoute>
+                  <Settings />
                 </ProtectedRoute>
               }
             />
