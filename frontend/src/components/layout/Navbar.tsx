@@ -18,7 +18,6 @@ export function Navbar() {
     { label: 'Features', path: '/features' },
     { label: 'Credit Card', path: '/credit-card' },
     { label: 'Check & Savings', path: '/check-savings' },
-    { label: 'Security', path: '/security' },
     { label: 'About', path: '/about' },
   ];
 
