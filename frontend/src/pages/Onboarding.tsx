@@ -436,8 +436,8 @@ export function OnboardingPage() {
                   <p className="text-3xl font-black text-[#064E3B] tracking-[0.1em]">{generatedAccount}</p>
                 </div>
 
-                <button 
-                  onClick={() => navigate("/dashboard"))}
+                <button
+                  onClick={() => navigate("/dashboard")}
                   className="w-full bg-[#064E3B] text-white py-6 rounded-[2rem] font-black text-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 shadow-xl shadow-[#064E3B]/20"
                 >
                   Start Banking <ArrowRight size={24} />
