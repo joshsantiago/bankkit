@@ -500,7 +500,6 @@ export const Dashboard: React.FC = () => {
               </div>
             </div>
           </div>
-        </div>
       </main>
 
       {/* Transfer Modal */}
