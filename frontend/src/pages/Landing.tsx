@@ -1,721 +1,354 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
-import {
-  CreditCard,
-  Zap,
-  TrendingUp,
-  Shield,
-  BarChart3,
-  Smartphone,
-  ChevronRight,
+import { motion } from 'motion/react';
+import { 
+  ArrowRight, 
+  CreditCard, 
+  Wallet, 
+  Building2, 
   Check,
-  Lock,
+  ChevronLeft,
+  ChevronRight,
+  ShieldCheck,
+  Zap,
   Globe,
-  Users,
-  Star
+  Layout
 } from 'lucide-react';
-import { useScrollAnimation } from '../hooks/useScrollAnimation';
+import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { LoanCalculator } from '../components/LoanCalculator';
 
-export const Landing: React.FC = () => {
-  const navigate = useNavigate();
+const cardTypes = [
+  { name: 'Elite Black', color: 'bg-black', text: 'text-white' },
+  { name: 'Mint Pro', color: 'bg-[#DCFCE7]', text: 'text-[#064E3B]' },
+  { name: 'Azure Lite', color: 'bg-[#DBEAFE]', text: 'text-[#1E40AF]' },
+  { name: 'Lavender Plus', color: 'bg-[#E0E7FF]', text: 'text-[#3730A3]' },
+  { name: 'Coral Base', color: 'bg-[#FFEDD5]', text: 'text-[#9A3412]' },
+];
 
-  // Scroll animations for each section
-  const featuresAnim = useScrollAnimation();
-  const testimonialsAnim = useScrollAnimation();
-  const statsAnim = useScrollAnimation();
-  const ctaAnim = useScrollAnimation();
-  const securityAnim = useScrollAnimation();
-  const finalCtaAnim = useScrollAnimation();
+interface LandingPageProps {
+  onNavigate: (page: string) => void;
+}
 
+export function LandingPage({ onNavigate }: LandingPageProps) {
   return (
-    <div className="min-h-screen bg-white">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-black/90 backdrop-blur-sm z-50 border-b border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <span className="text-2xl font-bold text-white">BankKit</span>
-            </div>
-            <div className="hidden md:flex items-center space-x-8">
-              <a href="#features" className="text-gray-300 hover:text-white transition-colors">Features</a>
-              <button onClick={() => navigate('/about')} className="text-gray-300 hover:text-white transition-colors">About</button>
-              <button onClick={() => navigate('/security')} className="text-gray-300 hover:text-white transition-colors">Security</button>
-              <button onClick={() => navigate('/help')} className="text-gray-300 hover:text-white transition-colors">Help</button>
-              <button
-                onClick={() => navigate('/login')}
-                className="text-gray-300 hover:text-white transition-colors"
-              >
-                Sign In
-              </button>
-              <button
-                onClick={() => navigate('/onboarding')}
-                className="bg-lime-400 text-black px-6 py-2 rounded-full font-semibold hover:bg-lime-300 transition-colors"
-              >
-                Get Started
-              </button>
-            </div>
-          </div>
-        </div>
-      </nav>
-
+    <div className="pt-20">
       {/* Hero Section */}
-      <section className="relative bg-black text-white pt-32 pb-20 px-4 overflow-hidden">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Left Content */}
-            <div className="space-y-6">
-              <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full animate-fade-in-up">
-                <span className="w-2 h-2 bg-lime-400 rounded-full animate-pulse"></span>
-                <span className="text-sm text-gray-300">Trusted by 500K+ users</span>
-              </div>
-
-              <h1 className="text-5xl md:text-7xl font-bold leading-tight animate-fade-in-up animation-delay-200">
-                Digitize your financial
-                <span className="block mt-2">future</span>
-              </h1>
-
-              <p className="text-xl text-gray-400 max-w-lg animate-fade-in-up animation-delay-400">
-                Modern banking designed for today's lifestyle. Zero fees, instant transfers, and high-yield savings.
-              </p>
-
-              <div className="flex flex-wrap gap-4 animate-fade-in-up animation-delay-600">
-                <button
-                  onClick={() => navigate('/onboarding')}
-                  className="bg-lime-400 text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-lime-300 transition-all hover:scale-105 flex items-center gap-2"
-                >
-                  Digitize Now
-                  <ChevronRight className="w-5 h-5" />
-                </button>
-                <button className="border-2 border-white/20 text-white px-8 py-4 rounded-full font-semibold text-lg hover:bg-white/10 transition-all">
-                  Learn More
-                </button>
-              </div>
-
-              <div className="flex items-center gap-8 pt-4 animate-fade-in-up animation-delay-800">
-                <div>
-                  <div className="text-3xl font-bold">500K+</div>
-                  <div className="text-sm text-gray-400">Active Users</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold">$2.5B</div>
-                  <div className="text-sm text-gray-400">Transferred</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold">4.9★</div>
-                  <div className="text-sm text-gray-400">App Rating</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right - Card Mockup */}
-            <div className="relative h-[600px] flex items-center justify-center">
-              {/* Card 1 - Cyan */}
-              <div className="absolute top-20 left-0 w-80 h-52 bg-gradient-to-br from-cyan-400 to-blue-500 rounded-3xl shadow-2xl transform -rotate-12 hover:rotate-0 transition-transform duration-500 animate-fade-in-right animation-delay-400">
-                <div className="p-6 flex flex-col justify-between h-full">
-                  <div className="flex justify-between items-start">
-                    <span className="text-2xl font-bold text-white">BankKit</span>
-                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                      <CreditCard className="w-6 h-6 text-white" />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="text-sm text-white/80">Balance</div>
-                    <div className="text-3xl font-bold text-white">$12,459.50</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Card 2 - Gradient Center */}
-              <div className="absolute top-40 left-20 w-80 h-52 bg-gradient-to-br from-pink-500 via-purple-500 to-yellow-500 rounded-3xl shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500 z-10 animate-fade-in-right animation-delay-600">
-                <div className="p-6 flex flex-col justify-between h-full">
-                  <div className="flex justify-between items-start">
-                    <span className="text-2xl font-bold text-white">BankKit</span>
-                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                      <TrendingUp className="w-6 h-6 text-white" />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="text-sm text-white/80">Savings Account</div>
-                    <div className="text-3xl font-bold text-white">$48,392.00</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Card 3 - Yellow */}
-              <div className="absolute top-60 right-0 w-80 h-52 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-3xl shadow-2xl transform rotate-12 hover:rotate-0 transition-transform duration-500 animate-fade-in-right animation-delay-800">
-                <div className="p-6 flex flex-col justify-between h-full">
-                  <div className="flex justify-between items-start">
-                    <span className="text-2xl font-bold text-white">BankKit</span>
-                    <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
-                      <Zap className="w-6 h-6 text-white" />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <div className="text-sm text-white/80">**** 4829</div>
-                    <div className="text-lg font-bold text-white">Virtual Card</div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Floating Badge */}
-              <div className="absolute bottom-20 right-10 bg-white rounded-full px-6 py-3 shadow-2xl flex items-center gap-3 z-20 animate-fade-in animation-delay-1000">
-                <div className="flex -space-x-2">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 border-2 border-white"></div>
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-500 to-red-500 border-2 border-white"></div>
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-br from-green-500 to-teal-500 border-2 border-white"></div>
-                </div>
-                <span className="font-bold text-black">500K+</span>
-              </div>
-            </div>
-          </div>
+      <section className="relative min-h-[90vh] flex flex-col items-center justify-center overflow-hidden px-6">
+        <div className="absolute inset-0 z-0">
+          <ImageWithFallback 
+            src="https://images.unsplash.com/photo-1760111085279-6c4b6d831acc?q=80&w=2000" 
+            alt="BankKit Hero" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/60 via-black/20 to-transparent" />
         </div>
-
-        {/* Decorative Elements */}
-        <div className="absolute top-40 left-20 w-2 h-2 bg-lime-400 rounded-full animate-pulse"></div>
-        <div className="absolute top-60 right-40 w-1 h-1 bg-purple-400 rounded-full animate-pulse"></div>
-        <div className="absolute bottom-40 left-1/3 w-1.5 h-1.5 bg-cyan-400 rounded-full animate-pulse"></div>
-      </section>
-
-      {/* Bento Box Features Section */}
-      <section
-        id="features"
-        ref={featuresAnim.ref}
-        className={`py-20 px-4 bg-gray-50 transition-all duration-1000 ${
-          featuresAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Features</span>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mt-2">
-              Everything you need in one place
-            </h2>
-          </div>
-
-          {/* Bento Grid Layout */}
-          <div className="grid grid-cols-1 md:grid-cols-6 gap-6">
-            {/* Large Feature 1 - Zero Fees */}
-            <div className="md:col-span-3 md:row-span-2 bg-gradient-to-br from-blue-600 to-purple-600 rounded-3xl p-8 text-white hover:scale-[1.02] transition-all duration-300 hover:shadow-2xl group">
-              <div className="flex flex-col h-full justify-between">
-                <div>
-                  <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                    <CreditCard className="w-8 h-8 text-white" />
-                  </div>
-                  <h3 className="text-3xl font-bold mb-4">Zero Fees, Forever</h3>
-                  <p className="text-white/90 text-lg mb-6">
-                    No monthly fees, no minimum balance, no overdraft fees, no hidden charges.
-                    Banking should be free, and we mean it.
-                  </p>
-                </div>
-                <div className="flex gap-3 flex-wrap">
-                  <span className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm">No Monthly Fees</span>
-                  <span className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm">No Minimums</span>
-                  <span className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm">No Hidden Costs</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Medium Feature 2 - Instant Transfers */}
-            <div className="md:col-span-3 bg-white rounded-3xl p-8 hover:scale-[1.02] transition-all duration-300 hover:shadow-2xl group">
-              <div className="w-14 h-14 bg-gradient-to-br from-pink-500 to-red-500 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Zap className="w-7 h-7 text-white" />
-              </div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">Instant Transfers</h3>
-              <p className="text-gray-600">
-                Send money to anyone instantly with just their email or phone. No delays, no waiting periods.
-              </p>
-            </div>
-
-            {/* Small Feature 3 - High Yield */}
-            <div className="md:col-span-2 bg-gradient-to-br from-green-500 to-teal-500 rounded-3xl p-6 text-white hover:scale-[1.02] transition-all duration-300 hover:shadow-2xl group">
-              <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <TrendingUp className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold mb-2">High Yield</h3>
-              <p className="text-white/90 text-sm">
-                Earn competitive APY on your savings automatically
-              </p>
-            </div>
-
-            {/* Small Feature 4 - Security */}
-            <div className="md:col-span-2 bg-white rounded-3xl p-6 hover:scale-[1.02] transition-all duration-300 hover:shadow-2xl group">
-              <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-500 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Shield className="w-6 h-6 text-white" />
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">Bank-Level Security</h3>
-              <p className="text-gray-600 text-sm">
-                256-bit encryption & FDIC insured up to $250K
-              </p>
-            </div>
-
-            {/* Medium Feature 5 - Analytics */}
-            <div className="md:col-span-4 bg-gradient-to-br from-purple-600 to-blue-600 text-white rounded-3xl p-8 overflow-hidden relative hover:scale-[1.02] transition-all duration-300 hover:shadow-2xl group">
-              <div className="relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform">
-                    <BarChart3 className="w-6 h-6 text-white" />
-                  </div>
-                  <h3 className="text-2xl font-bold">Real-time Analytics</h3>
-                </div>
-                <p className="text-white/90 mb-6 max-w-md">
-                  Track spending patterns, visualize cash flow, and get actionable insights with beautiful charts.
-                </p>
-                <div className="flex gap-3">
-                  <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm flex items-center gap-2">
-                    <Check className="w-4 h-4" />
-                    Smart Budgets
-                  </div>
-                  <div className="bg-white/10 backdrop-blur-sm px-4 py-2 rounded-full text-sm flex items-center gap-2">
-                    <Check className="w-4 h-4" />
-                    Spending Alerts
-                  </div>
-                </div>
-              </div>
-
-              {/* Chart Visualization */}
-              <div className="absolute right-0 bottom-0 w-64 h-48 opacity-30 group-hover:opacity-40 transition-opacity">
-                <svg viewBox="0 0 200 150" className="w-full h-full">
-                  <path
-                    d="M 0,120 L 40,100 L 80,60 L 120,80 L 160,30 L 200,50"
-                    fill="none"
-                    stroke="white"
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                  />
-                  <path
-                    d="M 0,120 L 40,100 L 80,60 L 120,80 L 160,30 L 200,50 L 200,150 L 0,150 Z"
-                    fill="url(#gradient)"
-                    opacity="0.3"
-                  />
-                  <defs>
-                    <linearGradient id="gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                      <stop offset="0%" stopColor="white" stopOpacity="0.5" />
-                      <stop offset="100%" stopColor="white" stopOpacity="0" />
-                    </linearGradient>
-                  </defs>
-                </svg>
-              </div>
-            </div>
-
-            {/* Medium Feature 6 - Mobile */}
-            <div className="md:col-span-2 bg-gradient-to-br from-lime-400 to-green-500 text-black rounded-3xl p-6 hover:scale-[1.02] transition-all duration-300 hover:shadow-2xl group">
-              <div className="w-12 h-12 bg-black/10 backdrop-blur-sm rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                <Smartphone className="w-6 h-6 text-black" />
-              </div>
-              <h3 className="text-xl font-bold mb-2">Mobile First</h3>
-              <p className="text-black/80 text-sm mb-4">
-                Beautifully designed app for iOS and Android
-              </p>
-              <div className="flex gap-2">
-                <div className="bg-black/10 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold">
-                  4.9★
-                </div>
-                <div className="bg-black/10 backdrop-blur-sm px-3 py-1 rounded-full text-xs font-semibold">
-                  500K+ Downloads
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Customer Testimonials Section */}
-      <section
-        ref={testimonialsAnim.ref}
-        className={`py-20 px-4 bg-white transition-all duration-1000 ${
-          testimonialsAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Testimonials</span>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mt-2">
-              Loved by customers everywhere
-            </h2>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8">
-            {/* Testimonial 1 */}
-            <div className="bg-gray-50 rounded-3xl p-8 hover:scale-[1.02] transition-all duration-300 hover:shadow-xl group">
-              <div className="flex gap-1 mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                ))}
-              </div>
-              <p className="text-gray-700 mb-6 leading-relaxed">
-                "Switching to BankKit was the best financial decision I made this year.
-                Zero fees and instant transfers have saved me so much hassle."
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-500 to-purple-500"></div>
-                <div>
-                  <div className="font-bold text-gray-900">Sarah Johnson</div>
-                  <div className="text-sm text-gray-500">Freelance Designer</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Testimonial 2 */}
-            <div className="bg-gray-50 rounded-3xl p-8 hover:scale-[1.02] transition-all duration-300 hover:shadow-xl group">
-              <div className="flex gap-1 mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                ))}
-              </div>
-              <p className="text-gray-700 mb-6 leading-relaxed">
-                "The mobile app is incredibly intuitive. I can manage everything from
-                my phone - transfers, budgets, savings goals. It just works."
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-red-500"></div>
-                <div>
-                  <div className="font-bold text-gray-900">Marcus Chen</div>
-                  <div className="text-sm text-gray-500">Small Business Owner</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Testimonial 3 */}
-            <div className="bg-gray-50 rounded-3xl p-8 hover:scale-[1.02] transition-all duration-300 hover:shadow-xl group">
-              <div className="flex gap-1 mb-4">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                ))}
-              </div>
-              <p className="text-gray-700 mb-6 leading-relaxed">
-                "Finally, a bank that gets it. High APY on savings, beautiful interface,
-                and customer support that actually responds. Highly recommend!"
-              </p>
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-green-500 to-teal-500"></div>
-                <div>
-                  <div className="font-bold text-gray-900">Emily Rodriguez</div>
-                  <div className="text-sm text-gray-500">Software Engineer</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Trust Badges */}
-          <div className="mt-16 flex flex-wrap justify-center items-center gap-8 opacity-60">
-            <div className="text-center">
-              <div className="text-2xl font-bold text-gray-900">500K+</div>
-              <div className="text-sm text-gray-600">Happy Customers</div>
-            </div>
-            <div className="h-8 w-px bg-gray-300"></div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-gray-900">4.9/5</div>
-              <div className="text-sm text-gray-600">Average Rating</div>
-            </div>
-            <div className="h-8 w-px bg-gray-300"></div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-gray-900">99.9%</div>
-              <div className="text-sm text-gray-600">Uptime</div>
-            </div>
-            <div className="h-8 w-px bg-gray-300"></div>
-            <div className="text-center">
-              <div className="text-2xl font-bold text-gray-900">24/7</div>
-              <div className="text-sm text-gray-600">Support</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Statistics Section */}
-      <section
-        id="about"
-        ref={statsAnim.ref}
-        className={`py-20 px-4 bg-gray-50 transition-all duration-1000 ${
-          statsAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto text-center">
-          <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Statistics</span>
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mt-2 mb-4">
-            Get to know more about BankKit
-          </h2>
-          <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-16">
-            We are customers-focused digital bank that brings together a range of digital financial solutions
-          </p>
-
-          <div className="grid md:grid-cols-3 gap-12">
-            <div className="hover:scale-105 transition-transform duration-300">
-              <div className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent mb-2">
-                500K
-              </div>
-              <p className="text-gray-600">
-                BankKit is trusted by over half a million users
-              </p>
-            </div>
-
-            <div className="hover:scale-105 transition-transform duration-300">
-              <div className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-pink-600 to-red-600 bg-clip-text text-transparent mb-2">
-                $2.5B
-              </div>
-              <p className="text-gray-600">
-                BankKit has processed over 2.5 billion in transfers
-              </p>
-            </div>
-
-            <div className="hover:scale-105 transition-transform duration-300">
-              <div className="text-6xl md:text-7xl font-bold bg-gradient-to-r from-green-600 to-teal-600 bg-clip-text text-transparent mb-2">
-                287%
-              </div>
-              <p className="text-gray-600">
-                BankKit's user growth in the last year
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Section with Illustration */}
-      <section
-        ref={ctaAnim.ref}
-        className={`py-20 px-4 bg-white transition-all duration-1000 ${
-          ctaAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-        }`}
-      >
-        <div className="max-w-5xl mx-auto">
-          <div className="bg-black rounded-[3rem] p-12 md:p-16 relative overflow-hidden hover:scale-[1.01] transition-all duration-300">
-            {/* Decorative Stars */}
-            <div className="absolute top-10 right-20 text-yellow-400 text-2xl">✦</div>
-            <div className="absolute top-32 right-40 text-lime-400 text-lg">✦</div>
-            <div className="absolute bottom-20 left-20 text-purple-400 text-xl">✦</div>
-
-            <div className="relative z-10 text-center">
-              <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-                Meet your banking future
-                <span className="block mt-2">starting from now with BankKit</span>
-              </h2>
-
-              <button
-                onClick={() => navigate('/onboarding')}
-                className="bg-lime-400 text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-lime-300 transition-all hover:scale-105 inline-flex items-center gap-2"
-              >
-                Try BankKit Now
-                <ChevronRight className="w-5 h-5" />
-              </button>
-
-              {/* Phone Mockup */}
-              <div className="mt-12">
-                <div className="inline-block relative">
-                  <div className="w-64 h-96 bg-gradient-to-br from-gray-800 to-gray-900 rounded-[3rem] p-4 shadow-2xl hover:scale-105 transition-transform duration-300">
-                    <div className="w-full h-full bg-gradient-to-br from-pink-500 via-purple-500 to-yellow-500 rounded-[2.5rem] flex items-center justify-center">
-                      <div className="text-white text-center">
-                        <Smartphone className="w-16 h-16 mx-auto mb-4" />
-                        <div className="text-xl font-bold">BankKit</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Security & Trust Section */}
-      <section
-        id="security"
-        ref={securityAnim.ref}
-        className={`py-20 px-4 bg-gray-50 transition-all duration-1000 ${
-          securityAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-        }`}
-      >
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <span className="text-sm font-semibold text-gray-500 uppercase tracking-wide">Trust & Security</span>
-            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mt-2">
-              Bank-level security you can trust
-            </h2>
-            <p className="text-xl text-gray-600 max-w-3xl mx-auto mt-4">
-              Your money and data are protected with the same security used by major financial institutions
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            <div className="text-center p-6 bg-white rounded-3xl hover:scale-105 transition-all duration-300 hover:shadow-xl group">
-              <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                <Shield className="w-8 h-8 text-white" />
-              </div>
-              <div className="text-2xl font-bold text-gray-900 mb-1">FDIC</div>
-              <div className="text-sm text-gray-600">Insured up to $250K</div>
-            </div>
-
-            <div className="text-center p-6 bg-white rounded-3xl hover:scale-105 transition-all duration-300 hover:shadow-xl group">
-              <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                <Lock className="w-8 h-8 text-white" />
-              </div>
-              <div className="text-2xl font-bold text-gray-900 mb-1">256-bit</div>
-              <div className="text-sm text-gray-600">Encryption</div>
-            </div>
-
-            <div className="text-center p-6 bg-white rounded-3xl hover:scale-105 transition-all duration-300 hover:shadow-xl group">
-              <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                <Users className="w-8 h-8 text-white" />
-              </div>
-              <div className="text-2xl font-bold text-gray-900 mb-1">2FA</div>
-              <div className="text-sm text-gray-600">Two-Factor Auth</div>
-            </div>
-
-            <div className="text-center p-6 bg-white rounded-3xl hover:scale-105 transition-all duration-300 hover:shadow-xl group">
-              <div className="w-16 h-16 bg-gradient-to-br from-pink-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform">
-                <Globe className="w-8 h-8 text-white" />
-              </div>
-              <div className="text-2xl font-bold text-gray-900 mb-1">SOC 2</div>
-              <div className="text-sm text-gray-600">Certified</div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Final CTA */}
-      <section
-        ref={finalCtaAnim.ref}
-        className={`py-20 px-4 bg-white transition-all duration-1000 ${
-          finalCtaAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'
-        }`}
-      >
-        <div className="max-w-4xl mx-auto">
-          <div className="bg-black rounded-[3rem] p-12 text-center hover:scale-[1.01] transition-all duration-300">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
-              Connect your finances with BankKit
-            </h2>
-            <p className="text-xl text-gray-400 mb-8 max-w-2xl mx-auto">
-              Join hundreds of thousands of people who trust BankKit for their digital banking needs
-            </p>
-            <button
-              onClick={() => navigate('/onboarding')}
-              className="bg-lime-400 text-black px-8 py-4 rounded-full font-bold text-lg hover:bg-lime-300 transition-all hover:scale-105"
+        
+        <div className="relative z-10 max-w-[1440px] w-full mx-auto">
+          <div className="max-w-2xl">
+            <motion.h1 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-[64px] md:text-[84px] font-black text-white leading-[1] mb-8 drop-shadow-lg"
             >
-              Join BankKit Now
-            </button>
+              Take Control of <br />
+              <span className="text-[#C6F4D6]">Your Money.</span>
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.1 }}
+              className="text-white text-xl md:text-2xl font-semibold mb-12 drop-shadow-md"
+            >
+              Safe, simple, and smart digital banking all in one place.
+            </motion.p>
+            <motion.div 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="flex flex-wrap gap-4"
+            >
+              <button 
+                onClick={() => onNavigate('onboarding')}
+                className="bg-[#064E3B] text-white px-10 py-5 rounded-full font-bold text-lg hover:scale-105 transition-transform"
+              >
+                Open an Account
+              </button>
+              <button className="bg-white/20 backdrop-blur-md text-white border-2 border-white/30 px-10 py-5 rounded-full font-bold text-lg hover:bg-white/30 transition-all">
+                Explore Cards
+              </button>
+            </motion.div>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-black text-white py-12 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <div className="text-2xl font-bold mb-4">BankKit</div>
-              <p className="text-gray-400 text-sm">
-                The future of digital banking, available today.
-              </p>
+      {/* Intro Section */}
+      <section className="py-24 max-w-[1440px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+         <div className="space-y-6">
+            <p className="text-[#064E3B] font-bold tracking-widest uppercase text-sm">BankKit is perfect</p>
+            <h2 className="text-4xl md:text-5xl font-black text-gray-900 leading-tight">
+              Banking Built Around You — Smart, Secure, and Effortless
+            </h2>
+            <p className="text-gray-500 text-lg font-medium leading-relaxed">
+              Experience the next generation of financial services. From instant transfers to smart savings, we've built a platform that puts you in the driver's seat.
+            </p>
+            <button className="bg-[#064E3B] text-white px-8 py-4 rounded-xl font-bold flex items-center gap-3 group">
+              View All Services <ArrowRight className="group-hover:translate-x-1 transition-transform" />
+            </button>
+         </div>
+         
+         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+            <div className="bg-[#F5F5F7] p-8 rounded-[32px] space-y-6 flex flex-col justify-between group hover:bg-[#064E3B] transition-all duration-500">
+               <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center text-[#064E3B] group-hover:bg-[#C6F4D6] transition-colors shadow-sm">
+                  <CreditCard size={32} />
+               </div>
+               <div>
+                  <h3 className="text-xl font-bold mb-2 group-hover:text-white transition-colors">Debit & Credit Cards</h3>
+                  <p className="text-gray-500 text-sm font-medium group-hover:text-white/70 transition-colors">Enjoy cashback, contactless payments, and virtual cards.</p>
+               </div>
+               <button className="w-full py-3 bg-[#C6F4D6] text-[#064E3B] rounded-xl font-bold text-sm">View All Credit Cards</button>
             </div>
-            <div>
-              <h4 className="font-semibold mb-4">Product</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><a href="#features" className="hover:text-white">Features</a></li>
-                <li><button onClick={() => navigate('/security')} className="hover:text-white">Security</button></li>
-                <li><a href="#" className="hover:text-white">Mobile App</a></li>
-              </ul>
+            
+            <div className="space-y-6">
+               <div className="bg-[#E0E7FF] p-8 rounded-[32px] space-y-4 group hover:shadow-xl transition-all">
+                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-[#3730A3]">
+                     <Wallet size={24} />
+                  </div>
+                  <h3 className="text-lg font-bold">Personal Savings Account</h3>
+                  <p className="text-gray-600 text-xs font-bold uppercase tracking-wider">Easy to open. No minimum balance required.</p>
+               </div>
+               
+               <div className="bg-[#DBEAFE] p-8 rounded-[32px] space-y-4 group hover:shadow-xl transition-all">
+                  <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center text-[#1E40AF]">
+                     <Building2 size={24} />
+                  </div>
+                  <h3 className="text-lg font-bold">Business Banking</h3>
+                  <p className="text-gray-600 text-xs font-bold uppercase tracking-wider">Boost your business with smart transfers and quick loans.</p>
+               </div>
             </div>
-            <div>
-              <h4 className="font-semibold mb-4">Company</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><button onClick={() => navigate('/about')} className="hover:text-white">About</button></li>
-                <li><a href="#" className="hover:text-white">Careers</a></li>
-                <li><button onClick={() => navigate('/help')} className="hover:text-white">Help</button></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Legal</h4>
-              <ul className="space-y-2 text-gray-400 text-sm">
-                <li><a href="#" className="hover:text-white">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-white">Terms of Service</a></li>
-                <li><a href="#" className="hover:text-white">FDIC Insurance</a></li>
-              </ul>
-            </div>
-          </div>
-          <div className="border-t border-gray-800 pt-8 text-center text-gray-400 text-sm">
-            <p>© 2026 BankKit. All rights reserved. FDIC Insured.</p>
-          </div>
+         </div>
+      </section>
+
+      {/* Cards Showcase */}
+      <section className="bg-gray-50 py-24 overflow-hidden">
+        <div className="max-w-[1440px] mx-auto px-6 text-center mb-16 space-y-4">
+          <h2 className="text-4xl md:text-5xl font-black text-gray-900">Cards That Match Your Style</h2>
+          <p className="text-gray-500 font-medium text-lg">Discover our exclusive collection of limited-edition cards.</p>
         </div>
-      </footer>
+        
+        <div className="flex gap-8 px-6 animate-scroll-horizontal">
+           <div className="flex gap-8">
+              {[...cardTypes, ...cardTypes].map((card, i) => (
+                <div key={i} className={`w-[340px] h-[210px] ${card.color} rounded-2xl p-8 flex flex-col justify-between shadow-2xl shrink-0`}>
+                   <div className="flex justify-between items-start">
+                      <div className="flex items-center gap-2">
+                         <div className={`w-8 h-8 rounded-lg bg-white/20 flex items-center justify-center ${card.text}`}>
+                            <Layout size={18} />
+                         </div>
+                         <span className={`font-black text-sm ${card.text}`}>BankKit</span>
+                      </div>
+                      <div className="w-10 h-6 bg-white/10 rounded-md" />
+                   </div>
+                   <div className="space-y-4">
+                      <div className={`text-xl font-mono tracking-widest ${card.text}`}>•••• •••• •••• 4242</div>
+                      <div className="flex justify-between items-end">
+                         <div className="space-y-1">
+                            <p className={`text-[8px] uppercase font-bold opacity-60 ${card.text}`}>Card Holder</p>
+                            <p className={`text-xs font-bold ${card.text}`}>ALEX RIVERA</p>
+                         </div>
+                         <div className="flex gap-1">
+                            <div className="w-6 h-6 rounded-full bg-[#FF4757]/80" />
+                            <div className="w-6 h-6 rounded-full bg-[#FFB84D]/80 -ml-3" />
+                         </div>
+                      </div>
+                   </div>
+                </div>
+              ))}
+           </div>
+        </div>
+      </section>
 
-      {/* Animation Keyframes */}
-      <style>{`
-        @keyframes float {
-          0%, 100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-20px);
-          }
-        }
-        .animate-float {
-          animation: float 3s ease-in-out infinite;
-        }
+      {/* 3 Easy Steps */}
+      <section className="py-24 bg-[#C6F4D6]/30">
+        <div className="max-w-[1440px] mx-auto px-6 flex flex-col lg:flex-row gap-20 items-center">
+           <div className="flex-1 space-y-12">
+              <h2 className="text-4xl md:text-5xl font-black text-[#064E3B] leading-tight">
+                Get Your Card in Just 3 Easy Steps
+              </h2>
+              <div className="space-y-12 relative">
+                 <div className="absolute left-5 top-4 bottom-4 w-0.5 bg-[#064E3B]/10" />
+                 {[
+                   { step: '01', title: 'Start for Free', desc: 'Create your free account in minutes — no paperwork needed.' },
+                   { step: '02', title: 'Pick Your Card', desc: 'Choose from our range of physical and virtual card designs.' },
+                   { step: '03', title: 'Use It Instantly', desc: 'Add to Apple Pay or Google Wallet and start spending right away.' }
+                 ].map((item, i) => (
+                   <div key={i} className="flex gap-10 group">
+                      <div className="relative z-10 w-10 h-10 rounded-full bg-white border-2 border-[#064E3B] text-[#064E3B] flex items-center justify-center font-bold text-sm group-hover:bg-[#064E3B] group-hover:text-white transition-colors">
+                        {item.step}
+                      </div>
+                      <div className="space-y-2">
+                        <h4 className="text-2xl font-black text-gray-900">{item.title}</h4>
+                        <p className="text-gray-500 font-medium leading-relaxed max-w-sm">{item.desc}</p>
+                      </div>
+                   </div>
+                 ))}
+              </div>
+              <button className="bg-[#064E3B] text-white px-10 py-5 rounded-full font-bold shadow-xl shadow-[#064E3B]/20">Get My Card Now</button>
+           </div>
+           
+           <div className="flex-1 w-full">
+              <div className="bg-[#064E3B] rounded-[40px] aspect-square flex items-center justify-center relative overflow-hidden group">
+                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_#C6F4D6_0%,_transparent_70%)] opacity-20" />
+                 <motion.div 
+                   animate={{ rotateY: [0, 10, 0], y: [0, -20, 0] }}
+                   transition={{ repeat: Infinity, duration: 6 }}
+                   className="w-2/3 aspect-[1.58/1] bg-gradient-to-br from-[#DCFCE7] to-[#C6F4D6] rounded-2xl shadow-2xl p-10 flex flex-col justify-between"
+                 >
+                    <div className="flex justify-between items-start">
+                       <Layout size={32} className="text-[#064E3B]" />
+                       <div className="w-12 h-12 rounded-full border-4 border-white/30" />
+                    </div>
+                    <div className="space-y-4">
+                       <div className="text-3xl font-mono text-[#064E3B] font-black">BankKit</div>
+                       <div className="h-2 w-1/2 bg-[#064E3B]/20 rounded" />
+                    </div>
+                 </motion.div>
+              </div>
+           </div>
+        </div>
+      </section>
 
-        @keyframes fadeInUp {
-          0% {
-            opacity: 0;
-            transform: translateY(30px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
+      {/* Loan Calculator Section */}
+      <section className="py-24 max-w-[1440px] mx-auto px-6">
+        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+          <h2 className="text-4xl md:text-5xl font-black text-gray-900 leading-tight">Stay on budget — calculate your monthly loan easily.</h2>
+          <p className="text-gray-500 text-lg font-medium">Estimate your monthly payment or loan amount based on total price, trade-in value, down payment, and term.</p>
+        </div>
+        <LoanCalculator />
+      </section>
 
-        @keyframes fadeInRight {
-          0% {
-            opacity: 0;
-            transform: translateX(50px);
-          }
-          100% {
-            opacity: 1;
-            transform: translateX(0);
-          }
-        }
+      {/* Mobile App Showcase */}
+      <section className="bg-white py-24 max-w-[1440px] mx-auto px-6 flex flex-col lg:flex-row gap-20 items-center">
+         <div className="flex-1 order-2 lg:order-1 relative">
+            <div className="relative z-10 rounded-[48px] overflow-hidden border-[12px] border-black shadow-2xl">
+               <ImageWithFallback 
+                 src="https://images.unsplash.com/photo-1637762163426-5c1283bc0405?q=80&w=800" 
+                 alt="People using app" 
+                 className="w-full h-full object-cover"
+               />
+               <div className="absolute inset-0 bg-[#064E3B]/10 flex items-center justify-center">
+                  <div className="w-full h-full bg-white/20 backdrop-blur-sm p-10 flex flex-col gap-6">
+                     <div className="flex justify-between items-center">
+                        <div className="w-12 h-12 rounded-full bg-white/40" />
+                        <div className="bg-[#064E3B] text-white px-4 py-1.5 rounded-full text-xs font-bold">Verified</div>
+                     </div>
+                     <div className="h-4 w-1/3 bg-white/40 rounded" />
+                     <div className="h-10 w-2/3 bg-white/60 rounded-xl" />
+                     <div className="grid grid-cols-4 gap-4 pt-10">
+                        {[1,2,3,4].map(i => <div key={i} className="aspect-square bg-[#064E3B] rounded-2xl" />)}
+                     </div>
+                  </div>
+               </div>
+            </div>
+            <div className="absolute -bottom-10 -right-10 bg-[#C6F4D6] p-8 rounded-[32px] shadow-2xl hidden md:block">
+               <p className="text-[#064E3B] font-black text-2xl">2.4M+</p>
+               <p className="text-[#064E3B]/70 font-bold text-sm uppercase tracking-wider">Active App Users</p>
+            </div>
+         </div>
+         
+         <div className="flex-1 space-y-8 order-1 lg:order-2">
+            <h2 className="text-4xl md:text-5xl font-black text-gray-900 leading-tight">
+               Your finances, <br />
+               <span className="text-[#064E3B]">completely in control.</span>
+            </h2>
+            <p className="text-gray-500 text-lg font-medium leading-relaxed">
+               Manage everything from a single dashboard. Track spending, set budgets, and watch your savings grow with real-time insights and AI-powered recommendations.
+            </p>
+            <div className="space-y-4">
+               {[
+                 'Real-time spending notifications',
+                 'Instant card freezing & security controls',
+                 'Automated round-up savings',
+                 'Free international transfers'
+               ].map((text, i) => (
+                 <div key={i} className="flex items-center gap-4">
+                    <div className="w-6 h-6 rounded-full bg-[#064E3B] text-white flex items-center justify-center">
+                       <Check size={14} strokeWidth={3} />
+                    </div>
+                    <span className="font-bold text-gray-700">{text}</span>
+                 </div>
+               ))}
+            </div>
+            <div className="flex gap-4 pt-4">
+               <button className="bg-black text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2">
+                  App Store
+               </button>
+               <button className="bg-black text-white px-8 py-4 rounded-xl font-bold flex items-center gap-2">
+                  Play Store
+               </button>
+            </div>
+         </div>
+      </section>
 
-        @keyframes fadeIn {
-          0% {
-            opacity: 0;
-          }
-          100% {
-            opacity: 1;
-          }
-        }
+      {/* Social Proof */}
+      <section className="bg-white py-24 border-t border-gray-100">
+         <div className="max-w-[1440px] mx-auto px-6">
+            <div className="text-center mb-16 space-y-4">
+               <h2 className="text-4xl font-black text-gray-900">Trusted by Millions. Loved for Simplicity.</h2>
+               <p className="text-gray-500 font-medium">Real users. Real reviews. See why people everywhere are choosing BankKit.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+               {[1,2,3].map(i => (
+                 <div key={i} className="p-8 rounded-[32px] bg-[#F5F5F7] space-y-6">
+                    <div className="flex gap-1">
+                       {[1,2,3,4,5].map(j => <Zap key={j} size={16} fill="#064E3B" className="text-[#064E3B]" />)}
+                    </div>
+                    <p className="text-gray-700 font-medium italic">"BankKit has completely transformed how I handle my money. The app is incredibly fast and the customer support is top-notch."</p>
+                    <div className="flex items-center gap-4">
+                       <div className="w-10 h-10 rounded-full bg-gray-200" />
+                       <div>
+                          <p className="font-bold text-[#064E3B]">User Name {i}</p>
+                          <p className="text-xs text-gray-400 font-bold">Verified Customer</p>
+                       </div>
+                    </div>
+                 </div>
+               ))}
+            </div>
+         </div>
+      </section>
 
-        .animate-fade-in-up {
-          animation: fadeInUp 0.8s ease-out forwards;
-          opacity: 0;
-        }
+      {/* CTA Section */}
+      <section className="py-24 px-6">
+         <div className="max-w-[1440px] mx-auto bg-[#064E3B] rounded-[48px] p-12 md:p-24 text-center space-y-12 relative overflow-hidden">
+            <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(circle_at_center,_white_0%,_transparent_70%)]" />
+            <h2 className="text-4xl md:text-6xl font-black text-white leading-tight max-w-4xl mx-auto relative z-10">
+               Save time. Stay updated. Do it all with powerful tools for free.
+            </h2>
+            <div className="flex flex-col sm:flex-row gap-6 justify-center relative z-10">
+               <button 
+                  onClick={() => onNavigate('onboarding')}
+                  className="bg-[#C6F4D6] text-[#064E3B] px-12 py-6 rounded-full font-black text-xl hover:scale-105 transition-transform shadow-2xl shadow-[#C6F4D6]/20"
+                >
+                  Open Your Account
+               </button>
+               <button className="bg-white/10 backdrop-blur-md text-white border-2 border-white/20 px-12 py-6 rounded-full font-black text-xl hover:bg-white/20 transition-all">
+                  Contact Sales
+               </button>
+            </div>
+         </div>
+      </section>
 
-        .animate-fade-in-right {
-          animation: fadeInRight 0.8s ease-out forwards;
-          opacity: 0;
+      <style dangerouslySetInnerHTML={{ __html: `
+        @keyframes scroll-horizontal {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(-50%); }
         }
-
-        .animate-fade-in {
-          animation: fadeIn 0.8s ease-out forwards;
-          opacity: 0;
+        .animate-scroll-horizontal {
+          display: flex;
+          animation: scroll-horizontal 30s linear infinite;
         }
-
-        .animation-delay-200 {
-          animation-delay: 0.2s;
+        .animate-scroll-horizontal:hover {
+          animation-play-state: paused;
         }
-
-        .animation-delay-400 {
-          animation-delay: 0.4s;
-        }
-
-        .animation-delay-600 {
-          animation-delay: 0.6s;
-        }
-
-        .animation-delay-800 {
-          animation-delay: 0.8s;
-        }
-
-        .animation-delay-1000 {
-          animation-delay: 1s;
-        }
-      `}</style>
+      `}} />
     </div>
   );
-};
+}
