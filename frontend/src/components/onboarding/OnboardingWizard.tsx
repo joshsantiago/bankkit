@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { WizardProgress } from './WizardProgress';
 import { WizardNavigation } from './WizardNavigation';
@@ -8,7 +8,7 @@ import { PersonalInfoStep } from './steps/PersonalInfoStep';
 import { AccountTypeStep } from './steps/AccountTypeStep';
 import { SuccessStep } from './steps/SuccessStep';
 import { authService } from '../../services/authService';
-import { Alert } from '../ui/Alert';
+import { Alert, AlertDescription } from '../ui';
 
 interface OnboardingData {
   email: string;
@@ -260,7 +260,9 @@ export const OnboardingWizard: React.FC = () => {
           {/* Error Alert */}
           {error && (
             <div className="mb-6">
-              <Alert type="error" message={error} onClose={() => setError('')} />
+              <Alert variant="destructive">
+                <AlertDescription>{error}</AlertDescription>
+              </Alert>
             </div>
           )}
 

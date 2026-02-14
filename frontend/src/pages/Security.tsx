@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   ShieldCheck,
@@ -85,6 +86,7 @@ const RECENT_ACTIVITY = [
 ];
 
 export function SecurityPage() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'overview' | 'sessions' | 'settings'>('overview');
 
   return (
@@ -94,8 +96,8 @@ export function SecurityPage() {
         <div className="max-w-7xl mx-auto px-6 py-8">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="flex items-center gap-4">
-              <button 
-                onClick={onBack}
+              <button
+                onClick={() => navigate('/')}
                 className="p-3 bg-gray-50 rounded-2xl text-gray-400 hover:text-[#064E3B] transition-colors"
               >
                 <ArrowLeft size={20} />
