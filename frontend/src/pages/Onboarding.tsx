@@ -437,13 +437,20 @@ export function OnboardingPage() {
                 <div className="space-y-4">
                   <h1 className="text-4xl lg:text-5xl font-black text-[#064E3B]">You're all set, {getValues('first_name')}!</h1>
                   <p className="text-xl text-gray-500 font-medium leading-relaxed">
-                    Welcome to the family. Your account has been created successfully and is ready for your first deposit.
+                    Welcome to the family. Your account has been created successfully and is ready to use.
                   </p>
                 </div>
 
-                <div className="bg-[#DCFCE7] p-8 rounded-[2.5rem] border border-emerald-100">
-                  <p className="text-xs font-black text-[#064E3B] uppercase tracking-[0.2em] mb-2 opacity-60">Your Account Number</p>
-                  <p className="text-3xl font-black text-[#064E3B] tracking-[0.1em]">{generatedAccount}</p>
+                <div className="bg-[#DCFCE7] p-8 rounded-[2.5rem] border border-emerald-100 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle2 className="text-emerald-600" size={24} />
+                      <p className="font-black text-[#064E3B]">Account Created</p>
+                    </div>
+                  </div>
+                  <p className="text-sm text-[#064E3B]/60 font-medium">
+                    Your {getValues('accountType') === 'both' ? 'checking and savings accounts are' : getValues('accountType') + ' account is'} ready to go!
+                  </p>
                 </div>
 
                 <button
