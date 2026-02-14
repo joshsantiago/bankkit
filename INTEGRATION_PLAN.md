@@ -466,23 +466,28 @@ This document outlines the step-by-step integration of the new Figma-designed fr
 
 ---
 
-## Phase 8: Navigation & Routing
+## Phase 8: Navigation & Routing ✅ COMPLETE
 
-### ✅ Task 8.1: Update App.tsx with react-router
+### ✅ Task 8.1: Update App.tsx with react-router - DONE
 **Files:** `frontend/src/App.tsx`
-- [ ] Replace state-based navigation with react-router
-- [ ] Define all routes
-- [ ] Protected route wrapper
-- [ ] Public vs authenticated layouts
-- [ ] 404 page
-- **Commit:** "migrate to react-router for navigation"
+- [x] React-router setup with BrowserRouter
+- [x] All routes defined (public, protected, admin)
+- [x] Protected route wrapper with requireAdmin support
+- [x] Public routes with PublicLayout (Navbar/Footer)
+- [x] Authenticated routes with ProtectedRoute component
+- [x] Catch-all 404 redirect to home
+- **Commits:**
+  - "add missing routes for cards, settings, features, credit-card, and check-savings pages" ✅
 
-### ✅ Task 8.2: Update navigation links throughout app
+### ✅ Task 8.2: Update navigation links throughout app - DONE
 **Files:** Multiple components (Navbar, Footer, Sidebar, etc.)
-- [ ] Replace onClick handlers with Link/NavLink
-- [ ] Update all page navigation
-- [ ] Test all routes work
-- **Commit:** "update navigation links to use react-router"
+- [x] Navbar: Converted to Link components and useLocation
+- [x] Footer: Converted to Link components
+- [x] All onClick handlers replaced with react-router navigation
+- [x] Sidebar: Using useNavigate for dashboard navigation
+- [x] All page navigation using navigate() hook
+- **Commits:**
+  - "update footer navigation to use react-router links" ✅
 
 ---
 
