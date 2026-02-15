@@ -1,6 +1,7 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
+import { toast } from 'sonner';
 import {
   User,
   Bell,
@@ -27,9 +28,11 @@ import {
   HelpCircle,
   FileText,
   Send,
-  X
+  X,
+  Loader2
 } from 'lucide-react';
 import { AuthContext } from '../context/AuthContext';
+import { settingsService } from '../services/settingsService';
 
 export const Settings: React.FC = () => {
   const navigate = useNavigate();
@@ -40,6 +43,8 @@ export const Settings: React.FC = () => {
   const [isDarkMode, setIsDarkMode] = useState(false);
   const [showSupport, setShowSupport] = useState(false);
   const [supportStep, setSupportStep] = useState<'home' | 'chat' | 'ticket'>('home');
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [chatMessages, setChatMessages] = useState([
     { role: 'bot', text: 'Hi! I\'m BankKit AI. How can I help you today?', time: '9:41 AM' }
   ]);
@@ -50,9 +55,117 @@ export const Settings: React.FC = () => {
     features: { email: true, push: false },
   });
 
+  useEffect(() => {
+    loadSettings();
+  }, []);
+
+  const loadSettings = async () => {
+    try {
+      setLoading(true);
+      // Load notification preferences
+      const notifications = await settingsService.getNotifications();
+      setNotificationSettings(notifications);
+      
+      // Load app preferences
+      const preferences = await settingsService.getPreferences();
+      setIsDarkMode(preferences.theme === 'dark');
+    } catch (error) {
+      console.error('Failed to load settings:', error);
+      toast.error('Failed to load settings');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSaveNotifications = async () => {
+    try {
+      setSaving(true);
+      await settingsService.updateNotifications(notificationSettings);
+      toast.success('Notification preferences saved!');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to save preferences');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSavePreferences = async () => {
+    try {
+      setSaving(true);
+      await settingsService.updatePreferences({
+        theme: isDarkMode ? 'dark' : 'light',
+      });
+      toast.success('Preferences saved!');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to save preferences');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleExportData = async () => {
+    try {
+      setSaving(true);
+      await settingsService.downloadExportedData();
+      toast.success('Data exported successfully!');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to export data');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleFreezeAccount = async () => {
+    if (!confirm('Are you sure you want to freeze your account? All transactions will be blocked.')) return;
+    
+    try {
+      setSaving(true);
+      await settingsService.freezeAccount();
+      toast.success('Account frozen successfully');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to freeze account');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleCloseAccount = async () => {
+    if (!confirm('Are you sure you want to close your account? This action cannot be undone.')) return;
+    
+    try {
+      setSaving(true);
+      await settingsService.closeAccount();
+      toast.success('Account closed successfully');
+      // Redirect to login or home
+      navigate('/login');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to close account');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSubmitTicket = async (subject: string, description: string) => {
+    try {
+      setSaving(true);
+      await settingsService.submitSupportTicket({ subject, description });
+      toast.success('Support ticket submitted!');
+      setSupportStep('home');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to submit ticket');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   const handleSave = () => {
-    // Mock save
-    alert('Settings saved successfully!');
+    if (activeTab === 'notifications') {
+      handleSaveNotifications();
+    } else if (activeTab === 'preferences') {
+      handleSavePreferences();
+    } else {
+      toast.success('Settings saved successfully!');
+    }
   };
 
   const toggleNotification = (type: string, channel: 'email' | 'push') => {
