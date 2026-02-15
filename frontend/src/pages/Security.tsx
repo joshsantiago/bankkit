@@ -22,7 +22,8 @@ import {
   ShieldQuestion,
   Loader2
 } from 'lucide-react';
-import { securityService, SecuritySession, SecurityEvent, PrivacySettings } from '../services/securityService';
+import { securityService } from '../services/securityService';
+import type { SecuritySession, SecurityEvent, PrivacySettings } from '../services/securityService';
 
 // Icon mapping for API data
 const getEventIcon = (event: string) => {

@@ -50,7 +50,8 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import { AuthContext } from '../context/AuthContext';
-import { dashboardService, DashboardData, ProfileCompletion } from '../services/dashboardService';
+import { dashboardService } from '../services/dashboardService';
+import type { DashboardData, ProfileCompletion } from '../services/dashboardService';
 
 // --- Sub-Components ---
 

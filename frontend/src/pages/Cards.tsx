@@ -23,7 +23,8 @@ import {
   Palette,
   Loader2
 } from 'lucide-react';
-import { cardService, Card } from '../services/cardService';
+import { cardService } from '../services/cardService';
+import type { Card } from '../services/cardService';
 
 // Transform API card to display format
 const transformCard = (card: Card) => {
@@ -148,40 +149,43 @@ export const Cards: React.FC = () => {
                   <p className="text-gray-400 font-bold">No cards yet</p>
                 </div>
               ) : (
-                cards.map((card) => (
-                <button
-                  key={card.id}
-                  onClick={() => {
-                    setSelectedCard(card);
-                    setIsFrozen(card.status === 'Frozen');
-                  }}
-                  className={`w-full text-left p-6 rounded-[2.5rem] border transition-all relative overflow-hidden group ${
-                    selectedCard.id === card.id
-                      ? 'bg-white border-emerald-500 shadow-xl shadow-emerald-500/5 ring-2 ring-emerald-500/10'
-                      : 'bg-white border-gray-100 hover:border-emerald-200'
-                  }`}
-                >
-                  <div className="flex items-center gap-4 relative z-10">
-                    <div className={`w-14 h-10 rounded-lg flex items-center justify-center shrink-0 shadow-sm ${card.color} ${card.textColor}`}>
-                      <CreditCard size={20} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-black text-[#064E3B] truncate">{card.name}</p>
-                      <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
-                        {card.type} ••{card.number.slice(-4)}
-                      </p>
-                    </div>
-                    {card.status === 'Frozen' && (
-                      <Lock size={16} className="text-red-400" />
-                    )}
-                  </div>
-                  {card.isVirtual && (
-                    <div className="absolute top-0 right-0 px-3 py-1 bg-emerald-100 text-emerald-600 text-[8px] font-black uppercase tracking-tighter rounded-bl-xl">
-                      Virtual
-                    </div>
-                  )}
-                </button>
-              ))}
+                <div className="space-y-4">
+                  {cards.map((card) => (
+                    <button
+                      key={card.id}
+                      onClick={() => {
+                        setSelectedCard(card);
+                        setIsFrozen(card.status === 'Frozen');
+                      }}
+                      className={`w-full text-left p-6 rounded-[2.5rem] border transition-all relative overflow-hidden group ${
+                        selectedCard?.id === card.id
+                          ? 'bg-white border-emerald-500 shadow-xl shadow-emerald-500/5 ring-2 ring-emerald-500/10'
+                          : 'bg-white border-gray-100 hover:border-emerald-200'
+                      }`}
+                    >
+                      <div className="flex items-center gap-4 relative z-10">
+                        <div className={`w-14 h-10 rounded-lg flex items-center justify-center shrink-0 shadow-sm ${card.color} ${card.textColor}`}>
+                          <CreditCard size={20} />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-black text-[#064E3B] truncate">{card.name}</p>
+                          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">
+                            {card.type} ••{card.number.slice(-4)}
+                          </p>
+                        </div>
+                        {card.status === 'Frozen' && (
+                          <Lock size={16} className="text-red-400" />
+                        )}
+                      </div>
+                      {card.isVirtual && (
+                        <div className="absolute top-0 right-0 px-3 py-1 bg-emerald-100 text-emerald-600 text-[8px] font-black uppercase tracking-tighter rounded-bl-xl">
+                          Virtual
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div className="p-8 bg-[#DCFCE7] rounded-[2.5rem] border border-emerald-100 space-y-4">

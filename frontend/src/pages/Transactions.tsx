@@ -26,7 +26,8 @@ import {
   Loader2,
   ArrowUpRight
 } from 'lucide-react';
-import { transactionService, Transaction } from '../services/transactionService';
+import { transactionService } from '../services/transactionService';
+import type { Transaction } from '../services/transactionService';
 
 // Category icon mapping
 const getCategoryIcon = (category: string) => {
