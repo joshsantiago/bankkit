@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from '../entities/user.entity';
 import { Account } from '../entities/account.entity';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Injectable()
 export class UsersService {
@@ -36,6 +37,36 @@ export class UsersService {
       success: true,
       data: { ...sanitizedUser, accounts },
     };
+  }
+
+  async updateProfile(userId: string, updateProfileDto: UpdateProfileDto) {
+    // Find user
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Update fields (only if provided)
+    if (updateProfileDto.first_name !== undefined) {
+      user.firstName = updateProfileDto.first_name;
+    }
+    if (updateProfileDto.last_name !== undefined) {
+      user.lastName = updateProfileDto.last_name;
+    }
+    if (updateProfileDto.phone !== undefined) {
+      user.phone = updateProfileDto.phone;
+    }
+    if (updateProfileDto.dateOfBirth !== undefined) {
+      user.dateOfBirth = new Date(updateProfileDto.dateOfBirth);
+    }
+
+    // Save to database
+    const updatedUser = await this.userRepository.save(user);
+
+    // Remove sensitive fields before returning
+    const { passwordHash, ...sanitizedUser } = updatedUser;
+    return sanitizedUser;
   }
 
   async updateStatus(id: string, status: string, currentUserId: string) {

@@ -34,6 +34,13 @@ export interface AuthResponse {
   message: string;
 }
 
+export interface UpdateProfileData {
+  first_name?: string;
+  last_name?: string;
+  phone?: string;
+  dateOfBirth?: string;
+}
+
 export const authService = {
   async login(data: LoginData): Promise<AuthResponse> {
     const response = await api.post('/auth/login', data);
@@ -47,6 +54,11 @@ export const authService = {
 
   async getMe(): Promise<{ success: boolean; data: User }> {
     const response = await api.get('/auth/me');
+    return response.data;
+  },
+
+  async updateProfile(data: UpdateProfileData): Promise<{ success: boolean; data: User; message: string }> {
+    const response = await api.patch('/users/profile', data);
     return response.data;
   },
 
