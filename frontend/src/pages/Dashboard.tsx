@@ -53,6 +53,32 @@ import { AuthContext } from '../context/AuthContext';
 import { dashboardService } from '../services/dashboardService';
 import type { DashboardData, ProfileCompletion } from '../services/dashboardService';
 
+// --- Mock Data ---
+const ONBOARDING_TASKS = [
+  { id: 'verify-id', title: 'Verify Identity', desc: 'SSN & ID upload', status: 'Pending' },
+  { id: 'confirm-address', title: 'Confirm Address', desc: 'Verify residency', status: 'Pending' },
+  { id: 'link-bank', title: 'Link External Bank', desc: 'For easy transfers', status: 'Pending' },
+  { id: 'enable-2fa', title: 'Enable 2FA', desc: 'Secure your account', status: 'Pending' },
+];
+
+const SPENDING_DATA = [
+  { name: 'Mon', amount: 120 },
+  { name: 'Tue', amount: 80 },
+  { name: 'Wed', amount: 200 },
+  { name: 'Thu', amount: 150 },
+  { name: 'Fri', amount: 300 },
+  { name: 'Sat', amount: 250 },
+  { name: 'Sun', amount: 90 },
+];
+
+const TRANSACTIONS = [
+  { id: '1', merchant: 'Amazon', category: 'Shopping', amount: -89.99, date: 'Today', status: 'Completed' },
+  { id: '2', merchant: 'Salary Deposit', category: 'Income', amount: 3500, date: 'Yesterday', status: 'Completed' },
+  { id: '3', merchant: 'Netflix', category: 'Entertainment', amount: -15.99, date: 'Mar 12', status: 'Completed' },
+  { id: '4', merchant: 'Whole Foods', category: 'Food & Dining', amount: -156.32, date: 'Mar 11', status: 'Completed' },
+  { id: '5', merchant: 'Uber', category: 'Transportation', amount: -24.50, date: 'Mar 10', status: 'Pending' },
+];
+
 // --- Sub-Components ---
 
 const StatCard = ({ title, balance, accNum, type, apy, onClick }: any) => (
