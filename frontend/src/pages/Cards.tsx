@@ -68,16 +68,28 @@ export const Cards: React.FC = () => {
   const loadCards = async () => {
     try {
       setLoading(true);
-      const data = await cardService.getCards();
+      // Add timeout to prevent hanging
+      const timeoutPromise = new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Request timeout')), 10000)
+      );
+      const cardsPromise = cardService.getCards();
+      
+      const data = await Promise.race([cardsPromise, timeoutPromise]) as any[];
       const transformed = data.map(transformCard);
       setCards(transformed);
       if (transformed.length > 0) {
         setSelectedCard(transformed[0]);
         setIsFrozen(transformed[0].status === 'Frozen');
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Failed to load cards:', error);
-      toast.error('Failed to load cards');
+      if (error.message === 'Request timeout') {
+        toast.error('Request timed out. Please try again.');
+      } else {
+        toast.error('Failed to load cards');
+      }
+      // Set empty array to show empty state
+      setCards([]);
     } finally {
       setLoading(false);
     }
