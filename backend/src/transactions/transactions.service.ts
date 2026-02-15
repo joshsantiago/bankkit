@@ -14,6 +14,47 @@ interface FindAllOptions {
   limit?: number;
 }
 
+interface RecurringTransaction {
+  id: string;
+  userId: string;
+  fromAccountId: string;
+  toAccountId: string;
+  amount: number;
+  frequency: 'daily' | 'weekly' | 'biweekly' | 'monthly';
+  nextExecutionDate: Date;
+  description: string;
+  category: string;
+  active: boolean;
+  createdAt: Date;
+}
+
+interface TransactionCategory {
+  id: string;
+  name: string;
+  icon: string;
+  color: string;
+  isCustom: boolean;
+  userId?: string;
+}
+
+// In-memory storage for recurring transactions and custom categories
+const recurringTransactions: Map<string, RecurringTransaction[]> = new Map();
+const customCategories: Map<string, TransactionCategory[]> = new Map();
+
+// Default categories
+const defaultCategories: TransactionCategory[] = [
+  { id: 'cat-1', name: 'Food & Dining', icon: 'utensils', color: '#F59E0B', isCustom: false },
+  { id: 'cat-2', name: 'Shopping', icon: 'shopping-bag', color: '#8B5CF6', isCustom: false },
+  { id: 'cat-3', name: 'Transportation', icon: 'car', color: '#3B82F6', isCustom: false },
+  { id: 'cat-4', name: 'Entertainment', icon: 'film', color: '#EC4899', isCustom: false },
+  { id: 'cat-5', name: 'Bills & Utilities', icon: 'zap', color: '#10B981', isCustom: false },
+  { id: 'cat-6', name: 'Health & Fitness', icon: 'heart', color: '#EF4444', isCustom: false },
+  { id: 'cat-7', name: 'Travel', icon: 'plane', color: '#06B6D4', isCustom: false },
+  { id: 'cat-8', name: 'Income', icon: 'dollar-sign', color: '#22C55E', isCustom: false },
+  { id: 'cat-9', name: 'Transfer', icon: 'repeat', color: '#6366F1', isCustom: false },
+  { id: 'cat-10', name: 'Other', icon: 'more-horizontal', color: '#64748B', isCustom: false },
+];
+
 @Injectable()
 export class TransactionsService {
   constructor(
@@ -259,5 +300,187 @@ export class TransactionsService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  // 4.5 Get Recurring Transactions
+  async getRecurringTransactions(userId: string) {
+    const userRecurring = recurringTransactions.get(userId) || [];
+    
+    return {
+      success: true,
+      data: userRecurring,
+    };
+  }
+
+  // 4.6 Set Up Recurring Transfer
+  async createRecurringTransfer(
+    userId: string,
+    data: {
+      from_account_id: string;
+      to_account_id: string;
+      amount: number;
+      frequency: 'daily' | 'weekly' | 'biweekly' | 'monthly';
+      description: string;
+      category: string;
+    },
+  ) {
+    // Verify accounts belong to user
+    const fromAccount = await this.accountRepository.findOne({
+      where: { id: data.from_account_id, userId },
+    });
+    
+    if (!fromAccount) {
+      throw new NotFoundException('Source account not found');
+    }
+
+    const toAccount = await this.accountRepository.findOne({
+      where: { id: data.to_account_id },
+    });
+    
+    if (!toAccount) {
+      throw new NotFoundException('Destination account not found');
+    }
+
+    const userRecurring = recurringTransactions.get(userId) || [];
+    
+    const nextDate = new Date();
+    switch (data.frequency) {
+      case 'daily':
+        nextDate.setDate(nextDate.getDate() + 1);
+        break;
+      case 'weekly':
+        nextDate.setDate(nextDate.getDate() + 7);
+        break;
+      case 'biweekly':
+        nextDate.setDate(nextDate.getDate() + 14);
+        break;
+      case 'monthly':
+        nextDate.setMonth(nextDate.getMonth() + 1);
+        break;
+    }
+
+    const newRecurring: RecurringTransaction = {
+      id: `rec-${Date.now()}`,
+      userId,
+      fromAccountId: data.from_account_id,
+      toAccountId: data.to_account_id,
+      amount: data.amount,
+      frequency: data.frequency,
+      nextExecutionDate: nextDate,
+      description: data.description,
+      category: data.category || 'Transfer',
+      active: true,
+      createdAt: new Date(),
+    };
+
+    userRecurring.push(newRecurring);
+    recurringTransactions.set(userId, userRecurring);
+
+    return {
+      success: true,
+      data: newRecurring,
+      message: 'Recurring transfer created successfully',
+    };
+  }
+
+  // 4.7 Cancel Recurring Transfer
+  async cancelRecurringTransfer(userId: string, recurringId: string) {
+    const userRecurring = recurringTransactions.get(userId) || [];
+    const recurringIndex = userRecurring.findIndex((r) => r.id === recurringId);
+
+    if (recurringIndex === -1) {
+      throw new NotFoundException('Recurring transfer not found');
+    }
+
+    userRecurring[recurringIndex].active = false;
+    recurringTransactions.set(userId, userRecurring);
+
+    return {
+      success: true,
+      message: 'Recurring transfer cancelled successfully',
+    };
+  }
+
+  // 4.8 Get Transaction Categories
+  async getCategories(userId: string) {
+    const userCategories = customCategories.get(userId) || [];
+    
+    return {
+      success: true,
+      data: [...defaultCategories, ...userCategories],
+    };
+  }
+
+  // 4.9 Create Custom Category
+  async createCategory(
+    userId: string,
+    data: { name: string; icon: string; color: string },
+  ) {
+    if (!data.name || !data.icon || !data.color) {
+      throw new BadRequestException('Name, icon, and color are required');
+    }
+
+    const userCategories = customCategories.get(userId) || [];
+    
+    // Check for duplicate name
+    if (userCategories.some((c) => c.name.toLowerCase() === data.name.toLowerCase())) {
+      throw new BadRequestException('Category with this name already exists');
+    }
+
+    const newCategory: TransactionCategory = {
+      id: `cat-custom-${Date.now()}`,
+      name: data.name,
+      icon: data.icon,
+      color: data.color,
+      isCustom: true,
+      userId,
+    };
+
+    userCategories.push(newCategory);
+    customCategories.set(userId, userCategories);
+
+    return {
+      success: true,
+      data: newCategory,
+      message: 'Category created successfully',
+    };
+  }
+
+  // 4.10 Export Transactions to CSV
+  async exportTransactions(
+    userId: string,
+    options: { startDate?: string; endDate?: string; accountId?: string },
+  ) {
+    const transactions = await this.findAll(userId, false, {
+      ...options,
+      limit: 10000,
+    });
+
+    const csvRows = [
+      ['Date', 'Description', 'Category', 'Type', 'Amount', 'Status'].join(','),
+    ];
+
+    transactions.data.forEach((tx) => {
+      const row = [
+        new Date(tx.createdAt).toISOString(),
+        `"${(tx.description || '').replace(/"/g, '""')}"`,
+        tx.category || 'Other',
+        tx.transactionType,
+        tx.amount,
+        tx.status,
+      ];
+      csvRows.push(row.join(','));
+    });
+
+    const csv = csvRows.join('\n');
+
+    return {
+      success: true,
+      data: {
+        csv,
+        filename: `transactions_${new Date().toISOString().split('T')[0]}.csv`,
+        count: transactions.data.length,
+      },
+    };
   }
 }
