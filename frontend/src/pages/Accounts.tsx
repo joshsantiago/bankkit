@@ -1,88 +1,156 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { toast } from 'sonner';
 import {
   ArrowLeft,
   Plus,
   Wallet,
   ShieldCheck,
   TrendingUp,
-  ChevronRight,
   Copy,
   Eye,
   EyeOff,
   FileText,
   Settings,
-  ExternalLink,
   Info,
   CheckCircle2,
   Lock,
   ArrowRight,
   MoreVertical,
   ArrowUpRight,
-  ArrowDownLeft
+  Loader2,
+  X
 } from 'lucide-react';
+import { accountService } from '../services/accountService';
 
-// --- Mock Data ---
-
-const INTERNAL_ACCOUNTS = [
-  {
-    id: 'acc-1',
-    name: 'Main Checking',
-    type: 'Checking',
-    number: '424288129901',
-    routing: '123456789',
-    balance: 2840.50,
-    status: 'Active',
-    apy: '0.01%',
+// Helper to get account icon and color
+const getAccountStyle = (type: string) => {
+  if (type === 'savings') {
+    return {
+      icon: ShieldCheck,
+      color: 'bg-[#064E3B] text-white',
+      bgClass: 'bg-[#064E3B]'
+    };
+  }
+  return {
+    icon: Wallet,
     color: 'bg-[#DCFCE7] text-[#064E3B]',
-    icon: Wallet
-  },
-  {
-    id: 'acc-2',
-    name: 'High-Yield Savings',
-    type: 'Savings',
-    number: '987654321098',
-    routing: '123456789',
-    balance: 14200.00,
-    status: 'Active',
-    apy: '4.50%',
-    color: 'bg-[#064E3B] text-white',
-    icon: ShieldCheck
-  }
-];
+    bgClass: 'bg-[#DCFCE7]'
+  };
+};
 
-const EXTERNAL_ACCOUNTS = [
-  {
-    id: 'ext-1',
-    name: 'Chase Checking',
-    bank: 'JPMorgan Chase',
-    last4: '1122',
-    balance: 1250.20,
-    icon: ExternalLink
-  },
-  {
-    id: 'ext-2',
-    name: 'Marcus Savings',
-    bank: 'Goldman Sachs',
-    last4: '8877',
-    balance: 5400.00,
-    icon: ExternalLink
-  }
-];
+interface AccountData {
+  id: string;
+  accountNumber: string;
+  accountType: string;
+  balance: number;
+  status: string;
+  currency: string;
+}
 
 export const Accounts: React.FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('internal');
-  const [selectedAccount, setSelectedAccount] = useState(INTERNAL_ACCOUNTS[0]);
+  const [accounts, setAccounts] = useState<AccountData[]>([]);
+  const [selectedAccount, setSelectedAccount] = useState<AccountData | null>(null);
   const [showNumbers, setShowNumbers] = useState(false);
   const [isCopying, setIsCopying] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [showNewAccountModal, setShowNewAccountModal] = useState(false);
+  const [creatingAccount, setCreatingAccount] = useState(false);
+
+  useEffect(() => {
+    loadAccounts();
+  }, []);
+
+  const loadAccounts = async () => {
+    try {
+      setLoading(true);
+      const response = await accountService.getAccounts();
+      const accountsData = response.data || [];
+      setAccounts(accountsData);
+      if (accountsData.length > 0) {
+        setSelectedAccount(accountsData[0]);
+      }
+    } catch (error) {
+      console.error('Failed to load accounts:', error);
+      toast.error('Failed to load accounts');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleCreateAccount = async (type: 'checking' | 'savings') => {
+    try {
+      setCreatingAccount(true);
+      await accountService.createAccount(type);
+      toast.success(`${type === 'checking' ? 'Checking' : 'Savings'} account created successfully!`);
+      setShowNewAccountModal(false);
+      loadAccounts();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to create account');
+    } finally {
+      setCreatingAccount(false);
+    }
+  };
+
+  const handleFreezeAccount = async () => {
+    if (!selectedAccount) return;
+    
+    try {
+      const newStatus = selectedAccount.status === 'frozen' ? 'active' : 'frozen';
+      await accountService.updateAccountStatus(selectedAccount.id, newStatus);
+      toast.success(`Account ${newStatus === 'frozen' ? 'frozen' : 'unfrozen'} successfully`);
+      loadAccounts();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to update account status');
+    }
+  };
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
     setIsCopying(true);
     setTimeout(() => setIsCopying(false), 2000);
   };
+
+  const selectedStyle = selectedAccount ? getAccountStyle(selectedAccount.accountType) : getAccountStyle('checking');
+
+  if (!selectedAccount && !loading) {
+    return (
+      <div className="min-h-screen bg-[#F8FAFC]">
+        <div className="bg-white border-b border-gray-100 sticky top-0 z-20">
+          <div className="max-w-7xl mx-auto px-6 py-8">
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => navigate('/dashboard')}
+                className="p-3 bg-gray-50 rounded-2xl text-gray-400 hover:text-[#064E3B] transition-colors"
+              >
+                <ArrowLeft size={20} />
+              </button>
+              <h1 className="text-3xl font-black text-[#064E3B]">Accounts</h1>
+            </div>
+          </div>
+        </div>
+        <div className="max-w-7xl mx-auto px-6 py-10 text-center">
+          <p className="text-gray-400 font-bold mb-4">No accounts yet</p>
+          <button 
+            onClick={() => setShowNewAccountModal(true)}
+            className="bg-[#064E3B] text-white px-8 py-4 rounded-2xl font-black"
+          >
+            Open your first account
+          </button>
+        </div>
+        {showNewAccountModal && (
+          <NewAccountModal 
+            onClose={() => setShowNewAccountModal(false)}
+            onSelect={handleCreateAccount}
+            loading={creatingAccount}
+          />
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
@@ -103,7 +171,10 @@ export const Accounts: React.FC = () => {
               </div>
             </div>
 
-            <button className="bg-[#064E3B] text-white px-8 py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:scale-105 transition-transform shadow-xl shadow-[#064E3B]/10">
+            <button 
+              onClick={() => setShowNewAccountModal(true)}
+              className="bg-[#064E3B] text-white px-8 py-4 rounded-2xl font-black flex items-center justify-center gap-2 hover:scale-105 transition-transform shadow-xl shadow-[#064E3B]/10"
+            >
               <Plus size={20} />
               Open New Account
             </button>
@@ -141,46 +212,58 @@ export const Accounts: React.FC = () => {
 
             <div className="space-y-4">
               {activeTab === 'internal' ? (
-                INTERNAL_ACCOUNTS.map((acc) => (
-                  <button
-                    key={acc.id}
-                    onClick={() => setSelectedAccount(acc)}
-                    className={`w-full text-left p-6 rounded-[2rem] border transition-all ${
-                      selectedAccount.id === acc.id
-                        ? 'bg-white border-emerald-500 shadow-lg shadow-emerald-500/5 ring-2 ring-emerald-500/10'
-                        : 'bg-white border-gray-100 hover:border-emerald-200'
-                    }`}
-                  >
-                    <div className="flex justify-between items-start mb-4">
-                      <div className={`p-3 rounded-2xl ${acc.color}`}>
-                        <acc.icon size={20} />
-                      </div>
-                      <span className={`text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider ${
-                        acc.type === 'Savings' ? 'bg-[#DCFCE7] text-[#064E3B]' : 'bg-gray-100 text-gray-500'
-                      }`}>
-                        {acc.type}
-                      </span>
-                    </div>
-                    <p className="font-black text-[#064E3B] text-lg mb-1">{acc.name}</p>
-                    <p className="text-3xl font-black text-[#064E3B]">${acc.balance.toLocaleString()}</p>
-                  </button>
-                ))
+                loading ? (
+                  <div className="flex items-center justify-center p-8">
+                    <Loader2 className="animate-spin text-emerald-600" size={32} />
+                  </div>
+                ) : accounts.length === 0 ? (
+                  <div className="text-center p-8">
+                    <p className="text-gray-400 font-bold">No accounts yet</p>
+                    <button 
+                      onClick={() => setShowNewAccountModal(true)}
+                      className="mt-4 text-emerald-600 font-black"
+                    >
+                      Open your first account
+                    </button>
+                  </div>
+                ) : (
+                  accounts.map((acc) => {
+                    const style = getAccountStyle(acc.accountType);
+                    return (
+                      <button
+                        key={acc.id}
+                        onClick={() => setSelectedAccount(acc)}
+                        className={`w-full text-left p-6 rounded-[2rem] border transition-all ${
+                          selectedAccount?.id === acc.id
+                            ? 'bg-white border-emerald-500 shadow-lg shadow-emerald-500/5 ring-2 ring-emerald-500/10'
+                            : 'bg-white border-gray-100 hover:border-emerald-200'
+                        }`}
+                      >
+                        <div className="flex justify-between items-start mb-4">
+                          <div className={`p-3 rounded-2xl ${style.color}`}>
+                            <style.icon size={20} />
+                          </div>
+                          <span className={`text-[10px] font-black px-3 py-1 rounded-full uppercase tracking-wider ${
+                            acc.accountType === 'savings' ? 'bg-[#DCFCE7] text-[#064E3B]' : 'bg-gray-100 text-gray-500'
+                          }`}>
+                            {acc.accountType}
+                          </span>
+                        </div>
+                        <p className="font-black text-[#064E3B] text-lg mb-1">
+                          {acc.accountType === 'checking' ? 'Main Checking' : 'High-Yield Savings'}
+                        </p>
+                        <p className="text-3xl font-black text-[#064E3B]">
+                          ${Number(acc.balance).toLocaleString()}
+                        </p>
+                      </button>
+                    );
+                  })
+                )
               ) : (
                 <div className="space-y-4">
-                  {EXTERNAL_ACCOUNTS.map((acc) => (
-                    <div key={acc.id} className="bg-white p-6 rounded-[2rem] border border-gray-100 flex items-center justify-between group hover:border-emerald-200 transition-colors">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-gray-50 rounded-xl flex items-center justify-center text-gray-400">
-                          <ExternalLink size={20} />
-                        </div>
-                        <div>
-                          <p className="font-black text-[#064E3B]">{acc.name}</p>
-                          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{acc.bank} ••{acc.last4}</p>
-                        </div>
-                      </div>
-                      <p className="font-black text-[#064E3B]">${acc.balance.toLocaleString()}</p>
-                    </div>
-                  ))}
+                  <div className="text-center p-8">
+                    <p className="text-gray-400 font-bold">No external accounts linked</p>
+                  </div>
                   <button className="w-full p-6 rounded-[2rem] border-2 border-dashed border-gray-200 flex items-center justify-center gap-2 text-gray-400 font-bold hover:border-emerald-300 hover:text-emerald-600 transition-all group">
                     <Plus size={20} className="group-hover:scale-110 transition-transform" />
                     Link External Bank
@@ -192,169 +275,188 @@ export const Accounts: React.FC = () => {
 
           {/* Account Detail View */}
           <div className="lg:col-span-8">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={selectedAccount.id}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="bg-white rounded-[3rem] border border-gray-100 shadow-sm overflow-hidden"
-              >
-                <div className={`p-10 ${selectedAccount.type === 'Savings' ? 'bg-[#064E3B] text-white' : 'bg-[#DCFCE7] text-[#064E3B]'}`}>
-                  <div className="flex justify-between items-start mb-10">
-                    <div>
-                      <div className="flex items-center gap-3 mb-2">
-                        <selectedAccount.icon size={24} className={selectedAccount.type === 'Savings' ? 'text-emerald-400' : 'text-[#064E3B]'} />
-                        <h2 className="text-2xl font-black">{selectedAccount.name}</h2>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                          selectedAccount.type === 'Savings' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-white/40 text-[#064E3B]'
-                        }`}>
-                          {selectedAccount.status}
-                        </span>
-                        {selectedAccount.apy && (
+            {selectedAccount && (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={selectedAccount.id}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="bg-white rounded-[3rem] border border-gray-100 shadow-sm overflow-hidden"
+                >
+                  <div className={`p-10 ${selectedAccount.accountType === 'savings' ? 'bg-[#064E3B] text-white' : 'bg-[#DCFCE7] text-[#064E3B]'}`}>
+                    <div className="flex justify-between items-start mb-10">
+                      <div>
+                        <div className="flex items-center gap-3 mb-2">
+                          {React.createElement(selectedStyle.icon, { 
+                            size: 24, 
+                            className: selectedAccount.accountType === 'savings' ? 'text-emerald-400' : 'text-[#064E3B]' 
+                          })}
+                          <h2 className="text-2xl font-black">
+                            {selectedAccount.accountType === 'checking' ? 'Main Checking' : 'High-Yield Savings'}
+                          </h2>
+                        </div>
+                        <div className="flex items-center gap-2">
                           <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
-                            selectedAccount.type === 'Savings' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-white/40 text-[#064E3B]'
+                            selectedAccount.accountType === 'savings' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-white/40 text-[#064E3B]'
                           }`}>
-                            {selectedAccount.apy} APY
+                            {selectedAccount.status}
                           </span>
-                        )}
+                          {selectedAccount.accountType === 'savings' && (
+                            <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                              selectedAccount.accountType === 'savings' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-white/40 text-[#064E3B]'
+                            }`}>
+                              4.50% APY
+                            </span>
+                          )}
+                        </div>
                       </div>
+                      <button className={`p-4 rounded-2xl ${selectedAccount.accountType === 'savings' ? 'bg-white/10 hover:bg-white/20' : 'bg-white/40 hover:bg-white/60'} transition-colors`}>
+                        <Settings size={24} />
+                      </button>
                     </div>
-                    <button className={`p-4 rounded-2xl ${selectedAccount.type === 'Savings' ? 'bg-white/10 hover:bg-white/20' : 'bg-white/40 hover:bg-white/60'} transition-colors`}>
-                      <Settings size={24} />
-                    </button>
+
+                    <div className="space-y-2">
+                      <p className={`text-xs font-black uppercase tracking-widest ${selectedAccount.accountType === 'savings' ? 'text-emerald-400/60' : 'text-[#064E3B]/40'}`}>
+                        Available Balance
+                      </p>
+                      <h3 className="text-6xl font-black tracking-tight">
+                        ${Number(selectedAccount.balance).toLocaleString()}
+                      </h3>
+                    </div>
                   </div>
 
-                  <div className="space-y-2">
-                    <p className={`text-xs font-black uppercase tracking-widest ${selectedAccount.type === 'Savings' ? 'text-emerald-400/60' : 'text-[#064E3B]/40'}`}>
-                      Available Balance
-                    </p>
-                    <h3 className="text-6xl font-black tracking-tight">${selectedAccount.balance.toLocaleString()}</h3>
-                  </div>
-                </div>
-
-                <div className="p-10 space-y-10">
-                  {/* Account Numbers Section */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center px-1">
-                        <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Routing Number</p>
-                        <button
-                          onClick={() => handleCopy(selectedAccount.routing)}
-                          className="text-emerald-600 hover:text-emerald-700 transition-colors"
-                        >
-                          <Copy size={16} />
-                        </button>
-                      </div>
-                      <div className="p-6 bg-gray-50 rounded-2xl font-mono font-bold text-[#064E3B] tracking-[0.2em]">
-                        {selectedAccount.routing}
-                      </div>
-                    </div>
-                    <div className="space-y-4">
-                      <div className="flex justify-between items-center px-1">
-                        <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Account Number</p>
-                        <div className="flex items-center gap-3">
+                  <div className="p-10 space-y-10">
+                    {/* Account Numbers Section */}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center px-1">
+                          <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Routing Number</p>
                           <button
-                            onClick={() => setShowNumbers(!showNumbers)}
-                            className="text-gray-400 hover:text-[#064E3B] transition-colors"
-                          >
-                            {showNumbers ? <EyeOff size={16} /> : <Eye size={16} />}
-                          </button>
-                          <button
-                            onClick={() => handleCopy(selectedAccount.number)}
+                            onClick={() => handleCopy('123456789')}
                             className="text-emerald-600 hover:text-emerald-700 transition-colors"
                           >
                             <Copy size={16} />
                           </button>
                         </div>
+                        <div className="p-6 bg-gray-50 rounded-2xl font-mono font-bold text-[#064E3B] tracking-[0.2em]">
+                          123456789
+                        </div>
                       </div>
-                      <div className="p-6 bg-gray-50 rounded-2xl font-mono font-bold text-[#064E3B] tracking-[0.2em]">
-                        {showNumbers ? selectedAccount.number : '•••• •••• ' + selectedAccount.number.slice(-4)}
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-center px-1">
+                          <p className="text-xs font-black text-gray-400 uppercase tracking-widest">Account Number</p>
+                          <div className="flex items-center gap-3">
+                            <button
+                              onClick={() => setShowNumbers(!showNumbers)}
+                              className="text-gray-400 hover:text-[#064E3B] transition-colors"
+                            >
+                              {showNumbers ? <EyeOff size={16} /> : <Eye size={16} />}
+                            </button>
+                            <button
+                              onClick={() => handleCopy(selectedAccount.accountNumber)}
+                              className="text-emerald-600 hover:text-emerald-700 transition-colors"
+                            >
+                              <Copy size={16} />
+                            </button>
+                          </div>
+                        </div>
+                        <div className="p-6 bg-gray-50 rounded-2xl font-mono font-bold text-[#064E3B] tracking-[0.2em]">
+                          {showNumbers ? selectedAccount.accountNumber : '•••• •••• ' + selectedAccount.accountNumber.slice(-4)}
+                        </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Quick Actions */}
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                    {[
-                      { icon: ArrowUpRight, label: 'Transfer', color: 'bg-emerald-50 text-emerald-600' },
-                      { icon: FileText, label: 'Statements', color: 'bg-blue-50 text-blue-600' },
-                      { icon: TrendingUp, label: 'Statistics', color: 'bg-orange-50 text-orange-600' },
-                      { icon: MoreVertical, label: 'More', color: 'bg-gray-50 text-gray-600' },
-                    ].map((action) => (
-                      <button
-                        key={action.label}
-                        className="flex flex-col items-center gap-3 p-6 rounded-3xl border border-transparent hover:border-gray-100 hover:shadow-sm transition-all group"
-                      >
-                        <div className={`p-4 rounded-2xl ${action.color} group-hover:scale-110 transition-transform`}>
-                          <action.icon size={24} />
-                        </div>
-                        <span className="text-xs font-black uppercase tracking-widest text-gray-500">{action.label}</span>
-                      </button>
-                    ))}
-                  </div>
+                    {/* Quick Actions */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                      {[
+                        { icon: ArrowUpRight, label: 'Transfer', color: 'bg-emerald-50 text-emerald-600' },
+                        { icon: FileText, label: 'Statements', color: 'bg-blue-50 text-blue-600' },
+                        { icon: TrendingUp, label: 'Statistics', color: 'bg-orange-50 text-orange-600' },
+                        { icon: MoreVertical, label: 'More', color: 'bg-gray-50 text-gray-600' },
+                      ].map((action) => (
+                        <button
+                          key={action.label}
+                          className="flex flex-col items-center gap-3 p-6 rounded-3xl border border-transparent hover:border-gray-100 hover:shadow-sm transition-all group"
+                        >
+                          <div className={`p-4 rounded-2xl ${action.color} group-hover:scale-110 transition-transform`}>
+                            <action.icon size={24} />
+                          </div>
+                          <span className="text-xs font-black uppercase tracking-widest text-gray-500">{action.label}</span>
+                        </button>
+                      ))}
+                    </div>
 
-                  {/* Insights Section */}
-                  <div className="bg-gray-50 rounded-[2.5rem] p-8 space-y-6">
-                    <div className="flex items-center gap-3 text-[#064E3B]">
-                      <Info size={24} />
-                      <h4 className="text-lg font-black">Account Insights</h4>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                      <div className="bg-white p-6 rounded-2xl border border-gray-100">
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Monthly Yield</p>
-                        <p className="text-xl font-black text-emerald-600">+$54.20 <span className="text-xs font-bold text-gray-400 uppercase">earned</span></p>
+                    {/* Insights Section */}
+                    <div className="bg-gray-50 rounded-[2.5rem] p-8 space-y-6">
+                      <div className="flex items-center gap-3 text-[#064E3B]">
+                        <Info size={24} />
+                        <h4 className="text-lg font-black">Account Insights</h4>
                       </div>
-                      <div className="bg-white p-6 rounded-2xl border border-gray-100">
-                        <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Transfer Limit</p>
-                        <div className="space-y-2">
-                          <div className="flex justify-between items-end">
-                            <p className="text-sm font-bold text-[#064E3B]">$12,400 / $50,000</p>
-                            <p className="text-[10px] font-black text-gray-400">25% Used</p>
-                          </div>
-                          <div className="h-1.5 bg-gray-50 rounded-full overflow-hidden">
-                            <div className="h-full bg-emerald-500 w-1/4" />
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <div className="bg-white p-6 rounded-2xl border border-gray-100">
+                          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Monthly Yield</p>
+                          <p className="text-xl font-black text-emerald-600">
+                            {selectedAccount.accountType === 'savings' ? `+$${(Number(selectedAccount.balance) * 0.045 / 12).toFixed(2)}` : '+$0.00'}
+                            <span className="text-xs font-bold text-gray-400 uppercase"> earned</span>
+                          </p>
+                        </div>
+                        <div className="bg-white p-6 rounded-2xl border border-gray-100">
+                          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Transfer Limit</p>
+                          <div className="space-y-2">
+                            <div className="flex justify-between items-end">
+                              <p className="text-sm font-bold text-[#064E3B]">$12,400 / $50,000</p>
+                              <p className="text-[10px] font-black text-gray-400">25% Used</p>
+                            </div>
+                            <div className="h-1.5 bg-gray-50 rounded-full overflow-hidden">
+                              <div className="h-full bg-emerald-500 w-1/4" />
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  {/* Security Features */}
-                  <div className="border-t border-gray-100 pt-10">
-                    <h4 className="text-lg font-black text-[#064E3B] mb-6">Security & Settings</h4>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between p-6 bg-white rounded-3xl border border-gray-100 hover:border-emerald-200 transition-colors cursor-pointer group">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
-                            <ShieldCheck size={24} />
+                    {/* Security Features */}
+                    <div className="border-t border-gray-100 pt-10">
+                      <h4 className="text-lg font-black text-[#064E3B] mb-6">Security & Settings</h4>
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between p-6 bg-white rounded-3xl border border-gray-100 hover:border-emerald-200 transition-colors cursor-pointer group">
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center">
+                              <ShieldCheck size={24} />
+                            </div>
+                            <div>
+                              <p className="font-black text-[#064E3B]">Account Protection</p>
+                              <p className="text-xs font-bold text-gray-400">Real-time fraud monitoring is active</p>
+                            </div>
                           </div>
-                          <div>
-                            <p className="font-black text-[#064E3B]">Account Protection</p>
-                            <p className="text-xs font-bold text-gray-400">Real-time fraud monitoring is active</p>
-                          </div>
+                          <CheckCircle2 className="text-emerald-500" size={20} />
                         </div>
-                        <CheckCircle2 className="text-emerald-500" size={20} />
-                      </div>
-                      <div className="flex items-center justify-between p-6 bg-white rounded-3xl border border-gray-100 hover:border-emerald-200 transition-colors cursor-pointer group">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-gray-50 text-gray-400 rounded-xl flex items-center justify-center">
-                            <Lock size={24} />
+                        <button 
+                          onClick={handleFreezeAccount}
+                          className="w-full flex items-center justify-between p-6 bg-white rounded-3xl border border-gray-100 hover:border-emerald-200 transition-colors cursor-pointer group"
+                        >
+                          <div className="flex items-center gap-4">
+                            <div className="w-12 h-12 bg-gray-50 text-gray-400 rounded-xl flex items-center justify-center">
+                              <Lock size={24} />
+                            </div>
+                            <div className="text-left">
+                              <p className="font-black text-[#064E3B]">
+                                {selectedAccount.status === 'frozen' ? 'Unfreeze Account' : 'Freeze Account'}
+                              </p>
+                              <p className="text-xs font-bold text-gray-400">
+                                {selectedAccount.status === 'frozen' ? 'Allow outgoing transfers' : 'Instantly block all outgoing transfers'}
+                              </p>
+                            </div>
                           </div>
-                          <div>
-                            <p className="font-black text-[#064E3B]">Freeze Account</p>
-                            <p className="text-xs font-bold text-gray-400">Instantly block all outgoing transfers</p>
-                          </div>
-                        </div>
-                        <ArrowRight className="text-gray-300 group-hover:text-emerald-500 transition-transform group-hover:translate-x-1" size={20} />
+                          <ArrowRight className="text-gray-300 group-hover:text-emerald-500 transition-transform group-hover:translate-x-1" size={20} />
+                        </button>
                       </div>
                     </div>
                   </div>
-                </div>
-              </motion.div>
-            </AnimatePresence>
+                </motion.div>
+              </AnimatePresence>
+            )}
           </div>
         </div>
       </div>
@@ -373,6 +475,83 @@ export const Accounts: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* New Account Modal */}
+      {showNewAccountModal && (
+        <NewAccountModal 
+          onClose={() => setShowNewAccountModal(false)}
+          onSelect={handleCreateAccount}
+          loading={creatingAccount}
+        />
+      )}
     </div>
   );
 };
+
+// New Account Modal Component
+function NewAccountModal({ 
+  onClose, 
+  onSelect, 
+  loading 
+}: { 
+  onClose: () => void; 
+  onSelect: (type: 'checking' | 'savings') => void; 
+  loading: boolean;
+}) {
+  return (
+    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="bg-white rounded-[3rem] p-8 max-w-md w-full mx-4"
+      >
+        <div className="flex justify-between items-center mb-8">
+          <h2 className="text-2xl font-black text-[#064E3B]">Open New Account</h2>
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-xl">
+            <X size={24} className="text-gray-400" />
+          </button>
+        </div>
+        
+        <div className="space-y-4">
+          <button
+            onClick={() => onSelect('checking')}
+            disabled={loading}
+            className="w-full p-6 rounded-[2rem] border-2 border-gray-100 hover:border-emerald-500 hover:bg-emerald-50 transition-all group text-left"
+          >
+            <div className="flex items-center gap-4">
+              <div className="p-4 bg-[#DCFCE7] rounded-2xl text-[#064E3B]">
+                <Wallet size={24} />
+              </div>
+              <div>
+                <p className="font-black text-[#064E3B] text-lg">Checking Account</p>
+                <p className="text-xs font-bold text-gray-400">For everyday transactions</p>
+              </div>
+            </div>
+          </button>
+          
+          <button
+            onClick={() => onSelect('savings')}
+            disabled={loading}
+            className="w-full p-6 rounded-[2rem] border-2 border-gray-100 hover:border-emerald-500 hover:bg-emerald-50 transition-all group text-left"
+          >
+            <div className="flex items-center gap-4">
+              <div className="p-4 bg-[#064E3B] rounded-2xl text-white">
+                <ShieldCheck size={24} />
+              </div>
+              <div>
+                <p className="font-black text-[#064E3B] text-lg">Savings Account</p>
+                <p className="text-xs font-bold text-gray-400">4.50% APY on your balance</p>
+              </div>
+            </div>
+          </button>
+        </div>
+
+        {loading && (
+          <div className="mt-6 flex justify-center">
+            <Loader2 className="animate-spin text-emerald-600" size={32} />
+          </div>
+        )}
+      </motion.div>
+    </div>
+  );
+}
