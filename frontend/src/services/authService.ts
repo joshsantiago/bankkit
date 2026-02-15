@@ -41,6 +41,11 @@ export interface UpdateProfileData {
   dateOfBirth?: string;
 }
 
+export interface ChangePasswordData {
+  currentPassword: string;
+  newPassword: string;
+}
+
 export const authService = {
   async login(data: LoginData): Promise<AuthResponse> {
     const response = await api.post('/auth/login', data);
@@ -59,6 +64,11 @@ export const authService = {
 
   async updateProfile(data: UpdateProfileData): Promise<{ success: boolean; data: User; message: string }> {
     const response = await api.patch('/users/profile', data);
+    return response.data;
+  },
+
+  async changePassword(data: ChangePasswordData): Promise<{ success: boolean; message: string }> {
+    const response = await api.patch('/users/password', data);
     return response.data;
   },
 

@@ -4,6 +4,7 @@ import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { RolesGuard } from '../auth/roles.guard';
 import { Roles } from '../auth/roles.decorator';
 import { UpdateProfileDto } from './dto/update-profile.dto';
+import { ChangePasswordDto } from './dto/change-password.dto';
 
 @Controller('users')
 export class UsersController {
@@ -20,6 +21,18 @@ export class UsersController {
       success: true,
       data: updatedUser,
       message: 'Profile updated successfully',
+    };
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('password')
+  async changePassword(@Request() req, @Body() changePasswordDto: ChangePasswordDto) {
+    const userId = req.user.id;
+    await this.usersService.changePassword(userId, changePasswordDto);
+
+    return {
+      success: true,
+      message: 'Password changed successfully',
     };
   }
 
