@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
+import { toast } from 'sonner';
 import {
   ArrowLeft,
   Plus,
@@ -19,62 +20,67 @@ import {
   ChevronRight,
   Zap,
   RefreshCcw,
-  Palette
+  Palette,
+  Loader2
 } from 'lucide-react';
+import { cardService, Card } from '../services/cardService';
 
-// --- Mock Data ---
-
-const CARDS = [
-  {
-    id: 'card-1',
-    name: 'Primary Debit',
-    type: 'Debit',
-    number: '4242 8812 9901 2345',
-    expiry: '08/28',
-    cvv: '123',
-    status: 'Active',
-    isVirtual: false,
-    color: 'bg-[#064E3B]',
-    textColor: 'text-white',
-    brand: 'Visa',
-    limits: { daily: 5000, monthly: 20000, current: 1240 },
-  },
-  {
-    id: 'card-2',
-    name: 'Virtual Shopping',
-    type: 'Credit',
-    number: '5521 0092 1182 7734',
-    expiry: '12/27',
-    cvv: '992',
-    status: 'Active',
-    isVirtual: true,
-    color: 'bg-[#DCFCE7]',
-    textColor: 'text-[#064E3B]',
-    brand: 'Mastercard',
-    limits: { daily: 1000, monthly: 5000, current: 450 },
-  },
-  {
-    id: 'card-3',
-    name: 'Travel Card',
-    type: 'Debit',
-    number: '4111 2222 3333 4444',
-    expiry: '04/29',
-    cvv: '555',
-    status: 'Frozen',
-    isVirtual: false,
-    color: 'bg-zinc-900',
-    textColor: 'text-white',
-    brand: 'Visa',
-    limits: { daily: 3000, monthly: 10000, current: 0 },
-  }
-];
+// Transform API card to display format
+const transformCard = (card: Card) => {
+  const isFrozen = card.status === 'Frozen';
+  const isDebit = card.cardType === 'Debit';
+  
+  return {
+    id: card.id,
+    name: card.name,
+    type: card.cardType,
+    number: card.cardNumber || '**** **** **** ****',
+    expiry: card.expiry || '**/**',
+    cvv: card.cvv || '***',
+    status: card.status,
+    isVirtual: card.isVirtual,
+    color: isDebit ? 'bg-[#064E3B]' : (isFrozen ? 'bg-zinc-900' : 'bg-[#DCFCE7]'),
+    textColor: isDebit ? 'text-white' : 'text-[#064E3B]',
+    brand: card.brand || 'Visa',
+    limits: {
+      daily: Number(card.dailyLimit) || 5000,
+      monthly: Number(card.monthlyLimit) || 20000,
+      current: Number(card.currentSpending) || 0,
+    },
+    raw: card,
+  };
+};
 
 export const Cards: React.FC = () => {
   const navigate = useNavigate();
-  const [selectedCard, setSelectedCard] = useState(CARDS[0]);
+  const [cards, setCards] = useState<ReturnType<typeof transformCard>[]>([]);
+  const [selectedCard, setSelectedCard] = useState<ReturnType<typeof transformCard> | null>(null);
   const [showNumbers, setShowNumbers] = useState(false);
   const [isCopying, setIsCopying] = useState(false);
-  const [isFrozen, setIsFrozen] = useState(selectedCard.status === 'Frozen');
+  const [isFrozen, setIsFrozen] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadCards();
+  }, []);
+
+  const loadCards = async () => {
+    try {
+      setLoading(true);
+      const data = await cardService.getCards();
+      const transformed = data.map(transformCard);
+      setCards(transformed);
+      if (transformed.length > 0) {
+        setSelectedCard(transformed[0]);
+        setIsFrozen(transformed[0].status === 'Frozen');
+      }
+    } catch (error) {
+      console.error('Failed to load cards:', error);
+      toast.error('Failed to load cards');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text.replace(/\s/g, ''));
@@ -82,8 +88,18 @@ export const Cards: React.FC = () => {
     setTimeout(() => setIsCopying(false), 2000);
   };
 
-  const toggleFreeze = () => {
-    setIsFrozen(!isFrozen);
+  const toggleFreeze = async () => {
+    if (!selectedCard) return;
+    
+    try {
+      const newStatus = isFrozen ? 'Active' : 'Frozen';
+      await cardService.updateCardStatus(selectedCard.id, { status: newStatus });
+      toast.success(`Card ${isFrozen ? 'unfrozen' : 'frozen'} successfully`);
+      setIsFrozen(!isFrozen);
+      loadCards();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to update card status');
+    }
   };
 
   return (
@@ -123,7 +139,16 @@ export const Cards: React.FC = () => {
           <div className="lg:col-span-4 space-y-6">
             <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest px-2">Your Wallet</h3>
             <div className="space-y-4">
-              {CARDS.map((card) => (
+              {loading ? (
+                <div className="flex items-center justify-center p-8">
+                  <Loader2 className="animate-spin text-emerald-600" size={32} />
+                </div>
+              ) : cards.length === 0 ? (
+                <div className="text-center p-8">
+                  <p className="text-gray-400 font-bold">No cards yet</p>
+                </div>
+              ) : (
+                cards.map((card) => (
                 <button
                   key={card.id}
                   onClick={() => {
