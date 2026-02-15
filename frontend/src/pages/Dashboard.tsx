@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
+import { toast } from 'sonner';
 import {
   LayoutDashboard,
   Wallet,
@@ -49,34 +50,7 @@ import {
   ResponsiveContainer
 } from 'recharts';
 import { AuthContext } from '../context/AuthContext';
-
-// --- Mock Data ---
-
-const SPENDING_DATA = [
-  { name: 'Mon', amount: 240 },
-  { name: 'Tue', amount: 1398 },
-  { name: 'Wed', amount: 9800 },
-  { name: 'Thu', amount: 3908 },
-  { name: 'Fri', amount: 4800 },
-  { name: 'Sat', amount: 3800 },
-  { name: 'Sun', amount: 4300 },
-];
-
-const TRANSACTIONS = [
-  { id: 1, merchant: 'Apple Store', category: 'Technology', amount: -1299.00, date: 'Feb 14, 2026', status: 'Completed', type: 'debit' },
-  { id: 2, merchant: 'Starbucks', category: 'Food & Drink', amount: -6.50, date: 'Feb 14, 2026', status: 'Completed', type: 'debit' },
-  { id: 3, merchant: 'Salary Deposit', category: 'Income', amount: 4500.00, date: 'Feb 12, 2026', status: 'Completed', type: 'credit' },
-  { id: 4, merchant: 'Netflix', category: 'Entertainment', amount: -15.99, date: 'Feb 10, 2026', status: 'Completed', type: 'debit' },
-  { id: 5, merchant: 'Uber', category: 'Transport', amount: -24.50, date: 'Feb 09, 2026', status: 'Completed', type: 'debit' },
-  { id: 6, merchant: 'Amazon', category: 'Shopping', amount: -89.99, date: 'Feb 08, 2026', status: 'Pending', type: 'debit' },
-];
-
-const ONBOARDING_TASKS = [
-  { id: 'verify-id', title: 'Verify Identity', desc: 'SSN & ID upload', status: 'Completed', points: 25 },
-  { id: 'confirm-address', title: 'Confirm Address', desc: 'Verify residency', status: 'Pending', points: 15 },
-  { id: 'link-bank', title: 'Link External Bank', desc: 'For easy transfers', status: 'Pending', points: 30 },
-  { id: 'enable-2fa', title: 'Enable 2FA', desc: 'Secure your account', status: 'Pending', points: 10 },
-];
+import { dashboardService, DashboardData, ProfileCompletion } from '../services/dashboardService';
 
 // --- Sub-Components ---
 
@@ -116,7 +90,11 @@ export const Dashboard: React.FC = () => {
   const navigate = useNavigate();
   const { logout } = useContext(AuthContext) || { logout: () => {} };
 
-  const [user, setUser] = useState<any>({ first_name: 'Alex' });
+  // Dashboard data from API
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  
+  const [user, setUser] = useState<any>(null);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showCardDetails, setShowCardDetails] = useState(false);
   const [isFrozen, setIsFrozen] = useState(false);
@@ -138,6 +116,27 @@ export const Dashboard: React.FC = () => {
   const [address, setAddress] = useState({ street: '', city: '', state: '', zip: '' });
   const [selectedBank, setSelectedBank] = useState<string | null>(null);
 
+  // Fetch dashboard data on mount
+  useEffect(() => {
+    loadDashboard();
+  }, []);
+
+  const loadDashboard = async () => {
+    try {
+      setLoading(true);
+      const response = await dashboardService.getDashboard();
+      if (response.success) {
+        setDashboardData(response.data);
+        setUser(response.data.user);
+      }
+    } catch (error) {
+      console.error('Failed to load dashboard:', error);
+      toast.error('Failed to load dashboard data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const formatSSN = (value: string) => {
     const digits = value.replace(/\D/g, '');
     if (digits.length <= 3) return digits;
@@ -152,17 +151,20 @@ export const Dashboard: React.FC = () => {
     }
   };
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem('bankkit_user');
-    if (storedUser) setUser(JSON.parse(storedUser));
-  }, []);
-
   const handleLogout = () => {
     logout();
     navigate('/login');
   };
 
-  const profileCompletion = Math.round((ONBOARDING_TASKS.filter(t => t.status === 'Completed').reduce((acc, t) => acc + t.points, 0) / 80) * 100);
+  // Get profile completion from dashboard data or default
+  const profileCompletion = dashboardData?.profileCompletion?.percentage || 0;
+  const onboardingTasks = dashboardData?.profileCompletion?.pendingTasks?.map(t => ({
+    id: t.id,
+    title: t.title,
+    desc: t.description,
+    status: 'Pending',
+    points: t.points
+  })) || [];
 
   return (
     <div className="min-h-screen bg-[#F8FAFC] flex font-sans selection:bg-emerald-100">
