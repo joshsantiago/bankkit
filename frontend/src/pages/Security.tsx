@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
+import { toast } from 'sonner';
 import {
   ShieldCheck,
   Lock,
@@ -18,76 +19,192 @@ import {
   MapPin,
   Clock,
   ExternalLink,
-  ShieldQuestion
+  ShieldQuestion,
+  Loader2
 } from 'lucide-react';
+import { securityService, SecuritySession, SecurityEvent, PrivacySettings } from '../services/securityService';
 
-const SECURITY_FEATURES = [
-  {
-    icon: Fingerprint,
-    title: 'Biometric Login',
-    desc: 'Use FaceID or TouchID to access your account instantly and securely.',
-    status: 'Enabled',
-    color: 'bg-emerald-50 text-emerald-600'
-  },
-  {
-    icon: Key,
-    title: 'Two-Factor Auth',
-    desc: 'Verify every sign-in with a secondary code sent to your trusted device.',
-    status: 'Enabled',
-    color: 'bg-blue-50 text-blue-600'
-  },
-  {
-    icon: ShieldAlert,
-    title: 'Fraud Monitoring',
-    desc: 'AI-powered detection watches for suspicious activity 24/7.',
-    status: 'Active',
-    color: 'bg-orange-50 text-orange-600'
-  },
-  {
-    icon: Globe,
-    title: 'Encryption',
-    desc: 'Your data is protected with military-grade 256-bit AES encryption.',
-    status: 'Active',
-    color: 'bg-purple-50 text-purple-600'
+// Icon mapping for API data
+const getEventIcon = (event: string) => {
+  const icons: Record<string, any> = {
+    'login': Lock,
+    'password_change': Key,
+    'card_frozen': ShieldAlert,
+    'card_cancelled': ShieldAlert,
+    'account_frozen': ShieldAlert,
+    '2fa_enabled': Fingerprint,
+    '2fa_disabled': Fingerprint,
+  };
+  return icons[event] || ShieldAlert;
+};
+
+// Transform API session to display format
+const transformSession = (session: SecuritySession) => {
+  const now = new Date();
+  const lastActive = new Date(session.lastActiveAt);
+  const diffMs = now.getTime() - lastActive.getTime();
+  const diffMins = Math.floor(diffMs / 60000);
+  const diffHours = Math.floor(diffMins / 60);
+  
+  let timeDisplay = 'Active now';
+  if (diffMins >= 60) {
+    timeDisplay = diffHours < 24 ? `${diffHours} hour${diffHours > 1 ? 's' : ''} ago` : lastActive.toLocaleDateString();
   }
-];
+  
+  return {
+    id: session.id,
+    device: session.device || `${session.browser} on ${session.os}`,
+    location: session.location || 'Unknown',
+    time: session.isCurrent ? 'Active now' : timeDisplay,
+    current: session.isCurrent,
+    icon: session.deviceType === 'mobile' ? Smartphone : Globe,
+  };
+};
 
-const ACTIVE_SESSIONS = [
-  {
-    id: 1,
-    device: 'iPhone 15 Pro',
-    location: 'San Francisco, CA',
-    time: 'Active now',
-    current: true,
-    icon: Smartphone
-  },
-  {
-    id: 2,
-    device: 'MacBook Pro 16"',
-    location: 'San Francisco, CA',
-    time: '2 hours ago',
-    current: false,
-    icon: Globe
-  },
-  {
-    id: 3,
-    device: 'Chrome on Windows',
-    location: 'Seattle, WA',
-    time: 'Feb 12, 10:45 AM',
-    current: false,
-    icon: Globe
-  }
-];
-
-const RECENT_ACTIVITY = [
-  { id: 1, event: 'Successful Login', date: 'Today, 9:41 AM', icon: Lock, status: 'success' },
-  { id: 2, event: 'Card Frozen', date: 'Yesterday, 4:20 PM', icon: ShieldAlert, status: 'warning' },
-  { id: 3, event: 'Password Changed', date: 'Feb 10, 2:15 PM', icon: Key, status: 'success' },
-];
+// Transform API event to display format
+const transformEvent = (event: SecurityEvent) => ({
+  id: event.id,
+  event: event.event,
+  date: new Date(event.date).toLocaleDateString('en-US', { 
+    month: 'short', 
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  }),
+  icon: getEventIcon(event.event),
+  status: event.status,
+});
 
 export function SecurityPage() {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'overview' | 'sessions' | 'settings'>('overview');
+  const [loading, setLoading] = useState(true);
+  const [sessions, setSessions] = useState<ReturnType<typeof transformSession>[]>([]);
+  const [activities, setActivities] = useState<ReturnType<typeof transformEvent>[]>([]);
+  const [privacySettings, setPrivacySettings] = useState<PrivacySettings>({
+    dataSharing: false,
+    locationAccess: true,
+    marketingEmails: true,
+    publicProfile: false,
+  });
+  const [securityScore, setSecurityScore] = useState(75);
+  const [checklist, setChecklist] = useState<{ label: string; done: boolean }[]>([
+    { label: 'Verified Phone Number', done: true },
+    { label: 'Set Up 2FA Verification', done: true },
+    { label: 'Emergency Contact Added', done: false },
+    { label: 'Privacy Policy Reviewed', done: true },
+  ]);
+
+  useEffect(() => {
+    loadSecurityData();
+  }, []);
+
+  const loadSecurityData = async () => {
+    try {
+      setLoading(true);
+      
+      // Load sessions
+      const sessionsData = await securityService.getSessions();
+      setSessions(sessionsData.map(transformSession));
+      
+      // Load activity
+      const activityData = await securityService.getActivityLog(10);
+      setActivities(activityData.map(transformEvent));
+      
+      // Load privacy settings
+      const privacyData = await securityService.getPrivacySettings();
+      setPrivacySettings(privacyData);
+      
+      // Load overview for score
+      const overviewData = await securityService.getOverview();
+      if (overviewData.securityScore) {
+        setSecurityScore(overviewData.securityScore);
+      }
+      if (overviewData.checklist) {
+        setChecklist(overviewData.checklist);
+      }
+    } catch (error) {
+      console.error('Failed to load security data:', error);
+      toast.error('Failed to load security data');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleRevokeSession = async (sessionId: string) => {
+    if (!confirm('Are you sure you want to log out this device?')) return;
+    
+    try {
+      await securityService.revokeSession(sessionId);
+      toast.success('Session revoked successfully');
+      loadSecurityData();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to revoke session');
+    }
+  };
+
+  const handleRevokeAllSessions = async () => {
+    if (!confirm('Are you sure you want to log out all other devices? This will keep you logged in on this device.')) return;
+    
+    try {
+      await securityService.revokeAllSessions();
+      toast.success('All other sessions revoked');
+      loadSecurityData();
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to revoke sessions');
+    }
+  };
+
+  const handleTogglePrivacy = async (key: keyof PrivacySettings) => {
+    const newSettings = { ...privacySettings, [key]: !privacySettings[key] };
+    
+    try {
+      await securityService.updatePrivacySettings({ [key]: !privacySettings[key] });
+      setPrivacySettings(newSettings);
+      toast.success('Privacy settings updated');
+    } catch (error: any) {
+      toast.error(error.response?.data?.message || 'Failed to update settings');
+    }
+  };
+
+  const SECURITY_FEATURES = [
+    {
+      icon: Fingerprint,
+      title: 'Biometric Login',
+      desc: 'Use FaceID or TouchID to access your account instantly and securely.',
+      status: 'Enabled',
+      color: 'bg-emerald-50 text-emerald-600'
+    },
+    {
+      icon: Key,
+      title: 'Two-Factor Auth',
+      desc: 'Verify every sign-in with a secondary code sent to your trusted device.',
+      status: 'Enabled',
+      color: 'bg-blue-50 text-blue-600'
+    },
+    {
+      icon: ShieldAlert,
+      title: 'Fraud Monitoring',
+      desc: 'AI-powered detection watches for suspicious activity 24/7.',
+      status: 'Active',
+      color: 'bg-orange-50 text-orange-600'
+    },
+    {
+      icon: Globe,
+      title: 'Encryption',
+      desc: 'Your data is protected with military-grade 256-bit AES encryption.',
+      status: 'Active',
+      color: 'bg-purple-50 text-purple-600'
+    }
+  ];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F8FAFC] flex items-center justify-center">
+        <Loader2 className="animate-spin text-emerald-600" size={48} />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
@@ -190,7 +307,7 @@ export function SecurityPage() {
                         <button className="text-emerald-600 font-bold text-sm">View Log</button>
                       </div>
                       <div className="space-y-6">
-                        {RECENT_ACTIVITY.map((item) => (
+                        {activities.length > 0 ? activities.map((item) => (
                           <div key={item.id} className="flex items-center justify-between group">
                             <div className="flex items-center gap-4">
                               <div className={`p-3 rounded-xl ${item.status === 'success' ? 'bg-emerald-50 text-emerald-600' : 'bg-orange-50 text-orange-600'}`}>
@@ -203,7 +320,9 @@ export function SecurityPage() {
                             </div>
                             <ChevronRight size={18} className="text-gray-200 group-hover:text-emerald-600 group-hover:translate-x-1 transition-all" />
                           </div>
-                        ))}
+                        )) : (
+                          <p className="text-sm font-bold text-gray-400">No recent activity</p>
+                        )}
                       </div>
                     </div>
 
@@ -251,7 +370,7 @@ export function SecurityPage() {
                     </div>
 
                     <div className="space-y-4">
-                      {ACTIVE_SESSIONS.map((session) => (
+                      {sessions.length > 0 ? sessions.map((session) => (
                         <div key={session.id} className="flex items-center justify-between p-6 rounded-[2rem] border border-gray-100 hover:border-emerald-200 transition-colors">
                           <div className="flex items-center gap-6">
                             <div className={`p-4 rounded-2xl ${session.current ? 'bg-emerald-50 text-emerald-600' : 'bg-gray-50 text-gray-400'}`}>
@@ -271,12 +390,17 @@ export function SecurityPage() {
                             </div>
                           </div>
                           {!session.current && (
-                            <button className="p-3 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all">
+                            <button 
+                              onClick={() => handleRevokeSession(session.id)}
+                              className="p-3 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                            >
                               <LogOut size={20} />
                             </button>
                           )}
                         </div>
-                      ))}
+                      )) : (
+                        <p className="text-sm font-bold text-gray-400">No active sessions</p>
+                      )}
                     </div>
                   </div>
 
