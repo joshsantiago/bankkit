@@ -214,8 +214,8 @@ export const Cards: React.FC = () => {
                 <p className="text-gray-400 text-sm">Create a new card to get started</p>
               </div>
             ) : (
-            <AnimatePresence mode="wait">
-              <motion.div
+              <AnimatePresence mode="wait">
+                <motion.div
                 key={selectedCard.id}
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
