@@ -30,6 +30,9 @@ export class User {
   @Column({ type: 'enum', enum: ['active', 'inactive', 'suspended'], default: 'active' })
   status: string;
 
+  @Column({ name: 'avatar_url', nullable: true })
+  avatarUrl: string;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

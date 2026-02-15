@@ -2,6 +2,9 @@ import { Injectable, NotFoundException, BadRequestException, UnauthorizedExcepti
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import sharp from 'sharp';
+import * as fs from 'fs';
+import * as path from 'path';
 import { User } from '../entities/user.entity';
 import { Account } from '../entities/account.entity';
 import { UpdateProfileDto } from './dto/update-profile.dto';
@@ -109,6 +112,85 @@ export class UsersService {
 
     // TODO: Send email notification about password change
     // TODO: Invalidate all other sessions (logout from other devices)
+  }
+
+  async uploadAvatar(userId: string, file: Express.Multer.File): Promise<string> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    // Delete old avatar if exists
+    if (user.avatarUrl) {
+      await this.deleteOldAvatar(user.avatarUrl);
+    }
+
+    // Process image with sharp (resize, optimize)
+    const processedFilename = `avatar-${userId}-${Date.now()}.jpg`;
+    const processedPath = path.join('./uploads/avatars', processedFilename);
+
+    try {
+      await sharp(file.path)
+        .resize(400, 400, {
+          fit: 'cover',
+          position: 'center',
+        })
+        .jpeg({ quality: 85 })
+        .toFile(processedPath);
+
+      // Delete original uploaded file
+      if (fs.existsSync(file.path)) {
+        fs.unlinkSync(file.path);
+      }
+
+      // Generate URL (in production, this would be a CDN URL)
+      const avatarUrl = `/uploads/avatars/${processedFilename}`;
+
+      // Update user record
+      user.avatarUrl = avatarUrl;
+      await this.userRepository.save(user);
+
+      return avatarUrl;
+    } catch (error) {
+      // Clean up file on error
+      if (fs.existsSync(file.path)) {
+        fs.unlinkSync(file.path);
+      }
+      throw new BadRequestException('Failed to process image');
+    }
+  }
+
+  async deleteAvatar(userId: string): Promise<void> {
+    const user = await this.userRepository.findOne({ where: { id: userId } });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    if (!user.avatarUrl) {
+      throw new BadRequestException('User has no avatar to delete');
+    }
+
+    // Delete file from storage
+    await this.deleteOldAvatar(user.avatarUrl);
+
+    // Clear avatar URL in database
+    user.avatarUrl = null as any;
+    await this.userRepository.save(user);
+  }
+
+  private async deleteOldAvatar(avatarUrl: string): Promise<void> {
+    try {
+      const filename = path.basename(avatarUrl);
+      const filepath = path.join('./uploads/avatars', filename);
+      if (fs.existsSync(filepath)) {
+        fs.unlinkSync(filepath);
+      }
+    } catch (error) {
+      console.error('Failed to delete old avatar:', error);
+      // Don't throw error, just log it
+    }
   }
 
   async updateStatus(id: string, status: string, currentUserId: string) {
