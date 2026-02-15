@@ -8,6 +8,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { AccountsModule } from './accounts/accounts.module';
 import { CardsModule } from './cards/cards.module';
+import { SettingsModule } from './settings/settings.module';
 import { UsersModule } from './users/users.module';
 import { User } from './entities/user.entity';
 import { Account } from './entities/account.entity';
@@ -43,6 +44,7 @@ import { Card } from './entities/card.entity';
     TransactionsModule,
     DashboardModule,
     CardsModule,
+    SettingsModule,
     AdminModule,
   ],
 })

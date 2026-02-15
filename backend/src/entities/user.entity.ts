@@ -33,6 +33,24 @@ export class User {
   @Column({ name: 'avatar_url', nullable: true })
   avatarUrl: string;
 
+  @Column({ nullable: true })
+  address: string;
+
+  @Column({ type: 'jsonb', nullable: true })
+  notificationSettings: {
+    security: { email: boolean; push: boolean };
+    transactions: { email: boolean; push: boolean };
+    reminders: { email: boolean; push: boolean };
+    features: { email: boolean; push: boolean };
+  };
+
+  @Column({ type: 'jsonb', nullable: true })
+  appPreferences: {
+    theme: string;
+    language: string;
+    currency: string;
+  };
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

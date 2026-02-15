@@ -5,6 +5,7 @@ import {
   MaxLength,
   Matches,
   IsDateString,
+  IsEmail,
 } from 'class-validator';
 
 export class UpdateProfileDto {
@@ -30,4 +31,13 @@ export class UpdateProfileDto {
   @IsOptional()
   @IsDateString({}, { message: 'Date of birth must be a valid date' })
   dateOfBirth?: string;
+
+  @IsOptional()
+  @IsEmail({}, { message: 'Email must be a valid email address' })
+  email?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(255, { message: 'Address must not exceed 255 characters' })
+  address?: string;
 }

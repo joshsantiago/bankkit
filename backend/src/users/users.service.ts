@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, UnauthorizedException, ConflictException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
@@ -51,6 +51,15 @@ export class UsersService {
       throw new NotFoundException('User not found');
     }
 
+    // Check if email is already taken (if updating email)
+    if (updateProfileDto.email !== undefined && updateProfileDto.email !== user.email) {
+      const existingUser = await this.userRepository.findOne({ where: { email: updateProfileDto.email } });
+      if (existingUser) {
+        throw new ConflictException('Email is already in use');
+      }
+      user.email = updateProfileDto.email;
+    }
+
     // Update fields (only if provided)
     if (updateProfileDto.first_name !== undefined) {
       user.firstName = updateProfileDto.first_name;
@@ -63,6 +72,9 @@ export class UsersService {
     }
     if (updateProfileDto.dateOfBirth !== undefined) {
       user.dateOfBirth = new Date(updateProfileDto.dateOfBirth);
+    }
+    if (updateProfileDto.address !== undefined) {
+      user.address = updateProfileDto.address;
     }
 
     // Save to database
