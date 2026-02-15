@@ -5,6 +5,15 @@ import { Transaction } from '../entities/transaction.entity';
 import { Account } from '../entities/account.entity';
 import { CreateTransferDto } from './dto/create-transfer.dto';
 
+interface FindAllOptions {
+  accountId?: string;
+  type?: string;
+  status?: string;
+  startDate?: string;
+  endDate?: string;
+  limit?: number;
+}
+
 @Injectable()
 export class TransactionsService {
   constructor(
@@ -15,13 +24,13 @@ export class TransactionsService {
     private dataSource: DataSource,
   ) {}
 
-  async findAll(userId: string, isAdmin: boolean, accountId?: string) {
+  async findAll(userId: string, isAdmin: boolean, options: FindAllOptions = {}) {
     let query = this.transactionRepository.createQueryBuilder('transaction');
 
-    if (accountId) {
+    if (options.accountId) {
       // Verify ownership if not admin
       if (!isAdmin) {
-        const account = await this.accountRepository.findOne({ where: { id: accountId } });
+        const account = await this.accountRepository.findOne({ where: { id: options.accountId } });
         if (!account || account.userId !== userId) {
           throw new ForbiddenException('Access denied');
         }
@@ -29,7 +38,7 @@ export class TransactionsService {
 
       query = query.where(
         'transaction.fromAccountId = :accountId OR transaction.toAccountId = :accountId',
-        { accountId },
+        { accountId: options.accountId },
       );
     } else if (!isAdmin) {
       // For non-admin users, filter by their accounts
@@ -39,9 +48,28 @@ export class TransactionsService {
         .where('fromAccount.userId = :userId OR toAccount.userId = :userId', { userId });
     }
 
+    // Apply type filter
+    if (options.type) {
+      query = query.andWhere('transaction.transactionType = :type', { type: options.type });
+    }
+
+    // Apply status filter
+    if (options.status) {
+      query = query.andWhere('transaction.status = :status', { status: options.status });
+    }
+
+    // Apply date range filters
+    if (options.startDate) {
+      query = query.andWhere('transaction.createdAt >= :startDate', { startDate: new Date(options.startDate) });
+    }
+
+    if (options.endDate) {
+      query = query.andWhere('transaction.createdAt <= :endDate', { endDate: new Date(options.endDate) });
+    }
+
     const transactions = await query
       .orderBy('transaction.createdAt', 'DESC')
-      .limit(20)
+      .limit(options.limit || 20)
       .getMany();
 
     return { success: true, data: transactions };
@@ -69,6 +97,81 @@ export class TransactionsService {
     }
 
     return { success: true, data: transaction };
+  }
+
+  async getAnalytics(userId: string, isAdmin: boolean, startDate?: string, endDate?: string) {
+    let query = this.transactionRepository.createQueryBuilder('transaction');
+
+    if (!isAdmin) {
+      // For non-admin users, filter by their accounts
+      query = query
+        .leftJoin('transaction.fromAccount', 'fromAccount')
+        .leftJoin('transaction.toAccount', 'toAccount')
+        .where('fromAccount.userId = :userId OR toAccount.userId = :userId', { userId });
+    }
+
+    // Apply date range filters
+    if (startDate) {
+      query = query.andWhere('transaction.createdAt >= :startDate', { startDate: new Date(startDate) });
+    }
+
+    if (endDate) {
+      query = query.andWhere('transaction.createdAt <= :endDate', { endDate: new Date(endDate) });
+    }
+
+    const transactions = await query.getMany();
+
+    // Calculate analytics
+    const totalCount = transactions.length;
+    const totalAmount = transactions.reduce((sum, tx) => sum + Number(tx.amount), 0);
+    const averageAmount = totalCount > 0 ? totalAmount / totalCount : 0;
+
+    const transfers = transactions.filter(tx => tx.transactionType === 'transfer').length;
+    const deposits = transactions.filter(tx => tx.transactionType === 'deposit').length;
+    const withdrawals = transactions.filter(tx => tx.transactionType === 'withdrawal').length;
+
+    const completed = transactions.filter(tx => tx.status === 'completed').length;
+    const pending = transactions.filter(tx => tx.status === 'pending').length;
+    const failed = transactions.filter(tx => tx.status === 'failed').length;
+
+    // Group by type for amount breakdown
+    const amountByType = {
+      transfers: transactions
+        .filter(tx => tx.transactionType === 'transfer')
+        .reduce((sum, tx) => sum + Number(tx.amount), 0),
+      deposits: transactions
+        .filter(tx => tx.transactionType === 'deposit')
+        .reduce((sum, tx) => sum + Number(tx.amount), 0),
+      withdrawals: transactions
+        .filter(tx => tx.transactionType === 'withdrawal')
+        .reduce((sum, tx) => sum + Number(tx.amount), 0),
+    };
+
+    return {
+      success: true,
+      data: {
+        summary: {
+          totalCount,
+          totalAmount: Math.round(totalAmount * 100) / 100,
+          averageAmount: Math.round(averageAmount * 100) / 100,
+        },
+        byType: {
+          transfers,
+          deposits,
+          withdrawals,
+        },
+        amountByType,
+        byStatus: {
+          completed,
+          pending,
+          failed,
+        },
+        dateRange: {
+          startDate: startDate ? new Date(startDate) : null,
+          endDate: endDate ? new Date(endDate) : null,
+        },
+      },
+    };
   }
 
   async createTransfer(userId: string, isAdmin: boolean, createTransferDto: CreateTransferDto) {
