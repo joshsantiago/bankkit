@@ -204,6 +204,16 @@ export const Cards: React.FC = () => {
 
           {/* Card Management Area */}
           <div className="lg:col-span-8 space-y-8">
+            {loading ? (
+              <div className="flex items-center justify-center p-20">
+                <Loader2 className="animate-spin text-emerald-600" size={48} />
+              </div>
+            ) : !selectedCard ? (
+              <div className="text-center p-20">
+                <p className="text-gray-400 font-bold text-lg">No cards available</p>
+                <p className="text-gray-400 text-sm">Create a new card to get started</p>
+              </div>
+            ) : (
             <AnimatePresence mode="wait">
               <motion.div
                 key={selectedCard.id}
