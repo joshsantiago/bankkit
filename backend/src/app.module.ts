@@ -9,11 +9,14 @@ import { TransactionsModule } from './transactions/transactions.module';
 import { AccountsModule } from './accounts/accounts.module';
 import { CardsModule } from './cards/cards.module';
 import { SettingsModule } from './settings/settings.module';
+import { SecurityModule } from './security/security.module';
 import { UsersModule } from './users/users.module';
 import { User } from './entities/user.entity';
 import { Account } from './entities/account.entity';
 import { Transaction } from './entities/transaction.entity';
 import { Card } from './entities/card.entity';
+import { UserSession } from './entities/user-session.entity';
+import { SecurityLog } from './entities/security-log.entity';
 
 @Module({
   imports: [
@@ -30,7 +33,7 @@ import { Card } from './entities/card.entity';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        entities: [User, Account, Transaction, Card],
+        entities: [User, Account, Transaction, Card, UserSession, SecurityLog],
         synchronize: configService.get('NODE_ENV') === 'development',
       }),
     }),
@@ -45,6 +48,7 @@ import { Card } from './entities/card.entity';
     DashboardModule,
     CardsModule,
     SettingsModule,
+    SecurityModule,
     AdminModule,
   ],
 })

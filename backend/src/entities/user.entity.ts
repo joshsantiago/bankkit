@@ -51,6 +51,17 @@ export class User {
     currency: string;
   };
 
+  @Column({ type: 'jsonb', nullable: true })
+  privacySettings: {
+    dataSharing: boolean;
+    locationAccess: boolean;
+    marketingEmails: boolean;
+    publicProfile: boolean;
+  };
+
+  @Column({ name: 'two_factor_enabled', default: false })
+  twoFactorEnabled: boolean;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

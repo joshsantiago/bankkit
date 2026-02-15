@@ -5,6 +5,8 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from '../entities/user.entity';
 import { Account } from '../entities/account.entity';
+import { UserSession } from '../entities/user-session.entity';
+import { SecurityLog } from '../entities/security-log.entity';
 import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 
@@ -15,6 +17,10 @@ export class AuthService {
     private userRepository: Repository<User>,
     @InjectRepository(Account)
     private accountRepository: Repository<Account>,
+    @InjectRepository(UserSession)
+    private sessionRepository: Repository<UserSession>,
+    @InjectRepository(SecurityLog)
+    private securityLogRepository: Repository<SecurityLog>,
     private jwtService: JwtService,
   ) {}
 
@@ -87,7 +93,7 @@ export class AuthService {
     return Math.floor(100000000000 + Math.random() * 900000000000).toString();
   }
 
-  async login(loginDto: LoginDto) {
+  async login(loginDto: LoginDto, ipAddress?: string, userAgent?: string) {
     const user = await this.userRepository.findOne({
       where: { email: loginDto.email },
     });
@@ -110,6 +116,10 @@ export class AuthService {
       email: user.email,
       role: user.role,
     });
+
+    // Create session and log security event
+    await this.createSession(user.id, ipAddress, userAgent);
+    await this.logSecurityEvent(user.id, 'login', 'success', 'Successful login', ipAddress);
 
     return {
       success: true,
@@ -145,6 +155,111 @@ export class AuthService {
         status: user.status,
         created_at: user.createdAt,
       },
+    };
+  }
+
+  /**
+   * Create a session for user (called on login)
+   */
+  private async createSession(
+    userId: string,
+    ipAddress?: string,
+    userAgent?: string,
+  ): Promise<void> {
+    // Mark other sessions as not current
+    await this.sessionRepository.update({ userId }, { isCurrent: false });
+
+    // Parse user agent
+    const deviceInfo = this.parseUserAgent(userAgent);
+
+    const session = this.sessionRepository.create({
+      userId,
+      deviceName: deviceInfo.deviceName,
+      deviceType: deviceInfo.deviceType,
+      browser: deviceInfo.browser,
+      os: deviceInfo.os,
+      ipAddress,
+      location: 'San Francisco, CA', // Dummy location
+      isActive: true,
+      isCurrent: true,
+    });
+
+    await this.sessionRepository.save(session);
+  }
+
+  /**
+   * Log a security event
+   */
+  private async logSecurityEvent(
+    userId: string,
+    event: string,
+    status: 'success' | 'warning' | 'danger' = 'success',
+    description?: string,
+    ipAddress?: string,
+  ): Promise<void> {
+    const log = this.securityLogRepository.create({
+      userId,
+      event,
+      status,
+      description,
+      ipAddress,
+    });
+
+    await this.securityLogRepository.save(log);
+  }
+
+  /**
+   * Parse user agent string to extract device info
+   */
+  private parseUserAgent(userAgent?: string): any {
+    if (!userAgent) {
+      return {
+        deviceName: 'Unknown Device',
+        deviceType: 'desktop',
+        browser: 'Unknown',
+        os: 'Unknown',
+      };
+    }
+
+    // Simple parsing - in production use a library like ua-parser-js
+    let browser = 'Unknown';
+    let os = 'Unknown';
+    let deviceType = 'desktop';
+
+    if (userAgent.includes('Chrome')) {
+      browser = 'Chrome';
+    } else if (userAgent.includes('Safari')) {
+      browser = 'Safari';
+    } else if (userAgent.includes('Firefox')) {
+      browser = 'Firefox';
+    } else if (userAgent.includes('Edge')) {
+      browser = 'Edge';
+    }
+
+    if (userAgent.includes('Windows')) {
+      os = 'Windows';
+    } else if (userAgent.includes('Mac')) {
+      os = 'macOS';
+    } else if (userAgent.includes('Linux')) {
+      os = 'Linux';
+    } else if (userAgent.includes('iPhone')) {
+      os = 'iOS';
+      deviceType = 'mobile';
+    } else if (userAgent.includes('iPad')) {
+      os = 'iOS';
+      deviceType = 'tablet';
+    } else if (userAgent.includes('Android')) {
+      os = 'Android';
+      deviceType = 'mobile';
+    }
+
+    const deviceName = `${browser} on ${os}`;
+
+    return {
+      deviceName,
+      deviceType,
+      browser,
+      os,
     };
   }
 }
