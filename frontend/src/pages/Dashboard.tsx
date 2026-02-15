@@ -53,32 +53,6 @@ import { AuthContext } from '../context/AuthContext';
 import { dashboardService } from '../services/dashboardService';
 import type { DashboardData, ProfileCompletion } from '../services/dashboardService';
 
-// --- Mock Data ---
-const ONBOARDING_TASKS = [
-  { id: 'verify-id', title: 'Verify Identity', desc: 'SSN & ID upload', status: 'Pending' },
-  { id: 'confirm-address', title: 'Confirm Address', desc: 'Verify residency', status: 'Pending' },
-  { id: 'link-bank', title: 'Link External Bank', desc: 'For easy transfers', status: 'Pending' },
-  { id: 'enable-2fa', title: 'Enable 2FA', desc: 'Secure your account', status: 'Pending' },
-];
-
-const SPENDING_DATA = [
-  { name: 'Mon', amount: 120 },
-  { name: 'Tue', amount: 80 },
-  { name: 'Wed', amount: 200 },
-  { name: 'Thu', amount: 150 },
-  { name: 'Fri', amount: 300 },
-  { name: 'Sat', amount: 250 },
-  { name: 'Sun', amount: 90 },
-];
-
-const TRANSACTIONS = [
-  { id: '1', merchant: 'Amazon', category: 'Shopping', amount: -89.99, date: 'Today', status: 'Completed' },
-  { id: '2', merchant: 'Salary Deposit', category: 'Income', amount: 3500, date: 'Yesterday', status: 'Completed' },
-  { id: '3', merchant: 'Netflix', category: 'Entertainment', amount: -15.99, date: 'Mar 12', status: 'Completed' },
-  { id: '4', merchant: 'Whole Foods', category: 'Food & Dining', amount: -156.32, date: 'Mar 11', status: 'Completed' },
-  { id: '5', merchant: 'Uber', category: 'Transportation', amount: -24.50, date: 'Mar 10', status: 'Pending' },
-];
-
 // --- Sub-Components ---
 
 const StatCard = ({ title, balance, accNum, type, apy, onClick }: any) => (
@@ -310,7 +284,7 @@ export const Dashboard: React.FC = () => {
                   />
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                  {ONBOARDING_TASKS.map(task => (
+                  {onboardingTasks.map(task => (
                     <div key={task.id} className="flex items-start gap-3">
                       <div className={`mt-1 ${task.status === 'Completed' ? 'text-emerald-500' : 'text-gray-300'}`}>
                         {task.status === 'Completed' ? <CheckCircle2 size={18} /> : <AlertCircle size={18} />}
@@ -337,21 +311,17 @@ export const Dashboard: React.FC = () => {
             <div className="xl:col-span-2 space-y-8">
               {/* Account Cards */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <StatCard
-                  title="Checking"
-                  balance={2840.50}
-                  accNum={user?.accountNumber || '1029384756'}
-                  type="checking"
-                  onClick={() => navigate('/accounts')}
-                />
-                <StatCard
-                  title="Savings"
-                  balance={14200.00}
-                  accNum="9876543210"
-                  type="savings"
-                  apy="4.50%"
-                  onClick={() => navigate('/accounts')}
-                />
+                {dashboardData?.accounts?.map((account: any) => (
+                  <StatCard
+                    key={account.id}
+                    title={account.accountType}
+                    balance={account.balance}
+                    accNum={account.accountNumber}
+                    type={account.accountType}
+                    apy={account.apy}
+                    onClick={() => navigate('/accounts')}
+                  />
+                ))}
               </div>
 
               {/* Spending Chart */}
@@ -368,7 +338,7 @@ export const Dashboard: React.FC = () => {
                 </div>
                 <div className="h-[300px] w-full">
                   <ResponsiveContainer width="100%" height="100%">
-                    <AreaChart data={SPENDING_DATA}>
+                    <AreaChart data={dashboardData?.weeklySpending || []}>
                       <defs>
                         <linearGradient id="colorAmount" x1="0" y1="0" x2="0" y2="1">
                           <stop offset="5%" stopColor="#10b981" stopOpacity={0.1}/>
@@ -376,7 +346,7 @@ export const Dashboard: React.FC = () => {
                         </linearGradient>
                       </defs>
                       <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F1F5F9" />
-                      <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fontSize: 12, fontWeight: 700, fill: '#94A3B8' }} dy={10} />
+                      <XAxis dataKey="day" axisLine={false} tickLine={false} tick={{ fontSize: 12, fontWeight: 700, fill: '#94A3B8' }} dy={10} />
                       <YAxis hide />
                       <Tooltip
                         contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontWeight: 700 }}
@@ -401,7 +371,7 @@ export const Dashboard: React.FC = () => {
                   <button onClick={() => navigate('/transactions')} className="text-sm font-black text-emerald-600 hover:underline">View All</button>
                 </div>
                 <div className="space-y-4">
-                  {TRANSACTIONS.map(tx => (
+                  {dashboardData?.recentTransactions?.map((tx: any) => (
                     <div key={tx.id} className="flex items-center justify-between p-4 hover:bg-gray-50 rounded-2xl transition-colors cursor-pointer group">
                       <div className="flex items-center gap-4">
                         <div className={`w-12 h-12 rounded-xl flex items-center justify-center ${tx.amount < 0 ? 'bg-red-50 text-red-500' : 'bg-emerald-50 text-emerald-500'}`}>
@@ -409,7 +379,7 @@ export const Dashboard: React.FC = () => {
                         </div>
                         <div>
                           <p className="font-black text-[#064E3B] group-hover:text-emerald-700">{tx.merchant}</p>
-                          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{tx.category} • {tx.date}</p>
+                          <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">{tx.category} • {new Date(tx.date).toLocaleDateString()}</p>
                         </div>
                       </div>
                       <div className="text-right">
