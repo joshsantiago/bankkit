@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
+import { toast } from 'sonner';
 import {
   ArrowLeft,
   Search,
@@ -21,31 +22,85 @@ import {
   Receipt,
   AlertCircle,
   HelpCircle,
-  ChevronDown
+  ChevronDown,
+  Loader2,
+  ArrowUpRight
 } from 'lucide-react';
+import { transactionService, Transaction } from '../services/transactionService';
 
-// --- Mock Data ---
+// Category icon mapping
+const getCategoryIcon = (category: string) => {
+  const icons: Record<string, any> = {
+    'Technology': Smartphone,
+    'Food & Drink': Coffee,
+    'Entertainment': Music,
+    'Transport': Car,
+    'Shopping': ShoppingBag,
+    'Health': Utensils,
+    'Travel': Car,
+    'Investment': Wallet,
+    'Income': Wallet,
+    'Other': CreditCard,
+  };
+  return icons[category] || CreditCard;
+};
 
-const ALL_TRANSACTIONS = [
-  { id: 1, merchant: 'Apple Store', category: 'Technology', amount: -1299.00, date: 'Feb 14, 2026', time: '14:30', status: 'Completed', type: 'debit', account: 'Checking ••2234', icon: Smartphone, color: 'bg-blue-50 text-blue-500' },
-  { id: 2, merchant: 'Starbucks', category: 'Food & Drink', amount: -6.50, date: 'Feb 14, 2026', time: '09:15', status: 'Completed', type: 'debit', account: 'Checking ••2234', icon: Coffee, color: 'bg-orange-50 text-orange-500' },
-  { id: 3, merchant: 'Salary Deposit', category: 'Income', amount: 4500.00, date: 'Feb 12, 2026', time: '08:00', status: 'Completed', type: 'credit', account: 'Savings ••3210', icon: Wallet, color: 'bg-emerald-50 text-emerald-500' },
-  { id: 4, merchant: 'Netflix', category: 'Entertainment', amount: -15.99, date: 'Feb 10, 2026', time: '20:45', status: 'Completed', type: 'debit', account: 'Checking ••2234', icon: Music, color: 'bg-red-50 text-red-500' },
-  { id: 5, merchant: 'Uber', category: 'Transport', amount: -24.50, date: 'Feb 09, 2026', time: '18:20', status: 'Completed', type: 'debit', account: 'Checking ••2234', icon: Car, color: 'bg-gray-50 text-gray-500' },
-  { id: 6, merchant: 'Amazon', category: 'Shopping', amount: -89.99, date: 'Feb 08, 2026', time: '11:10', status: 'Pending', type: 'debit', account: 'Checking ••2234', icon: ShoppingBag, color: 'bg-indigo-50 text-indigo-500' },
-  { id: 7, merchant: 'Sweetgreen', category: 'Food & Drink', amount: -18.40, date: 'Feb 07, 2026', time: '13:05', status: 'Completed', type: 'debit', account: 'Checking ••2234', icon: Utensils, color: 'bg-green-50 text-green-500' },
-  { id: 8, merchant: 'Gym Membership', category: 'Health', amount: -45.00, date: 'Feb 01, 2026', time: '07:00', status: 'Completed', type: 'debit', account: 'Checking ••2234', icon: Smartphone, color: 'bg-pink-50 text-pink-500' },
-  { id: 9, merchant: 'Airbnb', category: 'Travel', amount: -450.00, date: 'Jan 28, 2026', time: '15:30', status: 'Completed', type: 'debit', account: 'Checking ••2234', icon: Car, color: 'bg-rose-50 text-rose-500' },
-  { id: 10, merchant: 'Dividend', category: 'Investment', amount: 125.50, date: 'Jan 25, 2026', time: '09:00', status: 'Completed', type: 'credit', account: 'Savings ••3210', icon: Wallet, color: 'bg-emerald-50 text-emerald-500' },
-];
+// Category color mapping
+const getCategoryColor = (type: string) => {
+  if (type === 'credit' || type === 'deposit') {
+    return 'bg-emerald-50 text-emerald-500';
+  }
+  return 'bg-blue-50 text-blue-500';
+};
+
+// Transform API transaction to display format
+const transformTransaction = (tx: Transaction) => {
+  const date = new Date(tx.createdAt);
+  const isDebit = tx.amount < 0 || tx.transactionType === 'debit' || tx.transactionType === 'withdrawal';
+  
+  return {
+    id: tx.id,
+    merchant: tx.description || 'Unknown',
+    category: tx.transactionType.charAt(0).toUpperCase() + tx.transactionType.slice(1),
+    amount: tx.amount,
+    date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }),
+    time: date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
+    status: tx.status.charAt(0).toUpperCase() + tx.status.slice(1),
+    type: isDebit ? 'debit' : 'credit',
+    account: 'Checking ••2234',
+    icon: getCategoryIcon(tx.transactionType),
+    color: getCategoryColor(tx.amount),
+    raw: tx,
+  };
+};
 
 export const Transactions: React.FC = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState('');
   const [filterType, setFilterType] = useState('All');
   const [selectedTx, setSelectedTx] = useState<any>(null);
+  const [transactions, setTransactions] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filteredTransactions = ALL_TRANSACTIONS.filter(tx => {
+  useEffect(() => {
+    loadTransactions();
+  }, []);
+
+  const loadTransactions = async () => {
+    try {
+      setLoading(true);
+      const data = await transactionService.getTransactions();
+      const transformed = data.map(transformTransaction);
+      setTransactions(transformed);
+    } catch (error) {
+      console.error('Failed to load transactions:', error);
+      toast.error('Failed to load transactions');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredTransactions = transactions.filter(tx => {
     const matchesSearch = tx.merchant.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          tx.category.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesType = filterType === 'All' ||
@@ -54,8 +109,8 @@ export const Transactions: React.FC = () => {
     return matchesSearch && matchesType;
   });
 
-  const totalIncome = ALL_TRANSACTIONS.filter(tx => tx.type === 'credit').reduce((acc, curr) => acc + curr.amount, 0);
-  const totalExpenses = ALL_TRANSACTIONS.filter(tx => tx.type === 'debit').reduce((acc, curr) => acc + curr.amount, 0);
+  const totalIncome = transactions.filter(tx => tx.type === 'credit').reduce((acc, curr) => acc + curr.amount, 0);
+  const totalExpenses = transactions.filter(tx => tx.type === 'debit').reduce((acc, curr) => acc + curr.amount, 0);
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
