@@ -6,6 +6,9 @@ export class Transaction {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column({ name: 'account_id', nullable: true })
+  accountId: string;
+
   @Column({ name: 'from_account_id', nullable: true })
   fromAccountId: string;
 

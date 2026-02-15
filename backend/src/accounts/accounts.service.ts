@@ -5,7 +5,7 @@ import { Account } from '../entities/account.entity';
 import { Transaction } from '../entities/transaction.entity';
 import { CreateAccountDto } from './dto/create-account.dto';
 
-interface AccountAlert {
+export interface AccountAlert {
   id: string;
   accountId: string;
   type: 'low_balance' | 'large_transaction' | 'deposit' | 'withdrawal';
@@ -14,7 +14,7 @@ interface AccountAlert {
   createdAt: Date;
 }
 
-interface Beneficiary {
+export interface Beneficiary {
   id: string;
   accountId: string;
   name: string;

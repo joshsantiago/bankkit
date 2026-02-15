@@ -14,7 +14,7 @@ interface FindAllOptions {
   limit?: number;
 }
 
-interface RecurringTransaction {
+export interface RecurringTransaction {
   id: string;
   userId: string;
   fromAccountId: string;
@@ -28,7 +28,7 @@ interface RecurringTransaction {
   createdAt: Date;
 }
 
-interface TransactionCategory {
+export interface TransactionCategory {
   id: string;
   name: string;
   icon: string;

@@ -541,7 +541,14 @@ export class DashboardService {
     const totalSpending = recentTransactions.reduce((sum, tx) => sum + Math.abs(Number(tx.amount)), 0);
     const avgDailySpending = totalSpending / 30;
 
-    const tips = [];
+    const tips: Array<{
+      id: string;
+      title: string;
+      description: string;
+      category: string;
+      priority: 'high' | 'medium' | 'low';
+      actionUrl?: string;
+    }> = [];
 
     // Savings tips
     if (savingsBalance < totalBalance * 0.2) {
@@ -624,7 +631,18 @@ export class DashboardService {
     }
 
     // Generate monthly statements for the last 6 months
-    const statements = [];
+    const statements: Array<{
+      id: string;
+      accountId: string;
+      accountType: string;
+      accountNumber: string;
+      period: { year: number; month: number; monthName: string };
+      startingBalance: number;
+      endingBalance: number;
+      credits: number;
+      debits: number;
+      transactionCount: number;
+    }> = [];
     const now = new Date();
 
     for (let i = 0; i < 6; i++) {
