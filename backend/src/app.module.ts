@@ -7,10 +7,12 @@ import { AdminModule } from './admin/admin.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { AccountsModule } from './accounts/accounts.module';
+import { CardsModule } from './cards/cards.module';
 import { UsersModule } from './users/users.module';
 import { User } from './entities/user.entity';
 import { Account } from './entities/account.entity';
 import { Transaction } from './entities/transaction.entity';
+import { Card } from './entities/card.entity';
 
 @Module({
   imports: [
@@ -27,7 +29,7 @@ import { Transaction } from './entities/transaction.entity';
         username: configService.get('DB_USERNAME'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        entities: [User, Account, Transaction],
+        entities: [User, Account, Transaction, Card],
         synchronize: configService.get('NODE_ENV') === 'development',
       }),
     }),
@@ -40,6 +42,7 @@ import { Transaction } from './entities/transaction.entity';
     AccountsModule,
     TransactionsModule,
     DashboardModule,
+    CardsModule,
     AdminModule,
   ],
 })
