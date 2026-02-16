@@ -154,7 +154,8 @@ export const Cards: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-[#F8FAFC] lg:ml-80 pb-24">
+    <>
+      <div className="min-h-screen bg-[#F8FAFC] lg:ml-80 pb-24">
       {/* Header */}
       <div className="bg-white border-b border-gray-100 sticky top-0 z-20">
         <div className="max-w-7xl mx-auto px-6 py-8">
@@ -263,7 +264,7 @@ export const Cards: React.FC = () => {
                 <p className="text-gray-400 font-bold text-lg">No cards available</p>
                 <p className="text-gray-400 text-sm">Create a new card to get started</p>
               </div>
-            ) : selectedCard && (
+            ) : (
               <AnimatePresence mode="wait">
               <motion.div
                 key={selectedCard.id}
@@ -462,6 +463,7 @@ export const Cards: React.FC = () => {
                 </div>
               </motion.div>
             </AnimatePresence>
+            )}
           </div>
         </div>
       </div>
@@ -480,6 +482,7 @@ export const Cards: React.FC = () => {
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+      </div>
+    </>
   );
 };
