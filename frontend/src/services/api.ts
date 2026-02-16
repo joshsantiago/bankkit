@@ -28,10 +28,11 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Clear token and redirect to login
+      // Clear token on 401
       localStorage.removeItem('token');
       localStorage.removeItem('user');
-      window.location.href = '/login';
+      // Dispatch custom event for components to handle logout
+      window.dispatchEvent(new CustomEvent('auth-error', { detail: 'Token expired' }));
     }
     return Promise.reject(error);
   }

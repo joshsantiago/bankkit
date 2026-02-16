@@ -27,6 +27,15 @@ export const AuthProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     } else {
       setLoading(false);
     }
+
+    // Listen for auth errors from API interceptor
+    const handleAuthError = () => {
+      setUser(null);
+      setLoading(false);
+    };
+
+    window.addEventListener('auth-error', handleAuthError);
+    return () => window.removeEventListener('auth-error', handleAuthError);
   }, []);
 
   const loadUser = async () => {
