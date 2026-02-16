@@ -25,6 +25,12 @@ export class Account {
   @Column({ type: 'enum', enum: ['active', 'inactive', 'closed'], default: 'active' })
   status: string;
 
+  @Column({ name: 'transfer_limit', type: 'decimal', precision: 15, scale: 2, default: 50000 })
+  transferLimit: number;
+
+  @Column({ name: 'daily_transfer_amount', type: 'decimal', precision: 15, scale: 2, default: 0 })
+  dailyTransferAmount: number;
+
   @CreateDateColumn({ name: 'created_at' })
   createdAt: Date;
 

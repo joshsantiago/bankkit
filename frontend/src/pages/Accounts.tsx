@@ -47,6 +47,8 @@ interface AccountData {
   balance: number;
   status: string;
   currency: string;
+  transferLimit?: number;
+  dailyTransferAmount?: number;
 }
 
 export const Accounts: React.FC = () => {
@@ -405,11 +407,18 @@ export const Accounts: React.FC = () => {
                           <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">Transfer Limit</p>
                           <div className="space-y-2">
                             <div className="flex justify-between items-end">
-                              <p className="text-sm font-bold text-[#064E3B]">$12,400 / $50,000</p>
-                              <p className="text-[10px] font-black text-gray-400">25% Used</p>
+                              <p className="text-sm font-bold text-[#064E3B]">
+                                ${Number(selectedAccount.dailyTransferAmount || 0).toLocaleString()} / ${Number(selectedAccount.transferLimit || 50000).toLocaleString()}
+                              </p>
+                              <p className="text-[10px] font-black text-gray-400">
+                                {selectedAccount.transferLimit ? Math.round((Number(selectedAccount.dailyTransferAmount || 0) / Number(selectedAccount.transferLimit)) * 100) : 25}% Used
+                              </p>
                             </div>
                             <div className="h-1.5 bg-gray-50 rounded-full overflow-hidden">
-                              <div className="h-full bg-emerald-500 w-1/4" />
+                              <div 
+                                className="h-full bg-emerald-500" 
+                                style={{ width: `${selectedAccount.transferLimit ? Math.min(100, (Number(selectedAccount.dailyTransferAmount || 0) / Number(selectedAccount.transferLimit)) * 100) : 25}%` }} 
+                              />
                             </div>
                           </div>
                         </div>
