@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
+import { useAuth } from '../context/AuthContext';
 import {
   ArrowLeft,
   Plus,
@@ -93,6 +94,7 @@ const transformCard = (card: Card) => {
 
 export const Cards: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
   const [cards, setCards] = useState<ReturnType<typeof transformCard>[]>([]);
   const [selectedCard, setSelectedCard] = useState<ReturnType<typeof transformCard> | null>(null);
   const [showNumbers, setShowNumbers] = useState(false);
@@ -294,7 +296,7 @@ export const Cards: React.FC = () => {
                     <div className="flex justify-between items-end">
                       <div>
                         <p className="text-[10px] font-bold opacity-50 uppercase tracking-widest mb-1">Card Holder</p>
-                        <p className="font-black tracking-wider uppercase">Alex Rivera</p>
+                        <p className="font-black tracking-wider uppercase">{user ? `${user.first_name} ${user.last_name}` : 'Card Holder'}</p>
                       </div>
                       <div className="text-right">
                         <p className="text-[10px] font-bold opacity-50 uppercase tracking-widest mb-1">Expires</p>
