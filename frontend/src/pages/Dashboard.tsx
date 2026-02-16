@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from 'react';
+import { useState, useEffect, useContext, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { toast } from 'sonner';
@@ -119,6 +119,15 @@ export const Dashboard: React.FC = () => {
   const [showSsn, setShowSsn] = useState(false);
   const [address, setAddress] = useState({ street: '', city: '', state: '', zip: '' });
   const [selectedBank, setSelectedBank] = useState<string | null>(null);
+  
+  // Document upload state for verification step 2
+  const [uploadedDoc, setUploadedDoc] = useState<string | null>(null);
+  const [showCamera, setShowCamera] = useState(false);
+  const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+  const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   // Fetch dashboard data on mount
   useEffect(() => {
@@ -174,6 +183,75 @@ export const Dashboard: React.FC = () => {
     logout();
     navigate('/login');
   };
+
+  // Document upload handlers
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setUploadedDoc(reader.result as string);
+        toast.success('Document uploaded successfully!');
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } 
+      });
+      setCameraStream(stream);
+      setShowCamera(true);
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (error) {
+      console.error('Error accessing camera:', error);
+      toast.error('Could not access camera. Please check permissions.');
+    }
+  };
+
+  const capturePhoto = () => {
+    if (videoRef.current && canvasRef.current) {
+      const canvas = canvasRef.current;
+      const video = videoRef.current;
+      canvas.width = video.videoWidth;
+      canvas.height = video.videoHeight;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(video, 0, 0);
+        const imageData = canvas.toDataURL('image/jpeg');
+        setCapturedPhoto(imageData);
+        setUploadedDoc(imageData);
+        stopCamera();
+        toast.success('Photo captured successfully!');
+      }
+    }
+  };
+
+  const stopCamera = () => {
+    if (cameraStream) {
+      cameraStream.getTracks().forEach(track => track.stop());
+      setCameraStream(null);
+    }
+    setShowCamera(false);
+  };
+
+  const retakePhoto = () => {
+    setCapturedPhoto(null);
+    setUploadedDoc(null);
+  };
+
+  // Cleanup camera on unmount
+  useEffect(() => {
+    return () => {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [cameraStream]);
 
   // Get profile completion from dashboard data or default
   const profileCompletion = dashboardData?.profileCompletion?.percentage || 0;
@@ -1004,24 +1082,96 @@ export const Dashboard: React.FC = () => {
                       <p className="text-gray-500 font-bold leading-relaxed">
                         Please upload a clear photo of your government-issued ID (Driver's License or Passport).
                       </p>
-                      <div className="grid grid-cols-2 gap-4">
-                        <button className="aspect-[4/3] border-2 border-dashed border-gray-200 rounded-[2rem] flex flex-col items-center justify-center gap-4 hover:border-emerald-500 hover:bg-emerald-50 transition-all group">
-                          <div className="p-4 bg-gray-50 rounded-2xl group-hover:bg-white transition-colors">
-                            <Camera size={32} className="text-gray-400 group-hover:text-emerald-500" />
+                      
+                      {/* Hidden file input */}
+                      <input
+                        type="file"
+                        ref={fileInputRef}
+                        onChange={handleFileUpload}
+                        accept="image/*"
+                        className="hidden"
+                      />
+                      
+                      {/* Camera view when active */}
+                      {showCamera && (
+                        <div className="space-y-4">
+                          <div className="relative aspect-[4/3] rounded-[2rem] overflow-hidden bg-black">
+                            <video
+                              ref={videoRef}
+                              autoPlay
+                              playsInline
+                              className="w-full h-full object-cover"
+                            />
+                            <button
+                              onClick={capturePhoto}
+                              className="absolute bottom-4 left-1/2 -translate-x-1/2 bg-white p-4 rounded-full shadow-lg hover:scale-110 transition-transform"
+                            >
+                              <div className="w-8 h-8 bg-[#064E3B] rounded-full" />
+                            </button>
+                            <button
+                              onClick={stopCamera}
+                              className="absolute top-4 right-4 bg-white p-2 rounded-full shadow-lg"
+                            >
+                              <X size={20} className="text-gray-600" />
+                            </button>
                           </div>
-                          <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Take Photo</span>
-                        </button>
-                        <button className="aspect-[4/3] border-2 border-dashed border-gray-200 rounded-[2rem] flex flex-col items-center justify-center gap-4 hover:border-emerald-500 hover:bg-emerald-50 transition-all group">
-                          <div className="p-4 bg-gray-50 rounded-2xl group-hover:bg-white transition-colors">
-                            <FileUp size={32} className="text-gray-400 group-hover:text-emerald-500" />
+                          <p className="text-center text-sm font-bold text-gray-400">Position your ID in the frame</p>
+                        </div>
+                      )}
+                      
+                      {/* Show uploaded/captured document preview */}
+                      {uploadedDoc && !showCamera && (
+                        <div className="space-y-4">
+                          <div className="relative aspect-[4/3] rounded-[2rem] overflow-hidden border-2 border-emerald-500">
+                            <img 
+                              src={uploadedDoc} 
+                              alt="Uploaded ID" 
+                              className="w-full h-full object-cover"
+                            />
+                            <div className="absolute top-2 right-2 bg-emerald-500 text-white px-3 py-1 rounded-full text-xs font-bold">
+                              Uploaded ✓
+                            </div>
                           </div>
-                          <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Upload File</span>
-                        </button>
-                      </div>
+                          <button
+                            onClick={retakePhoto}
+                            className="w-full py-3 rounded-2xl border-2 border-gray-200 text-gray-500 font-bold hover:border-gray-300 transition-all"
+                          >
+                            Take Different Photo
+                          </button>
+                        </div>
+                      )}
+                      
+                      {/* Upload buttons - show when no document and no camera */}
+                      {!uploadedDoc && !showCamera && (
+                        <div className="grid grid-cols-2 gap-4">
+                          <button 
+                            onClick={startCamera}
+                            className="aspect-[4/3] border-2 border-dashed border-gray-200 rounded-[2rem] flex flex-col items-center justify-center gap-4 hover:border-emerald-500 hover:bg-emerald-50 transition-all group"
+                          >
+                            <div className="p-4 bg-gray-50 rounded-2xl group-hover:bg-white transition-colors">
+                              <Camera size={32} className="text-gray-400 group-hover:text-emerald-500" />
+                            </div>
+                            <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Take Photo</span>
+                          </button>
+                          <button 
+                            onClick={() => fileInputRef.current?.click()}
+                            className="aspect-[4/3] border-2 border-dashed border-gray-200 rounded-[2rem] flex flex-col items-center justify-center gap-4 hover:border-emerald-500 hover:bg-emerald-50 transition-all group"
+                          >
+                            <div className="p-4 bg-gray-50 rounded-2xl group-hover:bg-white transition-colors">
+                              <FileUp size={32} className="text-gray-400 group-hover:text-emerald-500" />
+                            </div>
+                            <span className="text-xs font-black text-gray-400 uppercase tracking-widest">Upload File</span>
+                          </button>
+                        </div>
+                      )}
+                      
                       <div className="flex items-start gap-3 text-orange-600 bg-orange-50 p-4 rounded-2xl">
                         <AlertCircle size={18} className="mt-0.5 shrink-0" />
                         <p className="text-xs font-bold">Ensure the photo is not blurry and all text is readable.</p>
                       </div>
+                      
+                      {/* Hidden canvas for capturing photo */}
+                      <canvas ref={canvasRef} className="hidden" />
                     </motion.div>
                   )}
 
