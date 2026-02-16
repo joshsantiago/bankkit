@@ -12,7 +12,6 @@ import {
   Eye,
   EyeOff,
   Settings,
-  Smartphone,
   ShoppingBag,
   Wifi,
   Copy,
@@ -114,14 +113,14 @@ export const Cards: React.FC = () => {
       );
       const cardsPromise = cardService.getCards();
       
-      const data = await Promise.race([cardsPromise, timeoutPromise]) as any[];
+      const data = await Promise.race([cardsPromise, timeoutPromise]) as Card[];
       const transformed = data.map(transformCard);
       setCards(transformed);
       if (transformed.length > 0) {
         setSelectedCard(transformed[0]);
         setIsFrozen(transformed[0].status === 'Frozen');
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error('Failed to load cards:', error);
       // Use mock cards as fallback
       setCards(MOCK_CARDS);
@@ -148,8 +147,9 @@ export const Cards: React.FC = () => {
       toast.success(`Card ${isFrozen ? 'unfrozen' : 'frozen'} successfully`);
       setIsFrozen(!isFrozen);
       loadCards();
-    } catch (error: any) {
-      toast.error(error.response?.data?.message || 'Failed to update card status');
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Failed to update card status';
+      toast.error(message);
     }
   };
 
@@ -475,7 +475,7 @@ export const Cards: React.FC = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
-            className="fixed bottom-10 left-1/2 -translate-x-1/2 bg-[#064E3B] text-white px-8 py-4 rounded-full font-black text-sm shadow-2xl flex items-center gap-3 z-[100]"
+            className="fixed bottom-10 left-1/2 -translate-x-1/2 bg-[#064E3B] text-white px-8 py-4 rounded-full font-black text-sm shadow-2xl flex items-center gap-3 z-100"
           >
             <CheckCircle2 className="text-emerald-400" size={18} />
             Card number copied
