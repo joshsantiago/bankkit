@@ -51,7 +51,9 @@ import {
 } from 'recharts';
 import { AuthContext } from '../context/AuthContext';
 import { dashboardService } from '../services/dashboardService';
+import { cardService } from '../services/cardService';
 import type { DashboardData, ProfileCompletion } from '../services/dashboardService';
+import type { Card } from '../services/cardService';
 
 // --- Sub-Components ---
 
@@ -94,8 +96,9 @@ export const Dashboard: React.FC = () => {
   // Dashboard data from API
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
   const [loading, setLoading] = useState(true);
-  
+
   const [user, setUser] = useState<any>(null);
+  const [userCard, setUserCard] = useState<Card | null>(null);
   const [activeTab, setActiveTab] = useState('dashboard');
   const [showCardDetails, setShowCardDetails] = useState(false);
   const [isFrozen, setIsFrozen] = useState(false);
@@ -129,6 +132,16 @@ export const Dashboard: React.FC = () => {
       if (response.success) {
         setDashboardData(response.data);
         setUser(response.data.user);
+      }
+
+      // Load user's first card
+      try {
+        const cards = await cardService.getCards();
+        if (cards && cards.length > 0) {
+          setUserCard(cards[0]);
+        }
+      } catch (cardError) {
+        console.error('Failed to load cards:', cardError);
       }
     } catch (error) {
       console.error('Failed to load dashboard:', error);
@@ -445,7 +458,13 @@ export const Dashboard: React.FC = () => {
                   <div className="space-y-6 relative z-10">
                     <div className="flex items-center gap-3">
                       <p className="text-white font-mono text-xl tracking-[0.2em]">
-                        {showCardDetails ? '4242 8812 9901 2234' : '•••• •••• •••• 2234'}
+                        {userCard ? (
+                          showCardDetails
+                            ? userCard.cardNumber
+                            : `•••• •••• •••• ${userCard.cardNumber.slice(-4)}`
+                        ) : (
+                          showCardDetails ? '4242 8812 9901 2234' : '•••• •••• •••• 2234'
+                        )}
                       </p>
                       <button onClick={() => setShowCardDetails(!showCardDetails)} className="text-white/40 hover:text-white transition-colors">
                         {showCardDetails ? <EyeOff size={20} /> : <Eye size={20} />}
