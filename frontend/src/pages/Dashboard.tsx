@@ -450,7 +450,7 @@ export const Dashboard: React.FC = () => {
                   <div className="flex justify-between items-start relative z-10">
                     <div className="flex items-center gap-2">
                       <ShieldCheck size={24} className="text-emerald-400" />
-                      <span className="text-white font-black text-sm">BankKit</span>
+                      <span className="text-white font-black text-sm">{userCard?.brand || 'BankKit'}</span>
                     </div>
                     <div className="w-10 h-7 bg-white/20 rounded-md backdrop-blur-sm" />
                   </div>
@@ -477,7 +477,7 @@ export const Dashboard: React.FC = () => {
                       </div>
                       <div>
                         <p className="text-[8px] text-white/60 font-black uppercase tracking-widest mb-1">Expires</p>
-                        <p className="text-sm text-white font-bold">12/28</p>
+                        <p className="text-sm text-white font-bold">{userCard?.expiry || '12/28'}</p>
                       </div>
                     </div>
                   </div>
