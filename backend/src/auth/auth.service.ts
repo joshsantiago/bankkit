@@ -5,6 +5,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { User } from '../entities/user.entity';
 import { Account } from '../entities/account.entity';
+import { Card } from '../entities/card.entity';
 import { UserSession } from '../entities/user-session.entity';
 import { SecurityLog } from '../entities/security-log.entity';
 import { RegisterDto } from './dto/register.dto';
@@ -17,6 +18,8 @@ export class AuthService {
     private userRepository: Repository<User>,
     @InjectRepository(Account)
     private accountRepository: Repository<Account>,
+    @InjectRepository(Card)
+    private cardRepository: Repository<Card>,
     @InjectRepository(UserSession)
     private sessionRepository: Repository<UserSession>,
     @InjectRepository(SecurityLog)
@@ -63,6 +66,27 @@ export class AuthService {
           status: 'active',
         });
         await this.accountRepository.save(account);
+
+        // Auto-create a debit card for checking accounts
+        if (type === 'checking') {
+          const cardNumber = this.generateVirtualCardNumber();
+          const card = this.cardRepository.create({
+            userId: user.id,
+            accountId: account.id,
+            name: 'BankKit Debit Card',
+            cardNumber,
+            expiry: this.generateExpiryDate(),
+            cvv: this.generateCVV(),
+            brand: 'Visa',
+            cardType: 'Debit',
+            isVirtual: false,
+            status: 'Active',
+            dailyLimit: 5000,
+            monthlyLimit: 20000,
+            currentSpending: 0,
+          });
+          await this.cardRepository.save(card);
+        }
       }
     }
 
@@ -91,6 +115,28 @@ export class AuthService {
   private generateAccountNumber(): string {
     // Generate a 12-digit account number
     return Math.floor(100000000000 + Math.random() * 900000000000).toString();
+  }
+
+  private generateVirtualCardNumber(): string {
+    // Generate a 16-digit Visa card number (4242424242424242 format)
+    const prefix = '4242'; // Visa prefix
+    const randomDigits = Math.floor(Math.random() * 100000000000000)
+      .toString()
+      .padStart(12, '0');
+    return prefix + randomDigits;
+  }
+
+  private generateExpiryDate(): string {
+    // Generate expiry date 4 years from now
+    const now = new Date();
+    const year = (now.getFullYear() + 4) % 100; // Last 2 digits of year
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    return `${month}/${year}`;
+  }
+
+  private generateCVV(): string {
+    // Generate a random 3-digit CVV
+    return String(Math.floor(100 + Math.random() * 900));
   }
 
   async login(loginDto: LoginDto, ipAddress?: string, userAgent?: string) {
