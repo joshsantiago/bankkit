@@ -158,6 +158,11 @@ export const Dashboard: React.FC = () => {
     return `${digits.slice(0, 3)}-${digits.slice(3, 5)}-${digits.slice(5, 9)}`;
   };
 
+  const formatCardNumber = (cardNumber: string) => {
+    // Format card number as XXXX XXXX XXXX XXXX
+    return cardNumber.replace(/\s/g, '').replace(/(\d{4})(?=\d)/g, '$1 ');
+  };
+
   const handleSSNChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const formatted = formatSSN(e.target.value);
     if (formatted.replace(/\D/g, '').length <= 9) {
@@ -460,7 +465,7 @@ export const Dashboard: React.FC = () => {
                       <p className="text-white font-mono text-xl tracking-[0.2em]">
                         {userCard ? (
                           showCardDetails
-                            ? userCard.cardNumber
+                            ? formatCardNumber(userCard.cardNumber)
                             : `•••• •••• •••• ${userCard.cardNumber.slice(-4)}`
                         ) : (
                           showCardDetails ? '4242 8812 9901 2234' : '•••• •••• •••• 2234'
