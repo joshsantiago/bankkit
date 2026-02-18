@@ -269,7 +269,7 @@ export function LoginPage() {
               </div>
 
               <p className="text-center text-sm text-gray-400 font-medium leading-relaxed">
-                By signing in, you agree to our <button className="underline hover:text-emerald-600">Terms of Service</button> and <button className="underline hover:text-emerald-600">Privacy Policy</button>.
+                By signing in, you agree to our <button onClick={() => navigate('/terms')} className="underline hover:text-emerald-600">Terms of Service</button> and <button onClick={() => navigate('/privacy')} className="underline hover:text-emerald-600">Privacy Policy</button>.
               </p>
             </motion.div>
           ) : (

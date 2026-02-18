@@ -15,6 +15,8 @@ import { CheckSavingsPage as CheckSavings } from './pages/CheckSavings';
 import { LoginPage as Login } from './pages/Login';
 import { Register } from './pages/Register';
 import { OnboardingPage as Onboarding } from './pages/Onboarding';
+import { TermsOfService } from './pages/TermsOfService';
+import { PrivacyPolicy } from './pages/PrivacyPolicy';
 import { Dashboard } from './pages/Dashboard';
 import { Accounts } from './pages/Accounts';
 import { Transactions } from './pages/Transactions';
@@ -41,6 +43,8 @@ function AppRoutes() {
             <Route path="/login" element={<PageTransition><Login /></PageTransition>} />
             <Route path="/register" element={<PageTransition><Register /></PageTransition>} />
             <Route path="/onboarding" element={<PageTransition><Onboarding /></PageTransition>} />
+            <Route path="/terms" element={<PageTransition><TermsOfService /></PageTransition>} />
+            <Route path="/privacy" element={<PageTransition><PrivacyPolicy /></PageTransition>} />
 
             {/* Protected routes */}
             <Route
