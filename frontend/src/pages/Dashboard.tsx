@@ -587,19 +587,63 @@ export const Dashboard: React.FC = () => {
                 </div>
               </div>
 
-              {/* Security Recommendations */}
-              <div className="bg-orange-50 p-8 rounded-[2.5rem] border border-orange-100 space-y-4">
-                <div className="flex items-center gap-3 text-orange-600">
-                  <AlertCircle size={24} />
-                  <h3 className="font-black text-lg">Security Alert</h3>
-                </div>
-                <p className="text-orange-700/80 text-sm font-bold">
-                  Your identity verification is almost complete. Finish today to unlock higher transfer limits.
-                </p>
-                <button className="text-orange-600 font-black text-sm uppercase tracking-widest hover:underline">
-                  Fix Now
-                </button>
-              </div>
+              {/* Security Recommendations - Dynamic based on verification status */}
+              {verificationStep < 6 ? (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-orange-50 p-8 rounded-[2.5rem] border border-orange-100 space-y-4"
+                >
+                  <div className="flex items-center gap-3 text-orange-600">
+                    <AlertCircle size={24} />
+                    <h3 className="font-black text-lg">Security Alert</h3>
+                  </div>
+                  <div className="space-y-3">
+                    <p className="text-orange-700/80 text-sm font-bold">
+                      Your identity verification is {verificationStep === 1 ? 'not started' : `${Math.round((verificationStep / 6) * 100)}% complete`}.
+                      {verificationStep < 6 && ' Finish today to unlock higher transfer limits.'}
+                    </p>
+                    <div className="w-full bg-orange-100 rounded-full h-2 overflow-hidden">
+                      <motion.div
+                        initial={{ width: 0 }}
+                        animate={{ width: `${(verificationStep / 6) * 100}%` }}
+                        transition={{ duration: 0.5 }}
+                        className="h-full bg-orange-500"
+                      />
+                    </div>
+                    <p className="text-xs text-orange-600 font-bold">
+                      Step {verificationStep} of 6 • {
+                        verificationStep === 1 ? 'Personal Identity' :
+                        verificationStep === 2 ? 'Document Upload' :
+                        verificationStep === 3 ? 'Biometric Check' :
+                        verificationStep === 4 ? 'Confirm Address' :
+                        verificationStep === 5 ? 'Link External Bank' :
+                        'Security Setup'
+                      }
+                    </p>
+                  </div>
+                  <button
+                    onClick={() => setShowVerification(true)}
+                    className="text-orange-600 font-black text-sm uppercase tracking-widest hover:underline transition-colors"
+                  >
+                    Continue Verification
+                  </button>
+                </motion.div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="bg-emerald-50 p-8 rounded-[2.5rem] border border-emerald-100 space-y-4"
+                >
+                  <div className="flex items-center gap-3 text-emerald-600">
+                    <CheckCircle2 size={24} />
+                    <h3 className="font-black text-lg">Verification Complete</h3>
+                  </div>
+                  <p className="text-emerald-700/80 text-sm font-bold">
+                    Your identity has been verified! You now have access to higher transfer limits and all premium features.
+                  </p>
+                </motion.div>
+              )}
             </div>
           </div>
         </div>
