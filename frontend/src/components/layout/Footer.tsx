@@ -29,13 +29,10 @@ export function Footer() {
           </div>
 
           <div>
-            <h4 className="font-bold text-[#064E3B] mb-8">Solutions</h4>
+            <h4 className="font-bold text-[#064E3B] mb-8">Products</h4>
             <ul className="space-y-4">
-              <li><Link to="/check-savings" className="text-sm font-semibold text-gray-500 hover:text-[#064E3B] transition-colors">Check & Savings</Link></li>
-              <li><span className="text-sm font-semibold text-gray-500">Business Accounts</span></li>
+              <li><Link to="/check-savings" className="text-sm font-semibold text-gray-500 hover:text-[#064E3B] transition-colors">Checking & Savings</Link></li>
               <li><Link to="/credit-card" className="text-sm font-semibold text-gray-500 hover:text-[#064E3B] transition-colors">Credit Card</Link></li>
-              <li><span className="text-sm font-semibold text-gray-500">Investments</span></li>
-              <li><span className="text-sm font-semibold text-gray-500">Loans</span></li>
             </ul>
           </div>
 
@@ -43,32 +40,27 @@ export function Footer() {
             <h4 className="font-bold text-[#064E3B] mb-8">Company</h4>
             <ul className="space-y-4">
               <li><Link to="/about" className="text-sm font-semibold text-gray-500 hover:text-[#064E3B] transition-colors">About Us</Link></li>
-              <li><span className="text-sm font-semibold text-gray-500">Careers</span></li>
               <li><Link to="/security" className="text-sm font-semibold text-gray-500 hover:text-[#064E3B] transition-colors">Security</Link></li>
-              <li><span className="text-sm font-semibold text-gray-500">Press</span></li>
-              <li><span className="text-sm font-semibold text-gray-500">Legal</span></li>
             </ul>
           </div>
 
           <div>
-            <h4 className="font-bold text-[#064E3B] mb-8">Help</h4>
+            <h4 className="font-bold text-[#064E3B] mb-8">Support</h4>
             <ul className="space-y-4">
               <li><Link to="/help" className="text-sm font-semibold text-gray-500 hover:text-[#064E3B] transition-colors">Help Center</Link></li>
-              <li><Link to="/help" className="text-sm font-semibold text-gray-500 hover:text-[#064E3B] transition-colors">FAQs</Link></li>
-              <li><span className="text-sm font-semibold text-gray-500">Contact Support</span></li>
-              <li><span className="text-sm font-semibold text-gray-500">Privacy Policy</span></li>
+              <li><Link to="/terms" className="text-sm font-semibold text-gray-500 hover:text-[#064E3B] transition-colors">Terms of Service</Link></li>
+              <li><Link to="/privacy" className="text-sm font-semibold text-gray-500 hover:text-[#064E3B] transition-colors">Privacy Policy</Link></li>
             </ul>
           </div>
         </div>
 
         <div className="pt-10 border-t border-gray-100 flex flex-col md:flex-row justify-between items-center gap-8">
           <p className="text-sm font-semibold text-gray-400">
-            © {currentYear} BankKit. All rights reserved. Member FDIC.
+            © {currentYear} BankKit. All rights reserved.
           </p>
           <div className="flex gap-10">
-            <a href="#" className="text-sm font-bold text-gray-400 hover:text-[#064E3B]">Privacy Policy</a>
-            <a href="#" className="text-sm font-bold text-gray-400 hover:text-[#064E3B]">Terms of Service</a>
-            <a href="#" className="text-sm font-bold text-gray-400 hover:text-[#064E3B]">Cookies</a>
+            <Link to="/terms" className="text-sm font-bold text-gray-400 hover:text-[#064E3B] transition-colors">Terms of Service</Link>
+            <Link to="/privacy" className="text-sm font-bold text-gray-400 hover:text-[#064E3B] transition-colors">Privacy Policy</Link>
           </div>
         </div>
       </div>
