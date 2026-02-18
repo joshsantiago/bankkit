@@ -3,6 +3,7 @@ import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
 import { Account } from './entities/account.entity';
 import { Transaction } from './entities/transaction.entity';
+import { Card } from './entities/card.entity';
 
 const AppDataSource = new DataSource({
   type: 'postgres',
@@ -11,9 +12,29 @@ const AppDataSource = new DataSource({
   username: process.env.DB_USERNAME || 'admin',
   password: process.env.DB_PASSWORD || 'password',
   database: process.env.DB_DATABASE || 'bankkit',
-  entities: [User, Account, Transaction],
+  entities: [User, Account, Transaction, Card],
   synchronize: false,
 });
+
+// Helper functions for card generation (matching auth.service)
+function generateVirtualCardNumber(): string {
+  const prefix = '4242';
+  const randomDigits = Math.floor(Math.random() * 100000000000000)
+    .toString()
+    .padStart(12, '0');
+  return prefix + randomDigits;
+}
+
+function generateExpiryDate(): string {
+  const now = new Date();
+  const year = (now.getFullYear() + 4) % 100;
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  return `${month}/${year}`;
+}
+
+function generateCVV(): string {
+  return String(Math.floor(100 + Math.random() * 900));
+}
 
 async function seed() {
   await AppDataSource.initialize();
@@ -21,9 +42,11 @@ async function seed() {
   const userRepository = AppDataSource.getRepository(User);
   const accountRepository = AppDataSource.getRepository(Account);
   const transactionRepository = AppDataSource.getRepository(Transaction);
+  const cardRepository = AppDataSource.getRepository(Card);
 
   // Clear existing data
   await transactionRepository.delete({});
+  await cardRepository.delete({});
   await accountRepository.delete({});
   await userRepository.delete({});
 
@@ -39,6 +62,8 @@ async function seed() {
       passwordHash: password,
       firstName: 'Admin',
       lastName: 'User',
+      phone: '+1 (555) 000-0001',
+      dateOfBirth: new Date('1990-01-01'),
       role: 'admin',
       status: 'active',
     }),
@@ -51,6 +76,8 @@ async function seed() {
       passwordHash: password,
       firstName: 'John',
       lastName: 'Doe',
+      phone: '+1 (555) 123-4567',
+      dateOfBirth: new Date('1995-05-15'),
       role: 'user',
       status: 'active',
     }),
@@ -63,12 +90,14 @@ async function seed() {
       passwordHash: password,
       firstName: 'Jane',
       lastName: 'Smith',
+      phone: '+1 (555) 987-6543',
+      dateOfBirth: new Date('1993-08-22'),
       role: 'user',
       status: 'active',
     }),
   );
 
-  console.log('✅ Created users');
+  console.log('✅ Created users with personal info');
 
   // Create accounts
   const johnChecking = await accountRepository.save(
@@ -127,6 +156,63 @@ async function seed() {
   );
 
   console.log('✅ Created accounts');
+
+  // Create debit cards for checking accounts
+  const adminCard = await cardRepository.save(
+    cardRepository.create({
+      userId: admin.id,
+      accountId: adminChecking.id,
+      name: 'BankKit Debit Card',
+      cardNumber: generateVirtualCardNumber(),
+      expiry: generateExpiryDate(),
+      cvv: generateCVV(),
+      brand: 'Visa',
+      cardType: 'Debit',
+      isVirtual: false,
+      status: 'Active',
+      dailyLimit: 5000,
+      monthlyLimit: 20000,
+      currentSpending: 0,
+    }),
+  );
+
+  const johnCard = await cardRepository.save(
+    cardRepository.create({
+      userId: john.id,
+      accountId: johnChecking.id,
+      name: 'BankKit Debit Card',
+      cardNumber: generateVirtualCardNumber(),
+      expiry: generateExpiryDate(),
+      cvv: generateCVV(),
+      brand: 'Visa',
+      cardType: 'Debit',
+      isVirtual: false,
+      status: 'Active',
+      dailyLimit: 5000,
+      monthlyLimit: 20000,
+      currentSpending: 0,
+    }),
+  );
+
+  const janeCard = await cardRepository.save(
+    cardRepository.create({
+      userId: jane.id,
+      accountId: janeChecking.id,
+      name: 'BankKit Debit Card',
+      cardNumber: generateVirtualCardNumber(),
+      expiry: generateExpiryDate(),
+      cvv: generateCVV(),
+      brand: 'Visa',
+      cardType: 'Debit',
+      isVirtual: false,
+      status: 'Active',
+      dailyLimit: 5000,
+      monthlyLimit: 20000,
+      currentSpending: 0,
+    }),
+  );
+
+  console.log('✅ Created debit cards');
 
   // Create transactions
   await transactionRepository.save([
