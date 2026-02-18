@@ -4,6 +4,8 @@ import { User } from './entities/user.entity';
 import { Account } from './entities/account.entity';
 import { Transaction } from './entities/transaction.entity';
 import { Card } from './entities/card.entity';
+import { UserSession } from './entities/user-session.entity';
+import { SecurityLog } from './entities/security-log.entity';
 
 const AppDataSource = new DataSource({
   type: 'postgres',
@@ -12,7 +14,7 @@ const AppDataSource = new DataSource({
   username: process.env.DB_USERNAME || 'admin',
   password: process.env.DB_PASSWORD || 'password',
   database: process.env.DB_DATABASE || 'bankkit',
-  entities: [User, Account, Transaction, Card],
+  entities: [User, Account, Transaction, Card, UserSession, SecurityLog],
   synchronize: false,
 });
 
@@ -43,12 +45,16 @@ async function seed() {
   const accountRepository = AppDataSource.getRepository(Account);
   const transactionRepository = AppDataSource.getRepository(Transaction);
   const cardRepository = AppDataSource.getRepository(Card);
+  const userSessionRepository = AppDataSource.getRepository(UserSession);
+  const securityLogRepository = AppDataSource.getRepository(SecurityLog);
 
-  // Clear existing data
-  await transactionRepository.delete({});
-  await cardRepository.delete({});
-  await accountRepository.delete({});
-  await userRepository.delete({});
+  // Clear existing data using query builder (respecting foreign key constraints)
+  await transactionRepository.createQueryBuilder().delete().execute();
+  await cardRepository.createQueryBuilder().delete().execute();
+  await accountRepository.createQueryBuilder().delete().execute();
+  await userSessionRepository.createQueryBuilder().delete().execute();
+  await securityLogRepository.createQueryBuilder().delete().execute();
+  await userRepository.createQueryBuilder().delete().execute();
 
   console.log('🗑️  Cleared existing data');
 
