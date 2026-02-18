@@ -13,9 +13,13 @@ A modern, premium digital banking interface built with React, TypeScript, and sh
 
 BankKit is a next-generation digital banking platform designed with a focus on user experience, security, and modern design principles. The frontend provides a complete banking interface including:
 
-- **Public Marketing Pages** - Landing, About, Features, Help, Security
-- **Authentication Flow** - Modern wizard-style onboarding with multi-step registration
-- **Banking Dashboard** - Comprehensive account management, transactions, cards, and settings
+- **Public Marketing Pages** - Landing, About, Features, Help, Security, Credit Card showcase, Account types
+- **Authentication Flow** - Modern wizard-style onboarding with multi-step registration, login with demo credentials
+- **Card Management** - Card application modal with tier selection (Essential/Black Metal), card visualization, spending limits
+- **Banking Dashboard** - Comprehensive account overview, balance tracking, recent transactions, spending visualization
+- **Accounts & Transfers** - Multi-account management, fund transfers, account insights
+- **Transaction History** - Full transaction details, filtering, search capabilities
+- **User Settings** - Profile management, preferences, notification settings, account actions
 - **Admin Interface** - User and account management for administrators
 
 ---
@@ -36,9 +40,9 @@ BankKit is a next-generation digital banking platform designed with a focus on u
 
 ### Form & Data Handling
 - **[React Hook Form](https://react-hook-form.com/)** - Performant form validation
-- **[Axios](https://axios-http.com/)** - Promise-based HTTP client
+- **[Axios](https://axios-http.com/)** - Promise-based HTTP client with JWT interceptors
 - **[date-fns](https://date-fns.org/)** - Modern date utility library
-- **[Recharts](https://recharts.org/)** - Composable charting library
+- **[Recharts](https://recharts.org/)** - Composable charting library for data visualization
 
 ### Additional Libraries
 - **[Sonner](https://sonner.emilkowal.ski/)** - Beautiful toast notifications
@@ -94,56 +98,82 @@ npm test            # Run test suite (if configured)
 ```
 frontend/
 ├── src/
-│   ├── components/           # React components
-│   │   ├── ui/              # shadcn/ui components (Button, Input, Card, etc.)
-│   │   ├── layout/          # Layout components (Navbar, Footer, Sidebar)
-│   │   ├── ErrorBoundary.tsx
-│   │   ├── PageTransition.tsx
-│   │   ├── ProtectedRoute.tsx
-│   │   └── ScrollAnimation.tsx
+│   ├── components/                  # React components
+│   │   ├── ui/                     # shadcn/ui components (Button, Input, Card, etc.)
+│   │   ├── layout/                 # Layout components (Navbar, Footer, Sidebar, PublicLayout)
+│   │   ├── onboarding/             # Onboarding wizard components
+│   │   │   ├── steps/             # Individual wizard steps
+│   │   │   ├── OnboardingWizard.tsx
+│   │   │   ├── WizardProgress.tsx
+│   │   │   └── WizardNavigation.tsx
+│   │   ├── figma/                  # Figma integration components
+│   │   │   └── ImageWithFallback.tsx
+│   │   ├── CardApplicationModal.tsx # Card application modal
+│   │   ├── ErrorBoundary.tsx       # Error boundary wrapper
+│   │   ├── ProtectedRoute.tsx      # Auth guard component
+│   │   ├── PageTransition.tsx      # Page animation wrapper
+│   │   ├── ScrollAnimation.tsx     # Scroll-triggered animations
+│   │   ├── ErrorState.tsx          # Error display component
+│   │   ├── EmptyState.tsx          # Empty state component
+│   │   ├── TestimonialCard.tsx    # Testimonial cards
+│   │   ├── FeatureCard.tsx         # Feature showcase card
+│   │   ├── LoanCalculator.tsx      # Loan calculation tool
+│   │   └── FAQItem.tsx             # FAQ item component
 │   │
-│   ├── pages/               # Page components
-│   │   ├── Landing.tsx      # Homepage
-│   │   ├── About.tsx        # About page
-│   │   ├── Security.tsx     # Security information
-│   │   ├── Help.tsx         # Help & FAQ
-│   │   ├── Features.tsx     # Features showcase
-│   │   ├── CreditCard.tsx   # Credit card offering
-│   │   ├── CheckSavings.tsx # Account types
-│   │   ├── Login.tsx        # Login page
-│   │   ├── Onboarding.tsx   # Multi-step registration wizard
-│   │   ├── Dashboard.tsx    # Banking dashboard
-│   │   ├── Accounts.tsx     # Account management
-│   │   ├── Transactions.tsx # Transaction history
-│   │   ├── Cards.tsx        # Card management
-│   │   ├── Settings.tsx     # User settings
-│   │   └── admin/          # Admin pages
+│   ├── pages/                      # Page components
+│   │   ├── Landing.tsx             # Homepage
+│   │   ├── About.tsx               # About page
+│   │   ├── Security.tsx            # Security information
+│   │   ├── Help.tsx                # Help & FAQ
+│   │   ├── Features.tsx            # Features showcase
+│   │   ├── CreditCard.tsx          # Credit card offering
+│   │   ├── CheckSavings.tsx        # Account types
+│   │   ├── Login.tsx               # Login page with demo credentials
+│   │   ├── Register.tsx            # Registration page
+│   │   ├── Onboarding.tsx          # Multi-step registration wizard
+│   │   ├── Dashboard.tsx           # Banking dashboard
+│   │   ├── Accounts.tsx            # Account management
+│   │   ├── Transactions.tsx        # Transaction history
+│   │   ├── Cards.tsx               # Card management
+│   │   ├── Transfer.tsx            # Money transfer page
+│   │   ├── Settings.tsx            # User settings
+│   │   └── admin/                  # Admin pages
+│   │       ├── AdminDashboard.tsx
+│   │       ├── AdminUsers.tsx
+│   │       └── AdminAccounts.tsx
 │   │
-│   ├── context/            # React context providers
-│   │   └── AuthContext.tsx # Authentication state management
+│   ├── context/                    # React context providers
+│   │   └── AuthContext.tsx         # Authentication state management
 │   │
-│   ├── services/           # API services
-│   │   ├── api.ts         # Axios instance with interceptors
-│   │   ├── authService.ts # Authentication API calls
-│   │   ├── accountService.ts
-│   │   └── transactionService.ts
+│   ├── services/                   # API services
+│   │   ├── api.ts                 # Axios instance with interceptors
+│   │   ├── authService.ts         # Authentication API calls
+│   │   ├── accountService.ts      # Account management
+│   │   ├── cardService.ts         # Card operations
+│   │   ├── transactionService.ts  # Transaction management
+│   │   ├── dashboardService.ts    # Dashboard data
+│   │   ├── settingsService.ts     # User settings
+│   │   ├── securityService.ts     # Security operations
+│   │   └── adminService.ts        # Admin operations
 │   │
-│   ├── lib/               # Utility functions
-│   │   └── utils.ts       # Tailwind class merging (cn function)
+│   ├── hooks/                      # Custom React hooks
+│   │   └── useScrollAnimation.ts   # Scroll animation hook
 │   │
-│   ├── styles/            # Global styles
-│   │   ├── tailwind.css   # Tailwind directives
-│   │   └── theme.css      # CSS custom properties
+│   ├── lib/                        # Utility functions
+│   │   └── utils.ts               # Tailwind class merging (cn function)
 │   │
-│   ├── App.tsx            # Root component with routing
-│   └── main.tsx           # Application entry point
+│   ├── utils/                      # Helper utilities
+│   │   └── formatters.ts          # Formatting functions
+│   │
+│   ├── App.tsx                     # Root component with routing
+│   └── main.tsx                    # Application entry point
 │
-├── public/                # Static assets
-├── index.html            # HTML entry point
-├── vite.config.ts        # Vite configuration
-├── tailwind.config.js    # Tailwind configuration
-├── tsconfig.json         # TypeScript configuration
-└── package.json          # Dependencies and scripts
+├── public/                         # Static assets
+├── index.html                      # HTML entry point
+├── vite.config.ts                 # Vite configuration
+├── tailwind.config.js             # Tailwind configuration
+├── tsconfig.json                  # TypeScript configuration
+└── package.json                   # Dependencies and scripts
 ```
 
 ---
@@ -309,6 +339,38 @@ export default {
   }
 }
 ```
+
+---
+
+## ✨ Key Features
+
+### Card Application System
+- Interactive card tier selection (Essential vs. Black Metal)
+- Automatic card number generation and validation
+- Dynamic spending limits based on card tier
+- Real-time card creation with success confirmation
+- Seamless integration with authentication flow
+
+### Demo Credentials
+The login page features a prominent demo credentials card for easy testing:
+- **Email:** `john.doe@example.com`
+- **Password:** `password123`
+- Clickable fields auto-fill the login form
+
+### Dashboard & Analytics
+- Real-time account balance visualization
+- Weekly spending charts with Recharts
+- Transaction overview with filtering
+- Card information display with freeze/unfreeze toggles
+- Account insights and metrics
+
+### Onboarding Wizard
+Five-step guided registration process:
+1. Welcome with value proposition
+2. Email/password with strength indicator
+3. Personal information (name, phone, DOB)
+4. Account type selection (checking/savings/both)
+5. Success celebration with account details
 
 ---
 
