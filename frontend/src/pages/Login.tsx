@@ -247,6 +247,27 @@ export function LoginPage() {
                 </button>
               </div>
 
+              {/* Test Credentials Card */}
+              <div className="bg-blue-50 border-2 border-blue-100 rounded-2xl p-5 space-y-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center text-white font-black text-sm">?</div>
+                  <p className="font-black text-blue-900 text-sm">Demo Credentials</p>
+                </div>
+                <div className="space-y-2 text-sm">
+                  <div className="bg-white rounded-lg p-3 font-mono text-blue-900">
+                    <p className="text-xs font-bold text-blue-600 uppercase mb-1">Email</p>
+                    <p className="font-bold cursor-pointer hover:text-blue-600 transition-colors" onClick={() => setEmail('john.doe@example.com')}>john.doe@example.com</p>
+                  </div>
+                  <div className="bg-white rounded-lg p-3 font-mono text-blue-900">
+                    <p className="text-xs font-bold text-blue-600 uppercase mb-1">Password</p>
+                    <p className="font-bold cursor-pointer hover:text-blue-600 transition-colors" onClick={() => setPassword('password123')}>password123</p>
+                  </div>
+                  <p className="text-xs text-blue-700 font-medium px-1">
+                    👆 Click to auto-fill
+                  </p>
+                </div>
+              </div>
+
               <p className="text-center text-sm text-gray-400 font-medium leading-relaxed">
                 By signing in, you agree to our <button className="underline hover:text-emerald-600">Terms of Service</button> and <button className="underline hover:text-emerald-600">Privacy Policy</button>.
               </p>
