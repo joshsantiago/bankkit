@@ -1,18 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { 
-  CreditCard, 
-  ShieldCheck, 
-  Zap, 
-  Star, 
-  ArrowRight, 
-  Wallet, 
-  Smartphone, 
+import { useNavigate } from 'react-router-dom';
+import {
+  CreditCard,
+  ShieldCheck,
+  Zap,
+  Star,
+  ArrowRight,
+  Wallet,
+  Smartphone,
   Globe,
   CheckCircle2,
   Trophy
 } from 'lucide-react';
 import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { CardApplicationModal } from '../components/CardApplicationModal';
+import { useAuth } from '../context/AuthContext';
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -22,6 +25,18 @@ const fadeIn = {
 };
 
 export function CreditCardPage() {
+  const navigate = useNavigate();
+  const { user, isAuthenticated } = useAuth();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const handleApplyClick = () => {
+    if (!isAuthenticated) {
+      navigate('/onboarding');
+    } else {
+      setIsModalOpen(true);
+    }
+  };
+
   return (
     <div className="bg-[#F8FAFC] min-h-screen pt-32 pb-20">
       {/* Hero Section */}
@@ -44,7 +59,10 @@ export function CreditCardPage() {
               Unlock the power of your spending with the BankKit Metal Card. No annual fees, unlimited rewards, and built-in security for the digital age.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <button className="bg-[#064E3B] text-white px-10 py-5 rounded-[2rem] font-bold text-lg hover:scale-105 transition-all shadow-xl shadow-[#064E3B]/20">
+              <button
+                onClick={handleApplyClick}
+                className="bg-[#064E3B] text-white px-10 py-5 rounded-[2rem] font-bold text-lg hover:scale-105 transition-all shadow-xl shadow-[#064E3B]/20"
+              >
                 Apply in 3 Minutes
               </button>
               <button className="bg-white text-[#064E3B] px-10 py-5 rounded-[2rem] font-bold text-lg hover:bg-gray-50 border border-gray-100 transition-all">
@@ -237,7 +255,10 @@ export function CreditCardPage() {
                   ))}
                 </ul>
               </div>
-              <button className="w-full py-5 rounded-2xl border-2 border-[#064E3B] text-[#064E3B] font-black hover:bg-[#064E3B] hover:text-white transition-all">
+              <button
+                onClick={handleApplyClick}
+                className="w-full py-5 rounded-2xl border-2 border-[#064E3B] text-[#064E3B] font-black hover:bg-[#064E3B] hover:text-white transition-all"
+              >
                 Select Essential
               </button>
             </motion.div>
@@ -274,7 +295,10 @@ export function CreditCardPage() {
                   ))}
                 </ul>
               </div>
-              <button className="w-full py-5 rounded-2xl bg-[#DCFCE7] text-[#064E3B] font-black hover:scale-105 transition-all shadow-lg shadow-[#DCFCE7]/10">
+              <button
+                onClick={handleApplyClick}
+                className="w-full py-5 rounded-2xl bg-[#DCFCE7] text-[#064E3B] font-black hover:scale-105 transition-all shadow-lg shadow-[#DCFCE7]/10"
+              >
                 Get Metal Card
               </button>
             </motion.div>
@@ -299,7 +323,10 @@ export function CreditCardPage() {
             No credit check required to start with our Essential card.
           </p>
           <div className="flex justify-center pt-6">
-            <button className="group relative bg-[#064E3B] text-white px-12 py-6 rounded-full font-black text-xl hover:scale-105 transition-all shadow-2xl shadow-[#064E3B]/30 overflow-hidden">
+            <button
+              onClick={handleApplyClick}
+              className="group relative bg-[#064E3B] text-white px-12 py-6 rounded-full font-black text-xl hover:scale-105 transition-all shadow-2xl shadow-[#064E3B]/30 overflow-hidden"
+            >
               <span className="relative z-10 flex items-center gap-3">
                 Apply for BankKit Card
                 <ArrowRight size={24} className="group-hover:translate-x-2 transition-transform" />
@@ -312,6 +339,14 @@ export function CreditCardPage() {
           </p>
         </motion.div>
       </section>
+
+      {/* Card Application Modal */}
+      <CardApplicationModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        userEmail={user?.email || ''}
+        firstName={user?.first_name || 'User'}
+      />
     </div>
   );
 }
